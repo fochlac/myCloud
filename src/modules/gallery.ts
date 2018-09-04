@@ -24,7 +24,8 @@ class GalleryDb {
   async create({ name, description = '', path, parent }): Promise<Core.Gallery> {
     const id = this.db.nextIndex
     const images = []
-    const gallery = { name, description, path, parent, id, images }
+    const urls = []
+    const gallery = { name, description, path, parent, id, images, urls }
     await this.db.set(id, gallery)
     return gallery as Core.Gallery
   }

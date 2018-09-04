@@ -20,12 +20,14 @@ declare namespace Core {
     path: Path
     parent: Id
     images: [Image]
+    urls: [AccessUrl]
   }
 
   interface Image {
     path: Path
     id: Id
     name: string
+    description: string
   }
 
   interface AccessUrl {
