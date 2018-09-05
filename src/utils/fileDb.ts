@@ -1,7 +1,13 @@
-import { moveSync as moveSyncRaw, outputFile as outputFileRaw, pathExists as pathExistsRaw, readJSON as readJSONRaw } from 'fs-extra'
+import * as clone from 'clone'
 
-import clone from 'clone-deep'
-import error from 'SERVER/utils/error'
+import {
+  moveSync as moveSyncRaw,
+  outputFile as outputFileRaw,
+  pathExists as pathExistsRaw,
+  readJSON as readJSONRaw,
+} from 'fs-extra'
+
+import error from 'utils/error'
 
 const { internalError } = error('fileDb')
 const outputFile = (path, data, options) => outputFileRaw(global.storage + path, data, options)
@@ -16,11 +22,13 @@ class FileDb {
   constructor(path, initialState) {
     this.content = initialState
     this.path = path
-    this.highestIndex = Math.max(...Object.keys(initialState).map(key => +key))
+    this.highestIndex = Object.keys(initialState).length
+      ? Math.max(...Object.keys(initialState).map(key => +key))
+      : 0
   }
 
   list() {
-    return clone(this.content)
+    return clone(Object.values(this.content)) as [any]
   }
 
   get(id: Core.Id) {
@@ -28,17 +36,18 @@ class FileDb {
   }
 
   find(key: string, value: string) {
-    return clone(Object.values(this.content).filter(elem => elem[key] === value))
+    return clone(Object.values(this.content).filter(elem => elem[key] === value)) as [any]
   }
 
   async set(id, value) {
-    await write(this.content, this.path)
     this.content[id] = clone(value)
+    await write(this.content, this.path)
     return clone(value)
   }
 
   get nextIndex(): Core.Id {
-    return this.highestIndex++
+    this.highestIndex++
+    return this.highestIndex.toString()
   }
 
   async delete(id: Core.Id) {
@@ -56,7 +65,7 @@ function write(content: object, path: Core.Path): void {
 export default async function initDb(path: Core.Path, initialState: object = {}): Promise<FileDb> {
   if (await pathExists(path)) {
     try {
-      initialState = readJSON(path, 'utf8')
+      initialState = await readJSON(path, 'utf8')
     } catch (error) {
       internalError(1, 'error opening the stored db')(error)
       moveSync(path, path.split('.')[0] + '_backup_' + Date.now() + '.json')

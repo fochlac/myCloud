@@ -1,7 +1,7 @@
-import { createFolder, deleteFolder } from 'SERVER/utils/fs'
+import { createFolder, deleteFolder } from 'utils/fs'
 
-import error from 'SERVER/utils/error'
-import galleryDb from 'SERVER/modules/gallery'
+import error from 'utils/error'
+import galleryDb from 'modules/gallery'
 
 const location = 'controller/gallery.ts'
 const { internalError } = error(location)
@@ -10,24 +10,28 @@ export default {
   create: async ({ name, parent, description }: Core.RawGallery): Promise<Core.Gallery> => {
     const { path = '' } = galleryDb.get(parent) || {}
 
-    const newPath = await createFolder(name, path).catch(internalError(3, 'unable to create directory', name, path))
+    const newPath = await createFolder(name, path).catch(
+      internalError(3, 'unable to create directory', name, path),
+    )
 
-    if (!newPath) return Promise.reject()
+    if (!newPath) return Promise.reject('')
 
     const gallery = await galleryDb
       .create({ name, parent, description, path: newPath })
-      .catch(internalError(3, 'unable to create gallery', { name, parent, description, path: newPath }))
+      .catch(
+        internalError(3, 'unable to create gallery', { name, parent, description, path: newPath }),
+      )
 
     if (!gallery) {
       deleteFolder(newPath).catch(internalError(5, 'unable to remove created directory', newPath))
-      return Promise.reject()
+      return Promise.reject('')
     }
 
     return gallery
   },
 
-  update: async ({ name, id, description }: Core.RawGallery): Promise<Core.Gallery> => {
-    const newGallery = await galleryDb.update({ name, id, description })
+  update: async ({ name, id, description, parent }: Core.RawGallery): Promise<Core.Gallery> => {
+    const newGallery = await galleryDb.update({ name, id, description, parent })
     return newGallery
   },
 

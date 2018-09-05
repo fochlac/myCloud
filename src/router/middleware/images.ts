@@ -1,25 +1,25 @@
-import multer from 'multer'
-import galleryDb from 'SERVER/modules/gallery'
+import * as multer from 'multer'
 
-const galleryStores = {}
+import galleryDb from 'modules/gallery'
+import imageDb from 'modules/image'
 
-function generateStore(id) {
-  const { path } = galleryDb.get(id)
-  return multer({
-    storage: multer.diskStorage({
-      destination: global.storage + path
-    })
-  })
+const imageStore = multer({
+  storage: multer.diskStorage({
+    destination: destinationFinder,
+    filename: fileName,
+  }),
+})
+
+function destinationFinder(req, file, cb) {
+  const { path } = galleryDb.get(req.params.id)
+  cb(null, global.storage + path)
 }
 
+function fileName({ params: { imageId, id } }: any, { originalname }: any, cb) {
+  if (!imageId) return cb(null, originalname)
 
-module.exports = (req, res, next) => {
-  const {params: {id}} = req
-  if (!galleryStores[id]) {
-    galleryStores[id] = generateStore(id)
-  }
+  const filename = imageDb.get(imageId).path.split(galleryDb.get(id).path)[1]
+  cb(null, filename)
+}
 
-  return galleryStores[id](req, res, next)
-};
-
-
+export default imageStore

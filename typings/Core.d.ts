@@ -11,7 +11,7 @@ declare namespace Core {
   }
 
   type Path = string
-  type Id = number
+  type Id = string
 
   interface Gallery {
     name: string
@@ -26,6 +26,7 @@ declare namespace Core {
   interface Image {
     path: Path
     id: Id
+    gallery: Id
     name: string
     description: string
   }
@@ -33,6 +34,7 @@ declare namespace Core {
   interface AccessUrl {
     url: string
     gallery: Id
+    id: Id
     access: 'read' | 'write'
     recursive: boolean
   }
@@ -51,8 +53,30 @@ declare namespace Core {
     get: (id: Id) => Gallery
     list: () => [Gallery]
     delete: (id: Id) => Promise<Id>
+    insertImage: (id: Core.Id, image: Core.Image) => Promise<Core.Gallery>
+    deleteImage: (id: Core.Id, image: Core.Image) => Promise<Core.Gallery>
+    insertAccessUrl: (id: Core.Id, url: Core.AccessUrl) => Promise<Core.Gallery>
+    deleteAccessUrl: (id: Core.Id, url: Core.AccessUrl) => Promise<Core.Gallery>
     update: (rawGallery: object) => Promise<Gallery>
     create: (rawGallery: object) => Promise<Gallery>
+  }
+
+  class ImageDb {
+    db: FileDb
+    get: (id: Id) => Image
+    list: () => [Image]
+    delete: (id: Id) => Promise<Id>
+    update: (rawImage: object) => Promise<Image>
+    create: (rawImage: object) => Promise<Image>
+  }
+
+  class UrlDb {
+    db: FileDb
+    get: (id: Id) => AccessUrl
+    list: () => [AccessUrl]
+    delete: (id: Id) => Promise<Id>
+    update: (rawAccessUrl: object) => Promise<AccessUrl>
+    create: (rawAccessUrl: object) => Promise<AccessUrl>
   }
 
   interface RawGallery {

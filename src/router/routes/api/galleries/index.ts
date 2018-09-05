@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import error from 'SERVER/utils/error'
-import gallery from 'CONTROLLER/gallery'
+import error from 'utils/error'
+import gallery from 'controller/gallery'
 import images from './images'
 import urls from './urls'
 const { routerError } = error('galleries-router')
@@ -35,7 +35,7 @@ galleries.delete('/:id', ({ params: { id } }, res) => {
     .catch(routerError(2, res, 'error deleting gallery', id))
 })
 
-galleries.use('/:id/images', images)
-galleries.use('/:id/urls', urls)
+galleries.use(images)
+galleries.use(urls)
 
 export default galleries

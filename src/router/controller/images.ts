@@ -1,5 +1,25 @@
+import galleryDb from 'modules/gallery'
+import imageDb from 'modules/image'
+
 export default {
-  delete: (arg) => null,
-  create: (arg) => null,
-  update: (arg) => null,
+  delete: id => imageDb.delete(id),
+  create: async ({ gallery, name, description, file }) => {
+    const image = await imageDb.create({
+      gallery,
+      name,
+      description,
+      path: file.path.split(global.storage)[1],
+    })
+    await galleryDb.insertImage(gallery, image)
+    return image
+  },
+  update: async ({ id, name, description, gallery }) => {
+    const image = await imageDb.update({
+      gallery,
+      name,
+      description,
+      id,
+    })
+    return image
+  },
 }
