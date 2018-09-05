@@ -19,9 +19,9 @@ declare namespace Core {
     description?: string
     path: Path
     parent: Id
-    images: [Image]
-    urls: [AccessUrl]
-    ancestors: [Id]
+    images: Image[]
+    urls: AccessUrl[]
+    ancestors: Id[]
   }
 
   interface Image {
@@ -46,9 +46,9 @@ declare namespace Core {
     set: (id: Id, value: any) => Promise<any>
     nextIndex: Id
     delete: (id: Id) => Promise<Id>
-    list: () => [any]
+    list: () => any[]
     get: (id: Id) => any
-    find: (key: string, value: any) => [any]
+    find: (key: string, value: any) => any[]
   }
 
   class GalleryDb {
@@ -67,7 +67,7 @@ declare namespace Core {
   class ImageDb {
     db: FileDb
     get: (id: Id) => Image
-    list: () => [Image]
+    list: () => Image[]
     delete: (id: Id) => Promise<Id>
     update: (rawImage: object) => Promise<Image>
     create: (rawImage: object) => Promise<Image>
@@ -76,8 +76,8 @@ declare namespace Core {
   class UrlDb {
     db: FileDb
     get: (id: Id) => AccessUrl
-    list: () => [AccessUrl]
-    find: (key: string, value: any) => [AccessUrl]
+    list: () => AccessUrl[]
+    find: (key: string, value: any) => AccessUrl[]
     delete: (id: Id) => Promise<Id>
     update: (rawAccessUrl: object) => Promise<AccessUrl>
     create: (rawAccessUrl: object) => Promise<AccessUrl>
@@ -92,10 +92,7 @@ declare namespace Core {
 
   interface WebToken {
     accessMap: AccessMap
-  }
-
-  interface Request extends Express.Request {
-    token: WebToken
-    authenticated: boolean
+    iss?: string
+    iat?: number
   }
 }

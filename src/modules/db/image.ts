@@ -2,7 +2,7 @@ import initDb from 'utils/fileDb'
 
 class ImageDb {
   db: Core.FileDb
-  list: () => [Core.Image]
+  list: () => Core.Image[]
   get: (id: Core.Id) => Core.Image
   delete: (id: Core.Id) => Promise<Core.Id>
   constructor() {

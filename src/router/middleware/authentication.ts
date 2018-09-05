@@ -42,25 +42,31 @@ export async function authenticate(req, res, next): Promise<void> {
   }
 }
 
-export function checkGalleryAccessToken(req, res, next) {
-  const {token: {accessMap}, params: {id}} = req
-  if (!id) {
-    res.status(400).send({
-      success: false,
-      message: 'Gallerie nicht gefunden'
-    })
-  } else if (req.authenticated) {
-    let gallery = galleryDb.get(id)
-    const ancestor = gallery.ancestors.find((ancestor) => accessMap[ancestor])
-    req.accessToken = accessMap[ancestor]
-    next()
-  } else {
-    res
-      .status(403)
-      .send({
+export function checkGalleryAccessToken(level = ['read', 'write']) {
+  return (req, res, next) => {
+    const { token, params: { id } } = req
+
+    let gallery = id && galleryDb.get(id)
+    if (!gallery) {
+      res.status(400).send({
         success: false,
-        message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+        message: 'Gallerie nicht gefunden'
       })
+    } else {
+      const accessToken = token && token.accessMap && token.accessMap[id] ||
+        token.accessMap[gallery.ancestors.find((ancestor) => token.accessMap[ancestor])]
+      if (accessToken && level.includes(accessToken.access)) {
+        req.accessToken = accessToken
+        next()
+      } else {
+        res
+          .status(403)
+          .send({
+            success: false,
+            message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+          })
+      }
+    }
   }
 }
 
@@ -77,11 +83,11 @@ export function isAuthenticated(req, res, next) {
   }
 }
 
-export function checkShortUrl(req:Core.Request, res:Express.Request, next) {
+export async function checkShortUrl(req: Express.Request, res: Express.Response, next) {
   const accessUrl = urlDb.find('url', req.path)[0]
 
   if (accessUrl) {
-    addToAccessMap(req, res, accessUrl)
+    await addToAccessMap(req, res, accessUrl)
   }
   next()
 }

@@ -28,7 +28,7 @@ class FileDb {
   }
 
   list() {
-    return clone(Object.values(this.content)) as [any]
+    return clone(Object.values(this.content)) as any[]
   }
 
   get(id: Core.Id) {
@@ -36,7 +36,7 @@ class FileDb {
   }
 
   find(key: string, value: string) {
-    return clone(Object.values(this.content).filter(elem => elem[key] === value)) as [any]
+    return clone(Object.values(this.content).filter(elem => elem[key] === value)) as any[]
   }
 
   async set(id, value) {

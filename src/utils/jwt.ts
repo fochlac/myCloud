@@ -35,12 +35,15 @@ const newToken:Core.WebToken = {
   accessMap: {}
 }
 
-export async function addToAccessMap(req: Core.Request, res: Express.Response, accessUrl: Core.AccessUrl) {
+export async function addToAccessMap(req: Express.Request, res: Express.Response, accessUrl: Core.AccessUrl) {
   let baseToken = req.token || newToken
+  delete baseToken.iss
+  delete baseToken.iat
+
   const token = await createJWT({
-      ...req.token,
+      ...baseToken,
       accessMap: {
-        ...req.token.accessMap,
+        ...baseToken.accessMap,
         [accessUrl.gallery]: accessUrl,
       }
     })

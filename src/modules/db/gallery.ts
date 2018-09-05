@@ -18,7 +18,7 @@ class GalleryDb {
     return gallery && enrichGallery(gallery)
   }
 
-  list(): [Core.Gallery] {
+  list(): Core.Gallery[] {
     const galleries = this.db.list()
     galleries.map(enrichGallery)
     return galleries
@@ -67,10 +67,20 @@ class GalleryDb {
   async create({ name, description = '', path, parent }): Promise<Core.Gallery> {
     const id = this.db.nextIndex
     const images = []
-    const urls = []
+    const initialUrl = '/' + (new Buffer('url_' + Date.now()).toString('base64'))
+    const initialAccessUrl = await urlDb.create({
+      url: initialUrl,
+      gallery: id,
+      access: 'write',
+      recursive: true
+    })
+    const urls = [initialAccessUrl.id]
     const ancestors = [parent].concat(parent ? this.db.get(parent).ancestors : [])
     const gallery = { name, description, path, parent, id, images, urls, ancestors }
-    await this.db.set(id, gallery)
+
+    await this.db.set(id, gallery).catch(err => {
+      return urlDb.delete(initialAccessUrl.id).then(() => Promise.reject(err))
+    })
     return enrichGallery(gallery)
   }
 }

@@ -8,3 +8,18 @@ declare namespace NodeJS {
     storage: string
   }
 }
+
+declare namespace Express {
+  export interface Request {
+    token: Core.WebToken
+    authenticated: boolean
+    path: string
+    accessToken: Core.AccessUrl
+  }
+
+  export interface Response {
+    cookie: (name: string, val: string, options: object) => Response;
+    set: (name: string, val: string) => Response
+    headers: object
+  }
+}

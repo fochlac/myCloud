@@ -8,11 +8,14 @@ import { authenticate, checkShortUrl } from 'middleware/authentication';
 const router = Router()
 
 // connect routes
-router.use('/api', apiRouter)
 router.use(staticRouter)
 
+
+router.use(authenticate)
+router.use('/api', apiRouter)
+
 // check for a shortUrl
-router.get('*', authenticate, checkShortUrl)
+router.get('*', checkShortUrl)
 
 // catch-all
 router.get('*', (req, res) => res.sendFile(join(global.appRoot, 'static/index.html')))

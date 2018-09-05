@@ -3,6 +3,7 @@ import error from 'utils/error'
 import gallery from 'controller/gallery'
 import images from './images'
 import urls from './urls'
+import { checkGalleryAccessToken } from 'middleware/authentication';
 const { routerError } = error('galleries-router')
 
 const galleries = Router()
@@ -10,25 +11,29 @@ const galleries = Router()
 galleries.get('/', (req, res) => {
   res.status(200).send(gallery.readAll())
 })
-galleries.get('/:id', ({ params: { id } }, res) => {
-  res.status(200).send(gallery.read(id))
+galleries.get('/:id', checkGalleryAccessToken(), ({ params: { id }, accessToken: {access} }, res) => {
+  const data = gallery.read(id)
+  if (access === 'read') {
+    data.urls = []
+  }
+  res.status(200).send(data)
 })
 
-galleries.put('/:id', ({ body: { name, parent, description }, params: { id } }, res) => {
+galleries.put('/:id', checkGalleryAccessToken(['write']), ({ body: { name, parent, description }, params: { id } }, res) => {
   gallery
     .update({ name, parent, description, id })
     .then(newGallery => res.status(200).send(newGallery))
     .catch(routerError(2, res, 'error updating gallery', { name, parent, description, id }))
 })
 
-galleries.post('/', ({ body: { name, parent, description } }, res) => {
+galleries.post('/', checkGalleryAccessToken(['write']), ({ body: { name, parent, description } }, res) => {
   gallery
     .create({ name, parent, description })
     .then(newGallery => res.status(200).send(newGallery))
     .catch(routerError(2, res, 'error creating new gallery', { name, parent, description }))
 })
 
-galleries.delete('/:id', ({ params: { id } }, res) => {
+galleries.delete('/:id', checkGalleryAccessToken(['write']), ({ params: { id } }, res) => {
   gallery
     .delete(id)
     .then(id => res.status(200).send(id))

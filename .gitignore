@@ -5,5 +5,5 @@ storage/
 .idea/
 package-lock.json
 .vscode
-log
+log/
 static

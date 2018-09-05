@@ -2,8 +2,8 @@ import initDb from 'utils/fileDb'
 
 class UrlDb {
   db: Core.FileDb
-  list: () => [Core.AccessUrl]
-  find: (key: string, value: any) => [Core.AccessUrl]
+  list: () => Core.AccessUrl[]
+  find: (key: string, value: any) => Core.AccessUrl[]
   get: (id: Core.Id) => Core.AccessUrl
   delete: (id: Core.Id) => Promise<Core.Id>
   constructor() {
