@@ -1,5 +1,5 @@
-import galleryDb from 'modules/gallery'
-import urlDb from 'modules/url'
+import galleryDb from 'modules/db/gallery'
+import urlDb from 'modules/db/url'
 
 export default {
   delete: id => galleryDb.delete(id),

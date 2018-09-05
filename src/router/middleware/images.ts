@@ -1,7 +1,7 @@
 import * as multer from 'multer'
 
-import galleryDb from 'modules/gallery'
-import imageDb from 'modules/image'
+import galleryDb from 'modules/db/gallery'
+import imageDb from 'modules/db/image'
 
 const imageStore = multer({
   storage: multer.diskStorage({

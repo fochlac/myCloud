@@ -11,8 +11,10 @@
       "PAGES/*": ["web/components/views/*"],
       "UTILS/*": ["web/utils/*"],
       "STORE/*": ["web/store/*"],
-      "SERVER/*": ["src/*"],
-      "CONTROLLER/*": ["src/router/controller/*"],
+      "middleware/*": ["src/router/middleware/*"],
+      "controller/*": ["src/router/controller/*"],
+      "utils/*": ["src/utils/*"],
+      "modules/*": ["src/modules/*"],
       "SW/*": ["node_modules/serviceworker-webpack-plugin/lib/*"]
     }
   },

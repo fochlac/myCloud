@@ -1,5 +1,7 @@
-import { decodeJWT } from '../../utils/jwt'
+import { decodeJWT, addToAccessMap } from '../../utils/jwt'
 import log from '../../utils/logger'
+import galleryDb from 'modules/db/gallery'
+import urlDb from 'modules/db/url'
 
 function extractTokenFromRequest(request): string | null {
   if (request.headers.jwt) {
@@ -40,8 +42,17 @@ export async function authenticate(req, res, next): Promise<void> {
   }
 }
 
-export function isAdmin(req, res, next) {
-  if (req.authenticated && req.admin) {
+export function checkGalleryAccessToken(req, res, next) {
+  const {token: {accessMap}, params: {id}} = req
+  if (!id) {
+    res.status(400).send({
+      success: false,
+      message: 'Gallerie nicht gefunden'
+    })
+  } else if (req.authenticated) {
+    let gallery = galleryDb.get(id)
+    const ancestor = gallery.ancestors.find((ancestor) => accessMap[ancestor])
+    req.accessToken = accessMap[ancestor]
     next()
   } else {
     res
@@ -66,11 +77,11 @@ export function isAuthenticated(req, res, next) {
   }
 }
 
-export function checkShortUrl(req, res, next) {
+export function checkShortUrl(req:Core.Request, res:Express.Request, next) {
   const accessUrl = urlDb.find('url', req.path)[0]
 
   if (accessUrl) {
-    addToAccessMap(req, accessUrl)
+    addToAccessMap(req, res, accessUrl)
   }
   next()
 }

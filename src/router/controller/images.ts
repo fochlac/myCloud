@@ -1,5 +1,5 @@
-import galleryDb from 'modules/gallery'
-import imageDb from 'modules/image'
+import galleryDb from 'modules/db/gallery'
+import imageDb from 'modules/db/image'
 
 export default {
   delete: id => imageDb.delete(id),

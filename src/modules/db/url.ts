@@ -3,14 +3,16 @@ import initDb from 'utils/fileDb'
 class UrlDb {
   db: Core.FileDb
   list: () => [Core.AccessUrl]
+  find: (key: string, value: any) => [Core.AccessUrl]
   get: (id: Core.Id) => Core.AccessUrl
   delete: (id: Core.Id) => Promise<Core.Id>
   constructor() {
     initDb('Urls.json').then(db => {
       this.db = db
-      this.list = this.db.list
-      this.get = this.db.get
-      this.delete = this.db.delete
+      this.list = this.db.list.bind(this.db)
+      this.get = this.db.get.bind(this.db)
+      this.find = this.db.find.bind(this.db)
+      this.delete = this.db.delete.bind(this.db)
     })
   }
 

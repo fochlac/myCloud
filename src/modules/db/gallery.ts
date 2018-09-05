@@ -1,6 +1,6 @@
-import imageDb from 'modules/image'
+import imageDb from 'modules/db/image'
 import initDb from 'utils/fileDb'
-import urlDb from 'modules/url'
+import urlDb from 'modules/db/url'
 
 class GalleryDb {
   db: Core.FileDb
@@ -59,7 +59,8 @@ class GalleryDb {
   async update({ name, description, id, parent }) {
     const gallery = this.db.get(id)
 
-    const newGallery = await this.db.set(id, { ...gallery, name, description, parent })
+    const ancestors = [parent].concat(parent ? this.db.get(parent).ancestors : [])
+    const newGallery = await this.db.set(id, { ...gallery, name, description, parent, ancestors })
     return enrichGallery(newGallery)
   }
 
@@ -67,7 +68,8 @@ class GalleryDb {
     const id = this.db.nextIndex
     const images = []
     const urls = []
-    const gallery = { name, description, path, parent, id, images, urls }
+    const ancestors = [parent].concat(parent ? this.db.get(parent).ancestors : [])
+    const gallery = { name, description, path, parent, id, images, urls, ancestors }
     await this.db.set(id, gallery)
     return enrichGallery(gallery)
   }

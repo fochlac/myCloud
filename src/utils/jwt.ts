@@ -2,10 +2,10 @@ import * as jwt from 'jsonwebtoken'
 
 import log from './logger'
 
-export function createJWT(userObject: Core.user): Promise<string> {
+export function createJWT(token: Core.WebToken): Promise<string> {
   return new Promise((resolve, reject) => {
-    log(6, 'createJWT: Creating JWT for User: ', userObject.name)
-    jwt.sign({ id: userObject.id, admin: userObject.admin }, global.secretKey, { issuer: global.address }, (err, token) => {
+    log(6, 'createJWT: Creating JWT', token)
+    jwt.sign(token, global.secretKey, { issuer: global.address }, (err, token) => {
       if (err) {
         log(5, 'createJWT: Error creating JWT.', err)
         reject(err)
@@ -16,17 +16,33 @@ export function createJWT(userObject: Core.user): Promise<string> {
   })
 }
 
-export function decodeJWT(token: string): Promise<{ id: Core.user['id']; admin: Core.user['admin'] }> {
+export function decodeJWT(token: string): Promise<Core.WebToken> {
   return new Promise((resolve, reject) => {
     log(7, 'jwtVerify: decoding JWT-Token')
-    jwt.verify(token, global.secretKey, (err, token) => {
+    jwt.verify(token, global.secretKey, (err, decodedToken) => {
       if (err) {
         log(5, 'jwtVerify: No valid Token provided.', err)
         reject(err)
       } else {
         log(7, 'jwtVerify: JWT-Token is valid')
-        resolve(token as { id: Core.user['id']; admin: Core.user['admin'] })
+        resolve(decodedToken as Core.WebToken)
       }
     })
   })
+}
+
+const newToken:Core.WebToken = {
+  accessMap: {}
+}
+
+export async function addToAccessMap(req: Core.Request, res: Express.Response, accessUrl: Core.AccessUrl) {
+  let baseToken = req.token || newToken
+  const token = await createJWT({
+      ...req.token,
+      accessMap: {
+        ...req.token.accessMap,
+        [accessUrl.gallery]: accessUrl,
+      }
+    })
+  res.cookie('jwt', token, { secure: false, httpOnly: true, expires: new Date(Date.now() + 1000 * 3600 * 24 * 7) })
 }

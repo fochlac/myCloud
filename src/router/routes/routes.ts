@@ -3,12 +3,16 @@ import { Router, static as serveStatic } from 'express'
 import apiRouter from './api/index'
 import { join } from 'path'
 import staticRouter from './static'
+import { authenticate, checkShortUrl } from 'middleware/authentication';
 
 const router = Router()
 
 // connect routes
 router.use('/api', apiRouter)
 router.use(staticRouter)
+
+// check for a shortUrl
+router.get('*', authenticate, checkShortUrl)
 
 // catch-all
 router.get('*', (req, res) => res.sendFile(join(global.appRoot, 'static/index.html')))

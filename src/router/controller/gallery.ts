@@ -1,7 +1,7 @@
 import { createFolder, deleteFolder } from 'utils/fs'
 
 import error from 'utils/error'
-import galleryDb from 'modules/gallery'
+import galleryDb from 'modules/db/gallery'
 
 const location = 'controller/gallery.ts'
 const { internalError } = error(location)

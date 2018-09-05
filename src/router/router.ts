@@ -1,3 +1,4 @@
+import * as cookieParser from 'cookie-parser'
 import * as bodyparser from 'body-parser'
 import * as compression from 'compression'
 import * as xssFilter from 'x-xss-protection'
@@ -8,6 +9,7 @@ import routes from './routes/routes'
 const router = Router()
 
 // apply generic middleware
+router.use(cookieParser())
 router.use(bodyparser.json())
 router.use(bodyparser.urlencoded({ extended: true }))
 router.use(compression())
