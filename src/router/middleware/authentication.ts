@@ -27,9 +27,7 @@ export async function authenticate(req, res, next): Promise<void> {
   if (token) {
     try {
       const parsedToken = await decodeJWT(token!)
-      // TODO: get user from db
-      req.admin = parsedToken.admin
-      req.user = parsedToken
+      req.token = parsedToken
       req.authenticated = true
     } catch (err) {
       log(2, 'error validating jwt', err)
@@ -46,7 +44,12 @@ export function isAdmin(req, res, next) {
   if (req.authenticated && req.admin) {
     next()
   } else {
-    res.status(403).send({ success: false, message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.' })
+    res
+      .status(403)
+      .send({
+        success: false,
+        message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+      })
   }
 }
 
@@ -54,6 +57,20 @@ export function isAuthenticated(req, res, next) {
   if (req.authenticated) {
     next()
   } else {
-    res.status(403).send({ success: false, message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.' })
+    res
+      .status(403)
+      .send({
+        success: false,
+        message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+      })
   }
+}
+
+export function checkShortUrl(req, res, next) {
+  const accessUrl = urlDb.find('url', req.path)[0]
+
+  if (accessUrl) {
+    addToAccessMap(req, accessUrl)
+  }
+  next()
 }
