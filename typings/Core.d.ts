@@ -6,8 +6,12 @@ declare namespace Core {
   }
 
   interface ErrorConstructor {
-    internalError: Function
-    routerError: Function
+    routerError: (
+      level: number,
+      res: Express.Response,
+      ...message: Array<any>
+    ) => (error: any) => void
+    internalError: (level: number, ...message: Array<any>) => (error: any) => void
   }
 
   type Path = string
@@ -40,7 +44,9 @@ declare namespace Core {
     recursive: boolean
   }
 
-  interface AccessMap {[key: Gallery['id']]: Gallery;}
+  interface AccessMap {
+    [key: string]: AccessUrl
+  }
 
   class FileDb {
     set: (id: Id, value: any) => Promise<any>
@@ -94,5 +100,10 @@ declare namespace Core {
     accessMap: AccessMap
     iss?: string
     iat?: number
+  }
+
+  interface Dimensions {
+    width?: number
+    height?: number
   }
 }

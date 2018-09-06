@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { checkGalleryAccessToken } from 'middleware/authentication'
 import error from 'utils/error'
 import image from 'controller/images'
 import imageStore from 'middleware/images'
@@ -9,9 +10,9 @@ const images = Router()
 
 images.post(
   '/:id/images/',
+  checkGalleryAccessToken(['write']),
   imageStore.single('image'),
   ({ params: { id }, body: { name, description }, file }, res) => {
-    console.log('test')
     image
       .create({ gallery: id, name, description, file })
       .then(image => res.status(200).send(image))
@@ -20,6 +21,7 @@ images.post(
 )
 images.put(
   '/:id/images/:imageId',
+  checkGalleryAccessToken(['write']),
   imageStore.single('image'),
   ({ params: { imageId, id }, body: { name, description } }, res) => {
     image
@@ -28,11 +30,15 @@ images.put(
       .catch(routerError(2, res, 'error updating image', { id: imageId, name, description }))
   },
 )
-images.delete('/:id/images/:imageId', ({ params: { imageId } }, res) => {
-  image
-    .delete({ id: imageId })
-    .then(id => res.status(200).send(id))
-    .catch(routerError(2, res, 'error deleting image', { id: imageId }))
-})
+images.delete(
+  '/:id/images/:imageId',
+  checkGalleryAccessToken(['write']),
+  ({ params: { imageId } }, res) => {
+    image
+      .delete({ id: imageId })
+      .then(id => res.status(200).send(id))
+      .catch(routerError(2, res, 'error deleting image', { id: imageId }))
+  },
+)
 
 export default images

@@ -18,8 +18,9 @@ declare namespace Express {
   }
 
   export interface Response {
-    cookie: (name: string, val: string, options: object) => Response;
+    cookie: (name: string, val: string, options: object) => Response
     set: (name: string, val: string) => Response
     headers: object
+    status: Function
   }
 }

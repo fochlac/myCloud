@@ -1,10 +1,10 @@
 import log from 'utils/logger'
 
 const error = (location: string): Core.ErrorConstructor => ({
-  internalError: (level: number, ...message: Array<string>): Function => (detail: Error): void => {
+  internalError: (level: number, ...message: Array<any>) => (detail: Error): void => {
     log(level, location, ...message, detail)
   },
-  routerError: (level: number, res, ...message: Array<string>): Function => (
+  routerError: (level: number, res: Express.Response, ...message: Array<any>) => (
     detail: Error,
   ): void => {
     log(level, location, ...message, detail)

@@ -1,6 +1,8 @@
-import { decodeJWT, addToAccessMap } from '../../utils/jwt'
-import log from '../../utils/logger'
+import { addToAccessMap, decodeJWT } from '../../utils/jwt'
+
 import galleryDb from 'modules/db/gallery'
+import imageDb from 'modules/db/image'
+import log from '../../utils/logger'
 import urlDb from 'modules/db/url'
 
 function extractTokenFromRequest(request): string | null {
@@ -44,29 +46,64 @@ export async function authenticate(req, res, next): Promise<void> {
 
 export function checkGalleryAccessToken(level = ['read', 'write']) {
   return (req, res, next) => {
-    const { token, params: { id } } = req
+    const {
+      token,
+      params: { id },
+    } = req
 
     let gallery = id && galleryDb.get(id)
     if (!gallery) {
       res.status(400).send({
         success: false,
-        message: 'Gallerie nicht gefunden'
+        message: 'Gallerie nicht gefunden',
       })
     } else {
-      const accessToken = token && token.accessMap && token.accessMap[id] ||
-        token.accessMap[gallery.ancestors.find((ancestor) => token.accessMap[ancestor])]
+      const accessToken = hasGalleryAccessToken(gallery, token)
       if (accessToken && level.includes(accessToken.access)) {
         req.accessToken = accessToken
         next()
       } else {
-        res
-          .status(403)
-          .send({
-            success: false,
-            message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
-          })
+        res.status(403).send({
+          success: false,
+          message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+        })
       }
     }
+  }
+}
+
+export function checkImageAccess(req, res, next) {
+  const {
+    token,
+    params: { id },
+  } = req
+  const { gallery } = imageDb.get(id)
+  const imageGallery = gallery && galleryDb.get(gallery)
+  if (!imageGallery) {
+    res.status(400).send({
+      success: false,
+      message: 'Gallerie nicht gefunden',
+    })
+  } else {
+    const accessToken = hasGalleryAccessToken(imageGallery, token)
+    if (accessToken) {
+      req.accessToken = accessToken
+      next()
+    } else {
+      res.status(403).send({
+        success: false,
+        message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+      })
+    }
+  }
+}
+
+function hasGalleryAccessToken(gallery: Core.Gallery, token: Core.WebToken): Core.AccessUrl {
+  if (gallery) {
+    const accessToken =
+      (token && token.accessMap && token.accessMap[gallery.id]) ||
+      token.accessMap[gallery.ancestors.find(ancestor => !!token.accessMap[ancestor])]
+    return accessToken
   }
 }
 
@@ -74,12 +111,10 @@ export function isAuthenticated(req, res, next) {
   if (req.authenticated) {
     next()
   } else {
-    res
-      .status(403)
-      .send({
-        success: false,
-        message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
-      })
+    res.status(403).send({
+      success: false,
+      message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
+    })
   }
 }
 
