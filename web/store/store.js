@@ -7,12 +7,16 @@ import { fromJS } from 'immutable'
 import { logMiddleware } from './middleware/logger.js'
 import reducers from './reducers.js'
 
-const defaultStore = window.defaultStore ? window.defaultStore : fromJS(emptyState)
+const defaultStore = window.defaultStore ? fromJS(window.defaultStore) : emptyState
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 export function configureStore(initialState = {}) {
-  const store = createStore(reducers, initialState, composeEnhancers(applyMiddleware(addActionId, apiMiddleware, logMiddleware)))
+  const store = createStore(
+    reducers,
+    initialState,
+    composeEnhancers(applyMiddleware(addActionId, apiMiddleware, logMiddleware)),
+  )
   return store
 }
 

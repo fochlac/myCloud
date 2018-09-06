@@ -1,8 +1,13 @@
+import { fromJS } from 'immutable'
+
+export const INITIALIZED = 'INITIALIZED'
+export const COMPLETE = 'COMPLETE'
+export const FAILURE = 'FAILURE'
+
 export const apiMiddleware = store => next => action => {
-  if (action.api && action.status !== 'complete') {
+  if (action.api && action.status === INITIALIZED) {
     const originalAction = Object.assign({}, action),
-      o = action.api,
-      instance = store.getState().instance
+      o = action.api
 
     next(originalAction)
     let headers = {}
@@ -36,7 +41,7 @@ export const apiMiddleware = store => next => action => {
       }
     }
 
-    fetch(`${instance.root}${o.url}`, opt)
+    fetch(`/api/${o.url}`, opt)
       .then(res => {
         action.timeDiff = Date.now() - +res.headers.get('timestamp')
         if (res.status >= 400) {
@@ -45,8 +50,8 @@ export const apiMiddleware = store => next => action => {
         return res.json()
       })
       .then(data => {
-        action.status = 'complete'
-        action.data = data
+        action.status = COMPLETE
+        action.data = fromJS(data)
         store.dispatch(action)
         if (action.enqueue) {
           store.dispatch(action.enqueue(data))
@@ -56,7 +61,7 @@ export const apiMiddleware = store => next => action => {
         console.log(err)
         action.api = undefined
         action.data = err
-        action.status = 'failure'
+        action.status = FAILURE
         store.dispatch(action)
       })
   } else {

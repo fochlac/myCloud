@@ -67,13 +67,7 @@ class GalleryDb {
   async create({ name, description = '', path, parent }): Promise<Core.Gallery> {
     const id = this.db.nextIndex
     const images = []
-    const initialUrl = '/' + (new Buffer('url_' + Date.now()).toString('base64'))
-    const initialAccessUrl = await urlDb.create({
-      url: initialUrl,
-      gallery: id,
-      access: 'write',
-      recursive: true
-    })
+    const initialAccessUrl = await createInitialUrl(id)
     const urls = [initialAccessUrl.id]
     const ancestors = [parent].concat(parent ? this.db.get(parent).ancestors : [])
     const gallery = { name, description, path, parent, id, images, urls, ancestors }
@@ -89,6 +83,16 @@ function enrichGallery(gallery): Core.Gallery {
   gallery.images = gallery.images.map(id => imageDb.get(id))
   gallery.urls = gallery.urls.map(id => urlDb.get(id))
   return gallery as Core.Gallery
+}
+
+function createInitialUrl(id: Core.Id): Promise<Core.AccessUrl> {
+  const initialUrl = '/' + new Buffer('url_' + Date.now()).toString('base64')
+  return urlDb.create({
+    url: initialUrl,
+    gallery: id,
+    access: 'write',
+    recursive: true,
+  })
 }
 
 export default new GalleryDb()

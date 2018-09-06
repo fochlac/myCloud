@@ -10,7 +10,7 @@ const { routerError } = error('galleries-router')
 const galleries = Router()
 
 galleries.get('/', (req, res) => {
-  res.status(200).send(gallery.readAll())
+  res.status(200).send(req.token && gallery.readAll(req.token.accessMap))
 })
 galleries.get(
   '/:id',

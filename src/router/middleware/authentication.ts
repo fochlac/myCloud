@@ -58,7 +58,7 @@ export function checkGalleryAccessToken(level = ['read', 'write']) {
         message: 'Gallerie nicht gefunden',
       })
     } else {
-      const accessToken = hasGalleryAccessToken(gallery, token)
+      const accessToken = token && hasGalleryAccessToken(gallery, token.accessMap)
       if (accessToken && level.includes(accessToken.access)) {
         req.accessToken = accessToken
         next()
@@ -85,7 +85,7 @@ export function checkImageAccess(req, res, next) {
       message: 'Gallerie nicht gefunden',
     })
   } else {
-    const accessToken = hasGalleryAccessToken(imageGallery, token)
+    const accessToken = token && hasGalleryAccessToken(imageGallery, token.accessMap)
     if (accessToken) {
       req.accessToken = accessToken
       next()
@@ -98,11 +98,14 @@ export function checkImageAccess(req, res, next) {
   }
 }
 
-function hasGalleryAccessToken(gallery: Core.Gallery, token: Core.WebToken): Core.AccessUrl {
+export function hasGalleryAccessToken(
+  gallery: Core.Gallery,
+  accessMap: Core.AccessMap,
+): Core.AccessUrl {
   if (gallery) {
     const accessToken =
-      (token && token.accessMap && token.accessMap[gallery.id]) ||
-      token.accessMap[gallery.ancestors.find(ancestor => !!token.accessMap[ancestor])]
+      (accessMap && accessMap[gallery.id]) ||
+      accessMap[gallery.ancestors.find(ancestor => !!accessMap[ancestor])]
     return accessToken
   }
 }

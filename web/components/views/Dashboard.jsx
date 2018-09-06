@@ -1,31 +1,24 @@
-import Post, { BusyPost } from 'RAW/Post.jsx'
-
+import BusyScreen from 'RAW/BusyScreen'
 import DefaultPage from 'CONNECTED/DefaultPage'
+import GalleryList from 'CONNECTED/GalleryList'
 import React from 'react'
 import { connect } from 'react-redux'
-import { load_posts } from 'STORE/actions.js'
+import { loadGalleries } from 'STORE/actions.js'
 import style from './Dashboard.less'
-
-const BusyNote = () => (
-  <div className={style.busyNote}>
-    <span className="fa fa-refresh fa-spin fa-lg" />
-    <p>Posts werden geladen</p>
-  </div>
-)
 
 export class Dashboard extends React.Component {
   componentDidMount() {
-    // this.props.load_posts()
+    this.props.loadGalleries()
   }
 
   render() {
-    const { posts, app } = this.props
-    const busy = app.get('busy').includes('LOAD_POSTS')
+    const { app } = this.props
+    const busy = app.get('busy').includes('DASHBOARD')
 
     return (
       <DefaultPage>
-        {busy && <BusyNote />}
-        {!posts.length && busy ? <BusyPost /> : posts.map(post => <Post post={post} key={post} />)}
+        {busy && <BusyScreen />}
+        <GalleryList />
       </DefaultPage>
     )
   }
@@ -38,5 +31,5 @@ const mapStoreToProps = (store, ownProps) => ({
 
 export default connect(
   mapStoreToProps,
-  { load_posts },
+  { loadGalleries },
 )(Dashboard)

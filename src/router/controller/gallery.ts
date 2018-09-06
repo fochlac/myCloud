@@ -2,6 +2,7 @@ import { createFolder, deleteFolder } from 'utils/fs'
 
 import error from 'utils/error'
 import galleryDb from 'modules/db/gallery'
+import { hasGalleryAccessToken } from 'middleware/authentication'
 
 const location = 'controller/gallery.ts'
 const { internalError } = error(location)
@@ -42,7 +43,10 @@ export default {
     return id
   },
 
-  readAll: () => galleryDb.list(),
+  readAll: (accessMap: Core.AccessMap) => {
+    const galleries = galleryDb.list()
+    return galleries.filter(gallery => hasGalleryAccessToken(gallery, accessMap))
+  },
 
   read: (id: Core.Id) => galleryDb.get(id),
 }

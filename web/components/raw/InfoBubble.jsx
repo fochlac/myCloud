@@ -1,19 +1,21 @@
-import React from 'react';
-import './InfoBubble.less';
+import './InfoBubble.less'
 
-export default class InfoBubble extends React.Component {
-  constructor(props) {
-    super();
-  }
+import React from 'react'
 
-  render() {
-    return (
-      <span className={'fa InfoBubble ' + (this.props.symbol ? this.props.symbol : 'fa-info-circle')}>
-        <span className="InfoBubbleContent" style={this.props.style}>
-          {this.props.children ? this.props.children : null}
-        </span>
-        <span className={'InfoBubbleTriangle ' + this.props.arrow}></span>
+function InfoBubble({ symbol, style, children, arrow }) {
+  return (
+    <span className={'fa InfoBubble ' + symbol}>
+      <span className="InfoBubbleContent" style={style}>
+        {children}
       </span>
-    );
-  }
+      <span className={'InfoBubbleTriangle ' + arrow} />
+    </span>
+  )
 }
+
+InfoBubble.defaultProps = {
+  symbol: 'fa-info-circle',
+  children: null,
+}
+
+export default InfoBubble
