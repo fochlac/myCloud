@@ -1,2 +1,2 @@
-export * from './actions/app.ts'
-export * from './actions/galleries.ts'
+export * from './actions/app'
+export * from './actions/galleries'

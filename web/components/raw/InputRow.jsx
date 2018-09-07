@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default class InputRow extends React.Component {
+class InputRow extends React.Component {
   constructor(props) {
     super()
 
@@ -45,36 +45,37 @@ export default class InputRow extends React.Component {
   render() {
     const { dirty, value } = this.state
     const {
-      className = 'fullWidth',
-      required = true,
-      userInterface = /.*/,
+      className,
+      required,
+      userInterface,
       autoComplete,
-      id = `input_${Math.floor(Date.now() * Math.random())}`,
+      id,
       label,
-      type = 'text',
+      type,
       valid,
       placeholder,
+      element
     } = this.props
 
-    return (
-      <div className={className}>
-        {label && (
-          <label className="noWrap" htmlFor={id}>
+    const HtmlElement = element
+
+    return <div className={className}>
+        {label && <label className="noWrap" htmlFor={id}>
             {label}
             {required && <span className="fa fa-asterisk required" />}
-          </label>
-        )}
-        <input
-          type={type}
-          id={id}
-          autoComplete={autoComplete}
-          value={value}
-          onChange={this.handleInput}
-          className={(valid !== undefined ? !valid : dirty && !userInterface.test(value.trim())) ? 'invalid' : ''}
-          onBlur={this.handleBlur}
-          placeholder={placeholder}
-        />
+          </label>}
+        <HtmlElement type={type} id={id} autoComplete={autoComplete} value={value} onChange={this.handleInput} className={(valid !== undefined ? !valid : dirty && !userInterface.test(value.trim())) ? 'invalid' : ''} onBlur={this.handleBlur} placeholder={placeholder} />
       </div>
-    )
   }
 }
+
+InputRow.defaultProps = {
+  type: 'text',
+  id: `input_${Math.floor(Date.now() * Math.random())}`,
+  required: false,
+  className: 'fullWidth',
+  userInterface: /.*/,
+  element: 'input'
+}
+
+export default InputRow
