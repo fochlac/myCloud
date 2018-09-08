@@ -1,18 +1,40 @@
 import { Redirect, Route, BrowserRouter as Router, Switch } from 'react-router-dom'
-import { apply_history, connect_serviceworker, convert_postmessage } from 'STORE/actions.js'
+import { loadGalleries } from 'STORE/actions.js'
+import ImmuTypes from 'immutable-prop-types'
+import PropTypes from 'prop-types'
 
+import Gallery from './views/Gallery'
 import Dashboard from './views/Dashboard'
+import BusyScreen from 'RAW/BusyScreen'
+import DefaultPage from 'RAW/DefaultPage'
 import React from 'react'
 import { connect } from 'react-redux'
 
 class App extends React.Component {
+  componentWillMount() {
+    console.log('test123', this.props.loadGalleries())
+  }
+
   render() {
-    const { instance, user, app } = this.props
+    const { app } = this.props
+    const busy = app.get('busy').includes('APP_ROOT')
+
+    if (busy) {
+      return <Router>
+        <DefaultPage>
+          <BusyScreen />
+        </DefaultPage>
+      </Router>
+    }
+
     return (
       <Router>
         <Switch>
           {/* <Route path="/image" render={() => <Slider />} /> */}
-          {/* <Route path="/gallery" render={() => <Gallery />} /> */}
+          <Route
+            path="/gallery/:id"
+            render={({ match: { params } }) => <Gallery params={params} />}
+          />
           <Route path="/" exact render={() => <Dashboard />} />
           <Redirect to="/" />
         </Switch>
@@ -21,13 +43,16 @@ class App extends React.Component {
   }
 }
 
+App.propTypes = {
+  app: ImmuTypes.map.isRequired,
+  loadGalleries: PropTypes.func.isRequired,
+}
+
 const mapStateToProps = (state, ownProps) => ({
-  user: state.user,
-  app: state.app,
-  instance: state.instance,
+  app: state.get('app')
 })
 
 export default connect(
   mapStateToProps,
-  { connect_serviceworker, convert_postmessage, apply_history },
+  (dispatch) =>( { loadGalleries: () => dispatch(loadGalleries()) }),
 )(App)

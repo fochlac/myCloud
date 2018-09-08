@@ -8,7 +8,7 @@ const location = 'controller/gallery.ts'
 const { internalError } = error(location)
 
 export default {
-  create: async ({ name, parent, description }: Core.RawGallery): Promise<Core.Gallery> => {
+  create: async ({ name, parent, description }: Core.RawGallery): Promise<Core.Gallery[]> => {
     const { path = '' } = galleryDb.get(parent) || {}
 
     const newPath = await createFolder(name, path).catch(
@@ -31,7 +31,7 @@ export default {
     return gallery
   },
 
-  update: async ({ name, id, description, parent }: Core.RawGallery): Promise<Core.Gallery> => {
+  update: async ({ name, id, description, parent }: Core.RawGallery): Promise<Core.Gallery[]> => {
     const newGallery = await galleryDb.update({ name, id, description, parent })
     return newGallery
   },

@@ -26,6 +26,7 @@ declare namespace Core {
     images: Image[]
     urls: AccessUrl[]
     ancestors: Id[]
+    children: Id[]
   }
 
   interface Image {
@@ -48,8 +49,11 @@ declare namespace Core {
     [key: string]: AccessUrl
   }
 
+  interface ObjectMap {[key:string]: any}
+
   class FileDb {
     set: (id: Id, value: any) => Promise<any>
+    setMultiple: (update: ObjectMap) => Promise<any[]>
     nextIndex: Id
     delete: (id: Id) => Promise<Id>
     list: () => any[]
@@ -66,8 +70,8 @@ declare namespace Core {
     deleteImage: (id: Core.Id, image: Core.Image) => Promise<Core.Gallery>
     insertAccessUrl: (id: Core.Id, url: Core.AccessUrl) => Promise<Core.Gallery>
     deleteAccessUrl: (id: Core.Id, url: Core.AccessUrl) => Promise<Core.Gallery>
-    update: (rawGallery: object) => Promise<Gallery>
-    create: (rawGallery: object) => Promise<Gallery>
+    update: (rawGallery: object) => Promise<Gallery[]>
+    create: (rawGallery: object) => Promise<Gallery[]>
   }
 
   class ImageDb {

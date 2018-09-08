@@ -1,14 +1,17 @@
 import { COMPLETE } from '../middleware/api'
-import { LOAD_GALLERIES } from '../actions'
+import { LOAD_GALLERIES, CREATE_GALLERY, UPDATE_GALLERY } from '../actions'
 import { Map } from 'immutable'
-import { CREATE_GALLERY } from '../actions';
 
 const galleriesReducer = (galleries = Map, action) => {
   switch (action.type) {
     case LOAD_GALLERIES:
       return action.status === COMPLETE ? Map(action.data.map(v => [v.get('id'), v])) : galleries
     case CREATE_GALLERY:
-      return action.status === COMPLETE ? galleries.set(action.data.get('id'), action.data) : galleries
+    case UPDATE_GALLERY:
+      if (action.status === COMPLETE) {
+        action.data.forEach(gallery => (galleries = galleries.set(gallery.get('id'), gallery)))
+      }
+      return galleries
     default:
       return galleries
   }

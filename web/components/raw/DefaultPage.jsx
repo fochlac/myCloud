@@ -4,10 +4,9 @@ import { removeResizeFocus, resizeFocus } from 'UTILS/resizeFocus.js'
 
 import { Link } from 'react-router-dom'
 import React from 'react'
-import { connect } from 'react-redux'
 import style from './DefaultPage.less'
 
-export class DefaultPage extends React.Component {
+export default class DefaultPage extends React.Component {
   componentDidMount() {
     resizeFocus()
   }
@@ -32,7 +31,3 @@ export class DefaultPage extends React.Component {
   }
 }
 
-export default connect(
-  store => ({}),
-  {},
-)(DefaultPage)

@@ -4,5 +4,5 @@ export const addActionId = store => next => action => {
     if (!action.actionId) {
         action.actionId = counter++;
     }
-    next(action);
+    return next(action);
 }

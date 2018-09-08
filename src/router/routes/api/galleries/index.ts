@@ -40,9 +40,9 @@ galleries.post('/', async (req, res) => {
     body: { name, parent, description },
   } = req
   try {
-    const newGallery = await gallery.create({ name, parent, description })
-    await addToAccessMap(req, res, newGallery.urls[0])
-    res.status(200).send(newGallery)
+    const galleries = await gallery.create({ name, parent, description })
+    await addToAccessMap(req, res, galleries.find(({id}) => id !== parent).urls[0])
+    res.status(200).send(galleries)
   } catch (error) {
     routerError(2, res, 'error creating new gallery', { name, parent, description })(error)
   }

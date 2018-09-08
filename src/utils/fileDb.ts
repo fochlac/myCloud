@@ -42,7 +42,16 @@ class FileDb {
   async set(id, value) {
     this.content[id] = clone(value)
     await write(this.content, this.path)
-    return clone(value)
+    return {[id]: clone(value)}
+  }
+
+  async setMultiple(map) {
+    this.content = {
+      ...this.content,
+      ...clone(map)
+    }
+    await write(this.content, this.path)
+    return clone(map)
   }
 
   get nextIndex(): Core.Id {
@@ -51,8 +60,8 @@ class FileDb {
   }
 
   async delete(id: Core.Id) {
-    await write(this.content, this.path)
     delete this.content[id]
+    await write(this.content, this.path)
     return id
   }
 }

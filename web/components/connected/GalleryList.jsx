@@ -1,26 +1,71 @@
 import GalleryCard from 'RAW/GalleryCard'
+import ImageCard from 'RAW/ImageCard'
 import React from 'react'
+import PropTypes from 'prop-types'
+import ImmuTypes from 'immutable-prop-types'
 import { connect } from 'react-redux'
 import style from './GalleryList.less'
-import { createGallery } from 'STORE/actions';
+import { createGallery, deleteImage, updateImage } from 'STORE/actions'
 import CreateGalleryCard from 'RAW/CreateGalleryCard'
+import ImageUploader from 'CONNECTED/ImageUploader'
+import { Map } from 'immutable';
 
-export class GalleryList extends React.Component {
+class GalleryList extends React.Component {
+  constructor() {
+    super()
+    this.handleEdit = this.handleEdit.bind(this)
+  }
+
   render() {
-    const { galleries, createGallery } = this.props
+    const { elements, createGallery, deleteImage, gallery = Map() } = this.props
 
     return <section className={style.list}>
-        {galleries
-          .toList()
-          .map(gallery => <GalleryCard key={gallery.get('id')} gallery={gallery} />)}
-        <CreateGalleryCard createGallery={createGallery} />
+        <CreateGalleryCard createGallery={createGallery} parent={gallery.get('id')} />
+        {gallery.get('id') && <ImageUploader parent={gallery.get('id')} />}
+        {elements
+          .sort(listGalleriesFirst)
+          .map(
+            element =>
+              isGallery(element) ? (
+                <GalleryCard key={element.get('id')} gallery={element} />
+              ) : (
+                <ImageCard
+                  key={element.get('id')}
+                  image={element}
+                  onEdit={this.handleEdit}
+                  onDelete={deleteImage}
+                />
+              ),
+          )}
       </section>
+  }
+
+  handleEdit(image) {
+    const { updateImage } = this.props
+    updateImage(image)
   }
 }
 
+GalleryList.propTypes = {
+  elements: ImmuTypes.list.isRequired,
+  gallery: ImmuTypes.map.isRequired,
+  createGallery: PropTypes.func.isRequired,
+  deleteImage: PropTypes.func.isRequired,
+  updateImage: PropTypes.func.isRequired,
+}
+
 export default connect(
-  store => ({
-    galleries: store.get('galleries'),
-  }),
-  { createGallery },
+  () => ({}),
+  {deleteImage, updateImage, createGallery},
 )(GalleryList)
+
+function listGalleriesFirst(a, b) {
+  if (isGallery(a) === isGallery(b)) {
+    return 0
+  }
+  return isGallery(a) ? 1 : -1
+}
+
+function isGallery(element) {
+  return !!element.get('images')
+}

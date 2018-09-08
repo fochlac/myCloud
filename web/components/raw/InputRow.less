@@ -1,0 +1,36 @@
+.label {
+  white-space: nowrap;
+  font-size: 0.8em;
+}
+.required {
+  color: red;
+  font-size: 0.7em !important;
+  position: relative;
+  top: -3px;
+}
+.invalid {
+  input, textarea {
+    border: solid 2px red;
+  }
+}
+.fullWidth {
+  width: 100%;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 10px;
+
+  input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    height: 100px;
+    outline: none;
+    resize: none;
+  }
+}

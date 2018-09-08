@@ -6,8 +6,8 @@ export const FAILURE = 'FAILURE'
 
 export const apiMiddleware = store => next => action => {
   if (action.api && action.status === INITIALIZED) {
-    const originalAction = Object.assign({}, action),
-      o = action.api
+    const originalAction = Object.assign({}, action)
+    const o = action.api
 
     next(originalAction)
     let headers = {}
@@ -41,7 +41,7 @@ export const apiMiddleware = store => next => action => {
       }
     }
 
-    fetch(`/api/${o.url}`, opt)
+    return fetch(`/api/${o.url}`, opt)
       .then(res => {
         action.timeDiff = Date.now() - +res.headers.get('timestamp')
         if (res.status >= 400) {
@@ -65,6 +65,6 @@ export const apiMiddleware = store => next => action => {
         store.dispatch(action)
       })
   } else {
-    next(action)
+    return next(action)
   }
 }

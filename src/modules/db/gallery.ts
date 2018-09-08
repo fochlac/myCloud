@@ -58,24 +58,42 @@ class GalleryDb {
 
   async update({ name, description, id, parent }) {
     const gallery = this.db.get(id)
-
-    const ancestors = [parent].concat(parent ? this.db.get(parent).ancestors : [])
-    const newGallery = await this.db.set(id, { ...gallery, name, description, parent, ancestors })
-    return enrichGallery(newGallery)
+    let result
+    if (parent !== gallery.parent) {
+      const oldParent = this.db.get(gallery.parent)
+      const newParent = this.db.get(parent)
+      const ancestors = [parent].concat(parent ? newParent.ancestors : [])
+      newParent.children.push(id)
+      oldParent.children.filter(childId => id !== childId)
+      const newGallery = {...gallery, name, description, parent, ancestors}
+      result = await this.db.setMultiple({
+        [id]: newGallery,
+        [parent]: newParent,
+        [gallery.parent]: oldParent
+      })
+    } else {
+      result = await this.db.set(id, { ...gallery, name, description })
+    }
+    return Object.values(result).map(gallery => enrichGallery(gallery))
   }
 
-  async create({ name, description = '', path, parent }): Promise<Core.Gallery> {
+  async create({ name, description = '', path, parent }): Promise<Core.Gallery[]> {
     const id = this.db.nextIndex
-    const images = []
     const initialAccessUrl = await createInitialUrl(id)
-    const urls = [initialAccessUrl.id]
-    const ancestors = [parent].concat(parent ? this.db.get(parent).ancestors : [])
-    const gallery = { name, description, path, parent, id, images, urls, ancestors }
-
-    await this.db.set(id, gallery).catch(err => {
+    const ancestors = []
+    const createObject = {}
+    if (parent) {
+      const parentGallery = this.db.get(parent)
+      parentGallery.children.push(id)
+      ancestors.push(parent, ...parentGallery.ancestors)
+      createObject[parent] = parentGallery
+    }
+    const gallery = { name, description, path, parent, id, images: [], urls: [initialAccessUrl.id], ancestors, children: [] }
+    createObject[id] = gallery
+    const result = await this.db.setMultiple(createObject).catch(err => {
       return urlDb.delete(initialAccessUrl.id).then(() => Promise.reject(err))
     })
-    return enrichGallery(gallery)
+    return Object.values(result).map(gallery => enrichGallery(gallery))
   }
 }
 

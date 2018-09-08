@@ -1,0 +1,41 @@
+.card {
+  width: 200px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  background: #fafafa;
+  margin: 10px;
+
+  &:hover {
+    border: solid 1px #eee;
+    background: #f1f1f1;
+  }
+}
+.name {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+}
+.toolbar {
+  opacity: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  overflow: hidden;
+  height: 0px;
+  background: rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    height: 20px;
+    opacity: 1;
+  }
+
+  :global(.fa) {
+    margin-left: 5px;
+  }
+}

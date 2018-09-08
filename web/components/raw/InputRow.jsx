@@ -1,5 +1,5 @@
 import React from 'react'
-
+import styles from './InputRow.less'
 class InputRow extends React.Component {
   constructor(props) {
     super()
@@ -54,18 +54,37 @@ class InputRow extends React.Component {
       type,
       valid,
       placeholder,
-      element
+      element,
     } = this.props
 
     const HtmlElement = element
 
-    return <div className={className}>
-        {label && <label className="noWrap" htmlFor={id}>
+    return (
+      <div className={`${className} ${styles.wrapper}`}>
+        {label && (
+          <label className={styles.label} htmlFor={id}>
             {label}
-            {required && <span className="fa fa-asterisk required" />}
-          </label>}
-        <HtmlElement type={type} id={id} autoComplete={autoComplete} value={value} onChange={this.handleInput} className={(valid !== undefined ? !valid : dirty && !userInterface.test(value.trim())) ? 'invalid' : ''} onBlur={this.handleBlur} placeholder={placeholder} />
+            {required && <span className={`fa fa-asterisk ${styles.required}`} />}
+          </label>
+        )}
+        <HtmlElement
+          type={type}
+          id={id}
+          autoComplete={autoComplete}
+          value={value}
+          onChange={this.handleInput}
+          className={
+            (valid !== undefined
+            ? !valid
+            : dirty && !userInterface.test(value.trim()))
+              ? styles.invalid
+              : ''
+          }
+          onBlur={this.handleBlur}
+          placeholder={placeholder}
+        />
       </div>
+    )
   }
 }
 
@@ -73,9 +92,9 @@ InputRow.defaultProps = {
   type: 'text',
   id: `input_${Math.floor(Date.now() * Math.random())}`,
   required: false,
-  className: 'fullWidth',
+  className: styles.fullWidth,
   userInterface: /.*/,
-  element: 'input'
+  element: 'input',
 }
 
 export default InputRow
