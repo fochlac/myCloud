@@ -10,32 +10,35 @@ export class Gallery extends React.Component {
   render() {
     const { app, gallery, galleries } = this.props
     const busy = app.get('busy').includes('GALLERY')
-    if (!gallery) return null
-    const elements = gallery.get('children').map(id => galleries.get(id)).concat(gallery.get('images'))
+    if (!gallery || !galleries) return null
+    const elements = gallery
+      .get('children')
+      .map(id => galleries.get(id))
+      .concat(gallery.get('images'))
 
-    return <DefaultPage parent={gallery.get('parent')} showButtons>
-        {busy && <BusyScreen /> || null}
+    return (
+      <DefaultPage parent={gallery.get('parent')} showButtons>
+        {(busy && <BusyScreen />) || null}
         <div className={styles.wrapper}>
           <h3 className={styles.name}>{gallery.get('name')}</h3>
           <p className={styles.description}>{gallery.get('description')}</p>
         </div>
-        <GalleryList elements={elements} gallery={gallery}/>
+        <GalleryList elements={elements} gallery={gallery} />
       </DefaultPage>
+    )
   }
 }
 
 Gallery.propTypes = {
   app: ImmuTypes.map.isRequired,
   gallery: ImmuTypes.map,
-  galleries: ImmuTypes.map.isRequired,
+  galleries: ImmuTypes.map,
 }
 
 const mapStoreToProps = (store, ownProps) => ({
   app: store.get('app'),
   gallery: store.getIn(['galleries', ownProps.params.id]),
-  galleries: store.get('galleries')
+  galleries: store.get('galleries'),
 })
 
-export default connect(
-  mapStoreToProps,
-)(Gallery)
+export default connect(mapStoreToProps)(Gallery)
