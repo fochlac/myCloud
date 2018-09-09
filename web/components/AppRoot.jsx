@@ -4,6 +4,7 @@ import ImmuTypes from 'immutable-prop-types'
 import PropTypes from 'prop-types'
 
 import Gallery from './views/Gallery'
+import Slideshow from './views/Slideshow'
 import Dashboard from './views/Dashboard'
 import BusyScreen from 'RAW/BusyScreen'
 import DefaultPage from 'RAW/DefaultPage'
@@ -30,7 +31,10 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          {/* <Route path="/image" render={() => <Slider />} /> */}
+          <Route
+            path="/gallery/:id/slideshow"
+            render={({ match: { params }, location: {search} }) => <Slideshow params={params} image={extractQuery(search, 'image')} />}
+          />
           <Route
             path="/gallery/:id"
             render={({ match: { params } }) => <Gallery params={params} />}
@@ -56,3 +60,8 @@ export default connect(
   mapStateToProps,
   (dispatch) =>( { loadGalleries: () => dispatch(loadGalleries()) }),
 )(App)
+
+function extractQuery(search, param) {
+  const query = new URLSearchParams(search)
+  return query.get(param)
+}

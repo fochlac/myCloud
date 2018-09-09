@@ -1,25 +1,20 @@
 import BusyScreen from 'RAW/BusyScreen'
 import DefaultPage from 'RAW/DefaultPage'
-import GalleryList from 'CONNECTED/GalleryList'
+import GallerySlider from 'CONNECTED/GallerySlider'
 import ImmuTypes from 'immutable-prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import styles from './Gallery.less'
+import PropTypes from 'prop-types'
 
 export class Gallery extends React.Component {
   render() {
-    const { app, gallery, galleries } = this.props
-    const busy = app.get('busy').includes('GALLERY')
+    const { app, gallery, startImage } = this.props
+    const busy = app.get('busy').includes('DETAIL')
     if (!gallery) return null
-    const elements = gallery.get('children').map(id => galleries.get(id)).concat(gallery.get('images'))
 
     return <DefaultPage parent={gallery.get('parent')} showButtons>
         {busy && <BusyScreen /> || null}
-        <div className={styles.wrapper}>
-          <h3 className={styles.name}>{gallery.get('name')}</h3>
-          <p className={styles.description}>{gallery.get('description')}</p>
-        </div>
-        <GalleryList elements={elements} gallery={gallery}/>
+        <GallerySlider gallery={gallery} startImage={startImage} />
       </DefaultPage>
   }
 }
@@ -28,12 +23,13 @@ Gallery.propTypes = {
   app: ImmuTypes.map.isRequired,
   gallery: ImmuTypes.map,
   galleries: ImmuTypes.map.isRequired,
+  startImage: PropTypes.string
 }
 
 const mapStoreToProps = (store, ownProps) => ({
   app: store.get('app'),
   gallery: store.getIn(['galleries', ownProps.params.id]),
-  galleries: store.get('galleries')
+  startImage: ownProps.image
 })
 
 export default connect(

@@ -7,16 +7,14 @@ import ImmuTypes from 'immutable-prop-types'
 import { Map } from 'immutable';
 
 function ImageCard({ image, editImage, deleteImage }) {
-  return (
-    <Link to={`/image/${image.get('id')}`}>
-      <Card image={image} className={styles.card}>
+  return <Link to={`/gallery/${image.get('gallery')}/slideshow?image=${image.get('id')}`}>
+      <Card image={image} imageTitle={image.get('name')} className={styles.card}>
         <div className={styles.toolbar}>
           <span className="fa fa-pencil" onClick={prevent(editImage, image)} />
           <span className="fa fa-trash" onClick={prevent(deleteImage, image)} />
         </div>
       </Card>
     </Link>
-  )
 }
 
 ImageCard.defaultProps = {
