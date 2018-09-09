@@ -1,6 +1,6 @@
 import { INITIALIZED } from "../middleware/api";
 
-const DELETE_IMAGE = 'DELETE_IMAGE'
+export const DELETE_IMAGE = 'DELETE_IMAGE'
 export function deleteImage(image) {
   return {
     type: DELETE_IMAGE,
@@ -12,7 +12,7 @@ export function deleteImage(image) {
   }
 }
 
-const UPDATE_IMAGE = 'UPDATE_IMAGE'
+export const UPDATE_IMAGE = 'UPDATE_IMAGE'
 export function updateImage(image) {
   return {
     type: UPDATE_IMAGE,
@@ -25,17 +25,17 @@ export function updateImage(image) {
   }
 }
 
-const CREATE_IMAGE = 'CREATE_IMAGE'
+export const CREATE_IMAGE = 'CREATE_IMAGE'
 export function createImage(file, parent) {
   return {
     type: CREATE_IMAGE,
     status: INITIALIZED,
     api: {
       headers: 'formdata',
-      method: 'put',
-      url: `galleries/${parent}/images/)}`,
+      method: 'post',
+      url: `galleries/${parent}/images/`,
       body: formDataFromObject({
-        image: null,
+        image: file,
         name: file.name
       })
     }

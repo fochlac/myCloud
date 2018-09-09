@@ -18,6 +18,12 @@ export async function createFolder(name: string, parent: Core.Path): Promise<Cor
   return path + '/'
 }
 
+export async function deleteFile(path: string) {
+  if (await pathExists(path)) {
+    await remove(path)
+  }
+}
+
 function cleanName(string) {
   const regex = /[^a-z0-9_-]+/g
   const uuid = new Buffer('' + Date.now()).toString('base64').replace(regex, '')

@@ -16,7 +16,7 @@ function destinationFinder(req, file, cb) {
 }
 
 function fileName({ params: { imageId, id } }: any, { originalname }: any, cb) {
-  if (!imageId) return cb(null, originalname)
+  if (!imageId || !imageDb.get(imageId)) return cb(null, originalname)
 
   const filename = imageDb.get(imageId).path.split(galleryDb.get(id).path)[1]
   cb(null, filename)

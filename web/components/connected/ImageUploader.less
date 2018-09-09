@@ -1,0 +1,38 @@
+.uploadWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.input {
+  height: 0px;
+  width: 0px;
+  padding: 28px 0 0 100%;
+  opacity: 0;
+  position: absolute;
+  bottom: 0px;
+  cursor: pointer;
+}
+
+.infoText {
+  max-width: 70vw;
+  text-align: center;
+  color: #fff;
+}
+
+.dragging {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .input {
+    padding: 100% 0 0 100%;
+  }
+}

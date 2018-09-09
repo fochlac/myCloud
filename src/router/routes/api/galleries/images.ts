@@ -9,7 +9,7 @@ const { routerError } = error('images-router')
 const images = Router()
 
 images.post(
-  '/:id/images/',
+  '/:id/images',
   checkGalleryAccessToken(['write']),
   imageStore.single('image'),
   ({ params: { id }, body: { name, description }, file }, res) => {
@@ -33,10 +33,10 @@ images.put(
 images.delete(
   '/:id/images/:imageId',
   checkGalleryAccessToken(['write']),
-  ({ params: { imageId } }, res) => {
+  ({ params: { imageId, id } }, res) => {
     image
-      .delete({ id: imageId })
-      .then(id => res.status(200).send(id))
+      .delete({ gallery: id, id: imageId })
+      .then(imageId => res.status(200).send({ gallery: id, id: imageId }))
       .catch(routerError(2, res, 'error deleting image', { id: imageId }))
   },
 )

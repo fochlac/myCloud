@@ -3,9 +3,9 @@ import styles from './Image.less'
 
 function Image({ image, size, src }) {
   return (
-    <div className={styles.wrapper} styles={{ height: `${size}px`, width: `${size}px` }}>
+    <div className={styles.wrapper} style={{ height: `${size}px`, width: `${size}px` }}>
       { image ? <img
-        styles={{ maxHeight: `${size}px`, maxWidth: `${size}px` }}
+        style={{ maxHeight: `${size}px`, maxWidth: `${size}px` }}
         className={styles.image}
         src={src || `/api/images/${image.get('id')}?width=${size}&height=${size - 10}`}
       /> : <span className={`fa fa-image ${styles.placeholder}`}></span>}

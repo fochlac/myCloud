@@ -4,7 +4,7 @@ import GalleryList from 'CONNECTED/GalleryList'
 import ImmuTypes from 'immutable-prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-// import style from './Gallery.less'
+import styles from './Gallery.less'
 
 export class Gallery extends React.Component {
   render() {
@@ -13,8 +13,12 @@ export class Gallery extends React.Component {
     if (!gallery) return null
     const elements = gallery.get('children').map(id => galleries.get(id)).concat(gallery.get('images'))
 
-    return <DefaultPage>
-        {busy && <BusyScreen />}
+    return <DefaultPage parent={gallery.get('parent')} showButtons>
+        {busy && <BusyScreen /> || null}
+        <div>
+          <h3 className={styles.name}>{gallery.get('name')}</h3>
+          <p className={styles.description}>{gallery.get('description')}</p>
+        </div>
         <GalleryList elements={elements} gallery={gallery}/>
       </DefaultPage>
   }

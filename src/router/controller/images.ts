@@ -1,8 +1,15 @@
 import galleryDb from 'modules/db/gallery'
 import imageDb from 'modules/db/image'
+import { deleteFile } from 'utils/fs';
 
 export default {
-  delete: id => imageDb.delete(id),
+  delete: async ({id, gallery}) => {
+    const image = imageDb.get(id)
+    if (!image) return
+    await deleteFile(image.path)
+    await galleryDb.deleteImage(gallery, imageDb.get(id))
+    return await imageDb.delete(id)
+  },
   create: async ({ gallery, name, description, file }) => {
     const image = await imageDb.create({
       gallery,

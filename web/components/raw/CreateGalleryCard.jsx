@@ -1,8 +1,5 @@
-import Image from './Image'
-import { Link } from 'react-router-dom'
-import { Map } from 'immutable'
 import React from 'react'
-import styles from './GalleryCard.less'
+import styles from './CreateGalleryCard.less'
 import InputRow from './InputRow'
 
 class CreateGalleryCard extends React.Component {

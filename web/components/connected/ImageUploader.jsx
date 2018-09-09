@@ -2,7 +2,7 @@ import styles from './ImageUploader.less'
 
 import React from 'react'
 import Image from 'RAW/Image'
-import {createImage} from 'STORE/actions'
+import { createImage } from 'STORE/actions'
 import { connect } from 'react-redux'
 
 export class ImageUploader extends React.Component {
@@ -14,7 +14,7 @@ export class ImageUploader extends React.Component {
   }
 
   handleNewFile(evt) {
-    const {parent, createImage} = this.props
+    const { parent, createImage } = this.props
     const files = evt.target.files
     console.log(files)
 
@@ -28,21 +28,29 @@ export class ImageUploader extends React.Component {
   }
 
   render() {
+    const { dragging } = this.props
     return (
-      <div className>
+      <div>
         <div className={styles.uploadWrapper}>
           <Image />
           <button>Bilder Hochladen</button>
-          <input
-            type="file"
-            name="Image"
-            className={styles.input}
-            onChange={evt => this.handleNewFile(evt)}
-          />
+          <div className={dragging ? styles.dragging : ''}>
+            {dragging && <h2 className={styles.infoText}>Um Bilder hochzuladen, zieh sie einfach auf diese Fläche!</h2>}
+            <input
+              type="file"
+              name="Image"
+              multiple
+              className={styles.input}
+              onChange={evt => this.handleNewFile(evt)}
+            />
+          </div>
         </div>
       </div>
     )
   }
 }
 
-export default connect(  () => ({}),  dispatch => ({ createImage: (file, parent) => dispatch(createImage(file, parent)) }))(ImageUploader)
+export default connect(
+  () => ({}),
+  dispatch => ({ createImage: (file, parent) => dispatch(createImage(file, parent)) }),
+)(ImageUploader)

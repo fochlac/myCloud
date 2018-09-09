@@ -11,8 +11,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 class App extends React.Component {
-  componentWillMount() {
-    console.log('test123', this.props.loadGalleries())
+  componentDidMount() {
+    this.props.loadGalleries()
   }
 
   render() {

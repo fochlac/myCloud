@@ -35,7 +35,7 @@ class GalleryDb {
 
   async deleteImage(id: Core.Id, image: Core.Image): Promise<Core.Gallery> {
     const gallery = this.db.get(id)
-    gallery.image = gallery.images.filter(id => id == !image.id)
+    gallery.images = gallery.images.filter(id => id !== image.id)
     const newGallery = await this.db.set(id, gallery)
     return enrichGallery(newGallery)
   }
@@ -51,7 +51,7 @@ class GalleryDb {
 
   async deleteAccessUrl(id: Core.Id, url: Core.AccessUrl): Promise<Core.Gallery> {
     const gallery = this.db.get(id)
-    gallery.urls = gallery.urls.filter(id => id == !url.id)
+    gallery.urls = gallery.urls.filter(id => id !== url.id)
     const newGallery = await this.db.set(id, gallery)
     return enrichGallery(newGallery)
   }
@@ -72,7 +72,7 @@ class GalleryDb {
         [gallery.parent]: oldParent
       })
     } else {
-      result = await this.db.set(id, { ...gallery, name, description })
+      result = await this.db.setMultiple({id: { ...gallery, name, description }})
     }
     return Object.values(result).map(gallery => enrichGallery(gallery))
   }

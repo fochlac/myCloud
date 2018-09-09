@@ -1,24 +1,25 @@
-import Image from './Image'
+import Card from './Card'
 import { Link } from 'react-router-dom'
 import { Map } from 'immutable'
 import React from 'react'
-import styles from './GalleryCard.less'
+import ImmuTypes from 'immutable-prop-types'
 
 function GalleryCard({ gallery }) {
   return (
     <Link to={`/gallery/${gallery.get('id')}`}>
-      <div className={styles.card}>
-        <Image image={gallery.getIn(['images', 0])} size="200" />
-        <div className={styles.name}>
-          <p>{gallery.get('name')}</p>
-        </div>
-      </div>
+      <Card image={gallery.getIn(['images', 0])}>
+        <p>{gallery.get('name')}</p>
+      </Card>
     </Link>
   )
 }
 
 GalleryCard.defaultProps = {
   gallery: Map(),
+}
+
+GalleryCard.propTypes = {
+  gallery: ImmuTypes.map,
 }
 
 export default GalleryCard

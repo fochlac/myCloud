@@ -42,7 +42,7 @@ class FileDb {
   async set(id, value) {
     this.content[id] = clone(value)
     await write(this.content, this.path)
-    return {[id]: clone(value)}
+    return clone(value)
   }
 
   async setMultiple(map) {

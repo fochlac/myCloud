@@ -8,8 +8,9 @@ const error = (location: string): Core.ErrorConstructor => ({
     detail: Error,
   ): void => {
     log(level, location, ...message, detail)
-    res.status(500).send()
+    res.status(500).send({success: false})
   },
 })
+
 
 export default error

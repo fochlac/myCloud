@@ -12,12 +12,10 @@ class Dashboard extends React.Component {
     const { app, galleries } = this.props
     const busy = app.get('busy').includes('DASHBOARD')
 
-    return (
-      <DefaultPage>
-        {busy && <BusyScreen />}
-        <GalleryList elements={findRootGalleries(galleries)}/>
+    return <DefaultPage>
+        {(busy && <BusyScreen />) || null}
+        <GalleryList elements={findRootGalleries(galleries)} />
       </DefaultPage>
-    )
   }
 }
 
