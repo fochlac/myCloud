@@ -5,16 +5,16 @@ import styles from './Image.less'
 
 function Image({ image, size, src, title, width, height, background }) {
   const url =
-    image &&
-    (src ||
-      `/api/images/${image.get('id')}?width=${width || size - 10}&height=${height || size - 10}`)
+    (image &&
+      `/api/images/${image.get('id')}?width=${width || size - 10}&height=${height || size - 10}`) ||
+    src
 
   return (
     <div
       className={styles.wrapper}
       style={{ height: `${height || size}px`, width: `${width || size}px`, background }}
     >
-      {image ? (
+      {image || src ? (
         <img
           style={{ maxHeight: `${height || size}px`, maxWidth: `${width || size}px` }}
           className={styles.image}

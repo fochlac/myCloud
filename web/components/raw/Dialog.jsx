@@ -1,6 +1,8 @@
 import './Dialog.less'
 
 import React from 'react'
+import cx from 'UTILS/classnames'
+import styles from './Dialog.less'
 
 export default class Dialog extends React.Component {
   constructor() {
@@ -10,7 +12,11 @@ export default class Dialog extends React.Component {
   }
 
   handleKeyUp(evt) {
-    if (evt.keyCode === 27 && (!document.activeElement || !['input', 'textarea', 'select'].includes(document.activeElement.tagName.toLowerCase()))) {
+    if (
+      evt.keyCode === 27 &&
+      (!document.activeElement ||
+        !['input', 'textarea', 'select'].includes(document.activeElement.tagName.toLowerCase()))
+    ) {
       this.props.close_dialog()
     }
   }
@@ -30,9 +36,13 @@ export default class Dialog extends React.Component {
   }
 
   render() {
+    const { className, children } = this.props
     return (
-      <div className="dialogBackground" onClick={this.closeDialog.bind(this)}>
-        <div className={this.props.className ? this.props.className + ' dialog' : 'dialog'}>{this.props.children}</div>
+      <div
+        className={cx(styles.dialogBackground, 'dialogBackground')}
+        onClick={this.closeDialog.bind(this)}
+      >
+        <div className={cx(styles.dialog, className)}>{children}</div>
       </div>
     )
   }

@@ -1,4 +1,4 @@
-import { INITIALIZED } from "../middleware/api";
+import { INITIALIZED } from '../middleware/api'
 
 export const DELETE_IMAGE = 'DELETE_IMAGE'
 export function deleteImage(image) {
@@ -7,8 +7,8 @@ export function deleteImage(image) {
     status: INITIALIZED,
     api: {
       method: 'delete',
-      url: `galleries/${image.get('gallery')}/images/${image.get('id')}`
-    }
+      url: `galleries/${image.get('gallery')}/images/${image.get('id')}`,
+    },
   }
 }
 
@@ -20,13 +20,13 @@ export function updateImage(image) {
     api: {
       method: 'put',
       url: `galleries/${image.get('gallery')}/images/${image.get('id')}`,
-      body: image.toJS()
-    }
+      body: image.toJS(),
+    },
   }
 }
 
 export const CREATE_IMAGE = 'CREATE_IMAGE'
-export function createImage(file, parent) {
+export function createImage(image, parent) {
   return {
     type: CREATE_IMAGE,
     status: INITIALIZED,
@@ -35,10 +35,11 @@ export function createImage(file, parent) {
       method: 'post',
       url: `galleries/${parent}/images/`,
       body: formDataFromObject({
-        image: file,
-        name: file.name
-      })
-    }
+        image: image.file,
+        name: image.name,
+        created: image.created,
+      }),
+    },
   }
 }
 

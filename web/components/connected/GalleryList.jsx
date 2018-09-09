@@ -1,45 +1,41 @@
+import { createGallery, deleteImage, updateImage } from 'STORE/actions'
+
+import CreateGalleryCard from 'RAW/CreateGalleryCard'
+import DnDLayer from 'RAW/DnDLayer'
 import GalleryCard from 'RAW/GalleryCard'
 import ImageCard from 'RAW/ImageCard'
-import React from 'react'
-import PropTypes from 'prop-types'
+import ImageUploader from 'CONNECTED/ImageUploader'
 import ImmuTypes from 'immutable-prop-types'
+import { Map } from 'immutable'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { connect } from 'react-redux'
 import style from './GalleryList.less'
-import { createGallery, deleteImage, updateImage } from 'STORE/actions'
-import CreateGalleryCard from 'RAW/CreateGalleryCard'
-import ImageUploader from 'CONNECTED/ImageUploader'
-import { Map } from 'immutable'
 
 class GalleryList extends React.Component {
   constructor() {
     super()
 
     this.state = {
-      dragging: false,
+      isImageUploaderOpen: false,
+      dndImages: [],
     }
 
     this.handleEdit = this.handleEdit.bind(this)
-    this.onDragStart = this.onDragStart.bind(this)
-    this.onDragStop = this.onDragStop.bind(this)
-  }
-
-  componentDidMount() {
-    document.addEventListener('dragexit', this.onDragStop)
-    document.addEventListener('mouseover', this.onDragStop)
-  }
-  componentWillUnmount() {
-    document.removeEventListener('dragexit', this.onDragStop)
-    document.removeEventListener('mouseover', this.onDragStop)
-
   }
 
   render() {
     const { elements, createGallery, deleteImage, gallery } = this.props
-    const { dragging } = this.state
+    const { isImageUploaderOpen, dndImages } = this.state
 
-    return <section className={style.list} onDragEnter={this.onDragStart} onDrop={this.onDragStop}>
+    return (
+      <DnDLayer
+        className={style.list}
+        onDrop={newImages =>
+          this.setState({ isImageUploaderOpen: true, dndImages: dndImages.concat(newImages) })
+        }
+      >
         <CreateGalleryCard createGallery={createGallery} parent={gallery.get('id')} />
-        {gallery.get('id') && <ImageUploader parent={gallery.get('id')} dragging={dragging} />}
         {elements
           .sort(listGalleriesFirst)
           .map(
@@ -55,18 +51,14 @@ class GalleryList extends React.Component {
                 />
               ),
           )}
-      </section>
-  }
-
-  onDragStart() {
-    this.setState({ dragging: true })
-    this.isDragging = true
-  }
-
-  onDragStop() {
-    if (!this.isDragging) return
-    this.setState({ dragging: false })
-    this.isDragging = false
+        {isImageUploaderOpen && (
+          <ImageUploader
+            dndImages={dndImages}
+            closeDialog={() => this.setState({ isImageUploaderOpen: false, dndImages: [] })}
+          />
+        )}
+      </DnDLayer>
+    )
   }
 
   handleEdit(image) {
@@ -84,7 +76,7 @@ GalleryList.propTypes = {
 }
 
 GalleryList.defaultProps = {
-  gallery: Map()
+  gallery: Map(),
 }
 
 export default connect(
