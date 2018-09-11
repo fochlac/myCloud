@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import ImmuTypes from 'immutable-prop-types'
 
-export const AccessTokenType = ImmuTypes.mapOf({
+export const AccessTokenType = ImmuTypes.shape({
   url: PropTypes.string.isRequired,
   gallery: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
@@ -9,14 +9,14 @@ export const AccessTokenType = ImmuTypes.mapOf({
   recursive: PropTypes.bool.isRequired,
 })
 
-export const ImageType = ImmuTypes.mapOf({
+export const ImageType = ImmuTypes.shape({
   id: PropTypes.string.isRequired,
   gallery: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
 })
 
-export const GalleryType = ImmuTypes.mapOf({
+export const GalleryType = ImmuTypes.shape({
   id: PropTypes.string.isRequired,
   accessToken: AccessTokenType.isRequired,
   name: PropTypes.string.isRequired,

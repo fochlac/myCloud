@@ -8,6 +8,7 @@ import {
 } from 'fs-extra'
 
 import error from 'utils/error'
+import logger from 'utils/logger'
 
 const { internalError } = error('fileDb')
 const outputFile = (path, data, options) => outputFileRaw(global.storage + path, data, options)
@@ -48,7 +49,7 @@ class FileDb {
   async setMultiple(map) {
     this.content = {
       ...this.content,
-      ...clone(map)
+      ...clone(map),
     }
     await write(this.content, this.path)
     return clone(map)
@@ -62,13 +63,29 @@ class FileDb {
   async delete(id: Core.Id) {
     delete this.content[id]
     await write(this.content, this.path)
+    logger(5, `deleted element ${id} from db ${this.path}`)
     return id
   }
 }
 
+let writeDebounce
+let debounceContent
 function write(content: object, path: Core.Path): void {
-  const data = JSON.stringify(content, null, 2)
-  outputFile(path, data, 'utf8')
+  if (writeDebounce) {
+    debounceContent = content
+  } else {
+    debounceContent = content
+    writeDebounce = new Promise(resolve =>
+      setTimeout(async () => {
+        const data = JSON.stringify(debounceContent, null, 2)
+        debounceContent = undefined
+        writeDebounce = undefined
+        await outputFile(path, data, 'utf8')
+        resolve()
+      }, 50),
+    )
+  }
+  return writeDebounce
 }
 
 export default async function initDb(path: Core.Path, initialState: object = {}): Promise<FileDb> {

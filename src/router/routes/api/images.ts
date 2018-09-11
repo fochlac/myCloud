@@ -19,7 +19,6 @@ images.get(
         height: parseInt(height),
       }
       const imageBuffer = await getImage(image, dimensions, format)
-      console.log('called')
 
       res.contentType(format || 'jpeg').send(imageBuffer)
     } catch (error) {

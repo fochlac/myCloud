@@ -7,6 +7,8 @@ import {
   UPDATE_IMAGE,
   DELETE_IMAGE,
   DELETE_GALLERY,
+  DELETE_URL,
+  CREATE_URL,
 } from '../actions'
 import { Map } from 'immutable'
 
@@ -56,6 +58,28 @@ const galleriesReducer = (galleries = Map, action) => {
 
         galleries = galleries.updateIn([data.get('gallery'), 'images'], images => {
           return images.filter(image => image.get('id') !== data.get('id'))
+        })
+      }
+      return galleries
+    case DELETE_URL:
+      if (action.status === COMPLETE) {
+        const {
+          data,
+          payload: { gallery },
+        } = action
+        const id = data.toString()
+
+        galleries = galleries.updateIn([gallery, 'urls'], urls => {
+          return urls.filter(url => url.get('id') !== id)
+        })
+      }
+      return galleries
+    case CREATE_URL:
+      if (action.status === COMPLETE) {
+        const { data } = action
+
+        galleries = galleries.updateIn([data.get('gallery'), 'urls'], urls => {
+          return urls.push(data)
         })
       }
       return galleries

@@ -9,8 +9,14 @@ export const handleBusy = store => next => action => {
   if (action.status === INITIALIZED) {
     if (!runningActions[action.busy]) {
       runningActions[action.busy] = [action.actionId]
-      store.dispatch(setBusy(store.getState().getIn(['app', 'busy']).concat([action.busy])))
-      console.log('start', action.busy)
+      store.dispatch(
+        setBusy(
+          store
+            .getState()
+            .getIn(['app', 'busy'])
+            .concat([action.busy]),
+        ),
+      )
     } else {
       runningActions[action.busy].push(action.actionId)
     }
@@ -19,10 +25,14 @@ export const handleBusy = store => next => action => {
       runningActions[action.busy] = runningActions[action.busy].filter(id => id !== action.actionId)
     } else {
       delete runningActions[action.busy]
-      store.dispatch(setBusy(store.getState()
+      store.dispatch(
+        setBusy(
+          store
+            .getState()
             .getIn(['app', 'busy'])
-            .filter(busy => busy !== action.busy)))
-      console.log('end', action.busy)
+            .filter(busy => busy !== action.busy),
+        ),
+      )
     }
   }
   return next(action)

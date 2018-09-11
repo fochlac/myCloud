@@ -1,9 +1,6 @@
-@import '../variables.less';
-:global
-
-body {
-  color: #100d04;
-  background: @base-color;
+:global body {
+  color: var(--black);
+  background: #fff;
   top: 0;
   bottom: 0;
   left: 0;
@@ -20,7 +17,7 @@ p {
 }
 
 a {
-  color: #100d04;
+  color: var(--black);
   text-decoration: none;
 }
 
@@ -33,12 +30,20 @@ h5 {
 }
 
 button {
-  background: #ffa500;
-  color: #fafafa;
-  border: solid 1px #bf7d03;
+  background: var(--main);
+  color: #fff;
+  border: solid 1px var(--main-dark);
   border-radius: 2px;
   cursor: pointer;
   padding: 5px;
   font-family: Raleway;
   font-size: 1em;
+
+  &:hover {
+    background: var(--main-hover);
+  }
+
+  &:active {
+    background: var(--main-active);
+  }
 }

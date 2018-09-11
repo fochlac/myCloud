@@ -104,9 +104,13 @@ export function hasGalleryAccessToken(
 ): Core.AccessUrl {
   if (gallery) {
     const accessToken =
-      (accessMap && accessMap[gallery.id]) ||
-      accessMap[gallery.ancestors.find(ancestor => !!accessMap[ancestor])]
-    return accessToken
+      (accessMap && accessMap[gallery.id] && urlDb.get(accessMap[gallery.id].id)) ||
+      accessMap[
+        gallery.ancestors.find(
+          ancestor => !!accessMap[ancestor] && !!urlDb.get(accessMap[ancestor].id),
+        )
+      ]
+    return accessToken && urlDb.get(accessToken.id)
   }
 }
 

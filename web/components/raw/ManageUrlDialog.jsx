@@ -3,6 +3,8 @@ import ButtonBar from 'RAW/ButtonBar'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { GalleryType } from '../../types/api-types'
+import styles from './ManageUrlDialog.less'
+import cx from 'UTILS/classnames'
 
 export default class ManageUrlDialog extends React.Component {
   constructor() {
@@ -24,43 +26,55 @@ export default class ManageUrlDialog extends React.Component {
 
     return (
       <Dialog onClose={onClose} header={<h4>Gallerie teilen</h4>}>
-        <div>
-          <h4>Links:</h4>
-          <table>
-            <tr>
-              <th>Link</th>
-              <th>Berechtigung</th>
-              <th />
-            </tr>
-            {gallery.get('urls').map(url => (
-              <tr key={'url_' + url.get('id')}>
-                <td>{url.get('url')}</td>
-                <td>{url.get('access') === 'read' ? 'Lesen' : 'Lesen & Schreiben'}</td>
+        <div className={styles.body}>
+          <h4 className={styles.head}>Links:</h4>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Link</th>
+                <th>Berechtigung</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {gallery.get('urls').map(url => (
+                <tr key={'url_' + url.get('id')}>
+                  <td className={styles.urlCell}>
+                    <a href={'https://gallery.fochlac.com' + url.get('url')} className={styles.url}>
+                      {'https://gallery.fochlac.com' + url.get('url')}
+                    </a>
+                    <span className={styles.copy}>Kopieren</span>
+                  </td>
+                  <td>{url.get('access') === 'read' ? 'Lesen' : 'Lesen & Schreiben'}</td>
+                  <td>
+                    <span
+                      className={cx('fa fa-trash', styles.buttons)}
+                      onClick={() => deleteUrl(gallery.get('id'), url.get('id'))}
+                    />
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td className={styles.newLink}>Neuen Link erstellen</td>
+                <td>
+                  <select
+                    onChange={({ target: { value } }) => this.setState({ access: value })}
+                    className={styles.access}
+                  >
+                    <option value="read">Lesen</option>
+                    <option value="write">Lesen & Schreiben</option>
+                  </select>
+                </td>
                 <td>
                   <span
-                    className="fa fa-lg fa-trash"
-                    onClick={() => deleteUrl(gallery.get('id'), url.get('id'))}
+                    className={cx('fa fa-plus-circle', styles.buttons)}
+                    onClick={() =>
+                      createUrl({ gallery: gallery.get('id'), access: this.state.access })
+                    }
                   />
                 </td>
               </tr>
-            ))}
-            <tr>
-              <td>Neuer Link</td>
-              <td>
-                <select onChange={({ target: { value } }) => this.setState({ access: value })}>
-                  <option value="read">Lesen</option>
-                  <option value="write">Lesen & Schreiben</option>
-                </select>
-              </td>
-              <td>
-                <span
-                  className="fa fa-lg fa-plus-circle"
-                  onClick={() =>
-                    createUrl({ gallery: gallery.get('id'), access: this.state.access })
-                  }
-                />
-              </td>
-            </tr>
+            </tbody>
           </table>
           <ButtonBar buttons={buttons} />
         </div>
