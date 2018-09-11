@@ -1,16 +1,17 @@
 import BusyScreen from 'RAW/BusyScreen'
 import DefaultPage from 'RAW/DefaultPage'
+import PageMissing from 'RAW/PageMissing'
 import GalleryList from 'CONNECTED/GalleryList'
 import ImmuTypes from 'immutable-prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import styles from './Gallery.less'
+export const GALLERY = 'GALLERY'
 
 export class Gallery extends React.Component {
   render() {
     const { app, gallery, galleries } = this.props
-    const busy = app.get('busy').includes('GALLERY')
-    if (!gallery || !galleries) return null
+    const busy = app.get('busy').includes(GALLERY)
+    if (!gallery || !galleries) return <PageMissing />
     const elements = gallery
       .get('children')
       .map(id => galleries.get(id))
@@ -19,11 +20,7 @@ export class Gallery extends React.Component {
     return (
       <DefaultPage parent={gallery.get('parent')} showButtons>
         {(busy && <BusyScreen />) || null}
-        <div className={styles.wrapper}>
-          <h3 className={styles.name}>{gallery.get('name')}</h3>
-          <p className={styles.description}>{gallery.get('description')}</p>
-        </div>
-        <GalleryList elements={elements} gallery={gallery} />
+        {gallery && <GalleryList elements={elements} gallery={gallery} />}
       </DefaultPage>
     )
   }

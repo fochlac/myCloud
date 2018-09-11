@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styles from './Slideshow.less'
 
-export class Gallery extends React.Component {
+export class Slideshow extends React.Component {
   render() {
     const { app, gallery, startImage } = this.props
     const busy = app.get('busy').includes('DETAIL')
@@ -22,10 +22,9 @@ export class Gallery extends React.Component {
   }
 }
 
-Gallery.propTypes = {
+Slideshow.propTypes = {
   app: ImmuTypes.map.isRequired,
   gallery: ImmuTypes.map,
-  galleries: ImmuTypes.map.isRequired,
   startImage: PropTypes.string,
 }
 
@@ -35,4 +34,4 @@ const mapStoreToProps = (store, ownProps) => ({
   startImage: ownProps.image,
 })
 
-export default connect(mapStoreToProps)(Gallery)
+export default connect(mapStoreToProps)(Slideshow)

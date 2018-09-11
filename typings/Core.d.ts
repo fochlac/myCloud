@@ -27,6 +27,7 @@ declare namespace Core {
     urls: AccessUrl[]
     ancestors: Id[]
     children: Id[]
+    accessToken?: AccessUrl
   }
 
   interface Image {
@@ -49,7 +50,9 @@ declare namespace Core {
     [key: string]: AccessUrl
   }
 
-  interface ObjectMap {[key:string]: any}
+  interface ObjectMap {
+    [key: string]: any
+  }
 
   class FileDb {
     set: (id: Id, value: any) => Promise<any>

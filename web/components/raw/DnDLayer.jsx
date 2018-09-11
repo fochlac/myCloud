@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import cx from '../../utils/classnames'
 import styles from './DnDLayer.less'
+import { createSmallObjectURL } from '../../utils/resizer';
 
 export default class DnDLayer extends React.Component {
   constructor() {
@@ -9,6 +10,7 @@ export default class DnDLayer extends React.Component {
 
     this.state = {
       dragging: false,
+      parsing: false,
     }
 
     this.onDragStart = this.onDragStart.bind(this)
@@ -27,16 +29,22 @@ export default class DnDLayer extends React.Component {
   }
 
   render() {
-    const { dragging } = this.state
-    const { className, children } = this.props
+    const { dragging, parsing } = this.state
+    const { className, children, active } = this.props
 
     return (
       <div onDrop={this.onDragStop} className={cx(styles.wrapper, className)}>
         {children}
-        <div className={dragging ? styles.dragging : styles.hidden}>
+        {active && <div className={dragging||parsing ? styles.dragging : styles.hidden}>
           {dragging && (
             <h2 className={styles.infoText}>
               Um Bilder hochzuladen, zieh sie einfach auf diese Fläche!
+            </h2>
+          )}
+          {parsing && (
+            <h2 className={styles.infoText}>
+              Bilder werden verarbeitet.
+              <span className="fa fa-spin fa-lg fa-circe-o-notch"></span>
             </h2>
           )}
           <input
@@ -48,23 +56,24 @@ export default class DnDLayer extends React.Component {
             className={styles.input}
             onChange={evt => this.handleNewFile(evt)}
           />
-        </div>
+        </div>}
       </div>
     )
   }
 
   handleNewFile(evt) {
     const files = evt.target.files
-
-    this.props.onDrop(
-      Array.from(files).map(file => ({
+    this.setState({parsing: true})
+    Promise.all(Array.from(files).map(async (file) => ({
         file,
         name: file.name,
         created: file.lastModified,
-        objectUrl: URL.createObjectURL(file),
+        objectUrl: await createSmallObjectURL(file),
         id: `${file.lastModified}_${file.size}`,
-      })),
-    )
+      }))).then((files) => {
+        this.props.onDrop(files)
+        this.setState({parsing: false})
+      })
   }
 
   onDragStart() {
@@ -82,4 +91,6 @@ export default class DnDLayer extends React.Component {
 DnDLayer.propTypes = {
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
+  active: PropTypes.bool,
+  children: PropTypes.any,
 }

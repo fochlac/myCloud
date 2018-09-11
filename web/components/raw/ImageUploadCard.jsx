@@ -1,0 +1,30 @@
+import Card from './Card'
+import { Map } from 'immutable'
+import PropTypes from 'prop-types'
+import React from 'react'
+import styles from './ImageUploadCard.less'
+
+function ImageUploadCard({ image }) {
+  return (
+    <Card src={image.objectUrl} imageTitle={image.name} className={styles.card}>
+      {image.isUploading && (
+        <div className={styles.uploading}>
+          <span className="fa fa-2x fa-circle-o-notch fa-spin" />
+        </div>
+      )}
+    </Card>
+  )
+}
+
+ImageUploadCard.defaultProps = {
+  image: Map(),
+}
+
+ImageUploadCard.propTypes = {
+  image: PropTypes.shape({
+    objectUrl: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    isUploading: PropTypes.bool
+  }),
+}
+export default ImageUploadCard
