@@ -5,6 +5,7 @@ import React from 'react'
 import { GalleryType } from '../../types/api-types'
 import styles from './ManageUrlDialog.less'
 import cx from 'UTILS/classnames'
+import copy from 'UTILS/clipboard'
 
 export default class ManageUrlDialog extends React.Component {
   constructor() {
@@ -43,7 +44,12 @@ export default class ManageUrlDialog extends React.Component {
                     <a href={'https://gallery.fochlac.com' + url.get('url')} className={styles.url}>
                       {'https://gallery.fochlac.com' + url.get('url')}
                     </a>
-                    <span className={styles.copy}>Kopieren</span>
+                    <span
+                      className={styles.copy}
+                      onClick={() => copy(`https://gallery.fochlac.com${url.get('url')}`)}
+                    >
+                      Kopieren
+                    </span>
                   </td>
                   <td>{url.get('access') === 'read' ? 'Lesen' : 'Lesen & Schreiben'}</td>
                   <td>

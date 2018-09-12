@@ -3,6 +3,7 @@ import styles from './CreateGalleryCard.less'
 import InputRow from './InputRow'
 import ImmuTypes from 'immutable-prop-types'
 import PropTypes from 'prop-types'
+import ButtonBar from 'RAW/ButtonBar'
 
 class CreateGalleryCard extends React.Component {
   constructor(props) {
@@ -17,6 +18,17 @@ class CreateGalleryCard extends React.Component {
   }
 
   render() {
+    const buttons = [
+      {
+        text: 'Abbrechen',
+        onClick: this.props.onClose,
+        type: 'secondary',
+      },
+      {
+        text: 'Abschicken',
+        onClick: this.submit,
+      },
+    ]
     return (
       <div className={styles.card}>
         <h3 className={styles.head}>Gallerie hinzufügen</h3>
@@ -25,6 +37,7 @@ class CreateGalleryCard extends React.Component {
           defaultValue={this.state.name}
           label="Name"
           required={true}
+          autoFocus={true}
         />
         <InputRow
           defaultValue={this.state.description}
@@ -32,9 +45,7 @@ class CreateGalleryCard extends React.Component {
           label="Beschreibung"
           element="textarea"
         />
-        <button className={styles.button} onClick={this.submit}>
-          Abschicken
-        </button>
+        <ButtonBar buttons={buttons} />
       </div>
     )
   }
@@ -62,6 +73,7 @@ CreateGalleryCard.defaultProps = {
 CreateGalleryCard.propTypes = {
   gallery: ImmuTypes.map,
   onSubmit: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   parent: PropTypes.string,
 }
 

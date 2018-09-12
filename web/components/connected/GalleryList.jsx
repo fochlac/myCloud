@@ -12,6 +12,7 @@ import {
 import CreateGalleryCard from 'RAW/CreateGalleryCard'
 import DnDLayer from 'RAW/DnDLayer'
 import GalleryCard from 'RAW/GalleryCard'
+import ZipDialog from 'RAW/ZipDialog'
 import ImageCard from 'RAW/ImageCard'
 import DeleteGalleryDialog from 'RAW/DeleteGalleryDialog'
 import ManageUrlDialog from 'RAW/ManageUrlDialog'
@@ -35,6 +36,7 @@ class GalleryList extends React.Component {
       showCreateGallery: false,
       showManageUrl: false,
       editGallery: false,
+      showCreateZip: false,
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -59,9 +61,11 @@ class GalleryList extends React.Component {
       editGallery,
       showConfirmDelete,
       showManageUrl,
+      showCreateZip,
     } = this.state
 
     const galleryActions = {
+      zip: () => this.setState({ showCreateZip: true }),
       create: () => this.setState({ showCreateGallery: true }),
       edit: () => this.setState({ showCreateGallery: true, editGallery: true }),
       delete: () => this.setState({ showConfirmDelete: true }),
@@ -103,6 +107,7 @@ class GalleryList extends React.Component {
             header={editGallery ? <h4>Gallerie bearbeiten</h4> : <h4>Gallerie erstellen</h4>}
           >
             <CreateGalleryCard
+              onClose={() => this.setState({ showCreateGallery: false, editGallery: false })}
               onSubmit={gallery => {
                 editGallery ? updateGallery(gallery) : createGallery(gallery)
                 this.setState({ showCreateGallery: false, editGallery: false })
@@ -128,6 +133,9 @@ class GalleryList extends React.Component {
             deleteUrl={deleteUrl}
             gallery={gallery}
           />
+        )}
+        {showCreateZip && (
+          <ZipDialog onClose={() => this.setState({ showCreateZip: false })} gallery={gallery} />
         )}
       </DnDLayer>
     )

@@ -46,7 +46,13 @@ export default {
   readAll: (accessMap: Core.AccessMap) => {
     const galleries = galleryDb.list()
     return galleries
-      .map(gallery => ({ ...gallery, accessToken: hasGalleryAccessToken(gallery, accessMap) }))
+      .map(gallery => {
+        const accessToken = hasGalleryAccessToken(gallery, accessMap)
+        if (accessToken && accessToken.access === 'read') {
+          gallery.urls = []
+        }
+        return { ...gallery, accessToken }
+      })
       .filter(gallery => !!gallery.accessToken)
   },
 

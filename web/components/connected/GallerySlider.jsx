@@ -1,11 +1,11 @@
 import { deleteImage, updateImage } from 'STORE/actions'
 
 import Image from 'RAW/Image'
-import ImmuTypes from 'immutable-prop-types'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styles from './GallerySlider.less'
+import { GalleryType } from '../../types/api-types'
 
 export const SLIDE = {
   ACTIVE: 'ACTIVE',
@@ -28,10 +28,35 @@ class GallerySlider extends React.Component {
     }
 
     this.handleEdit = this.handleEdit.bind(this)
+    this.handleKeys = this.handleKeys.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeys)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeys)
+  }
+
+  handleKeys({ keyCode }) {
+    const { gallery } = this.props
+    const { index } = this.state
+
+    switch (keyCode) {
+      case 37:
+        if (!index) return
+        this.setState({ index: index - 1 })
+        break
+      case 39:
+        if (index === gallery.get('images').size - 1) return
+        this.setState({ index: index + 1 })
+        break
+    }
   }
 
   render() {
-    const { deleteImage, gallery } = this.props
+    const { gallery } = this.props
     const { index } = this.state
 
     return (
@@ -45,9 +70,11 @@ class GallerySlider extends React.Component {
           </span>
         )}
         <div className={styles.imageWrapper}>
-          {gallery.get('images').map((image, slide) => (
-            <Slide key={image.get('id')} image={image} type={getSlideType(slide, index)} />
-          ))}
+          {gallery
+            .get('images')
+            .map((image, slide) =>
+              this.renderSlide({ image: image, type: getSlideType(slide, index) }),
+            )}
         </div>
         {index < gallery.get('images').size - 1 && (
           <span
@@ -58,6 +85,21 @@ class GallerySlider extends React.Component {
           </span>
         )}
       </section>
+    )
+  }
+
+  renderSlide({ image, type }) {
+    const additionalClass = [SLIDE.OLD, SLIDE.LAST].includes(type) ? styles.old : ''
+
+    const maxHeight = Math.floor((window.innerHeight - 48) / 25) * 25
+    const maxWidth = Math.floor((window.innerWidth - 50) / 25) * 25
+
+    return (
+      <div className={`${styles.slide} ${additionalClass}`}>
+        {![SLIDE.NEW, SLIDE.OLD].includes(type) && (
+          <Image image={image} width={maxWidth} height={maxHeight} background="black" />
+        )}
+      </div>
     )
   }
 
@@ -79,7 +121,7 @@ function getSlideType(index, active) {
 }
 
 GallerySlider.propTypes = {
-  gallery: ImmuTypes.map.isRequired,
+  gallery: GalleryType.isRequired,
   startImage: PropTypes.string,
   deleteImage: PropTypes.func.isRequired,
   updateImage: PropTypes.func.isRequired,
@@ -89,18 +131,3 @@ export default connect(
   () => ({}),
   { deleteImage, updateImage },
 )(GallerySlider)
-
-function Slide({ image, type }) {
-  const additionalClass = [SLIDE.OLD, SLIDE.LAST].includes(type) ? styles.old : ''
-
-  const maxHeight = Math.floor((window.innerHeight - 48) / 25) * 25
-  const maxWidth = Math.floor((window.innerWidth - 50) / 25) * 25
-
-  return (
-    <div className={`${styles.slide} ${additionalClass}`}>
-      {type !== SLIDE.EMPTY && (
-        <Image image={image} width={maxWidth} height={maxHeight} background="black" />
-      )}
-    </div>
-  )
-}

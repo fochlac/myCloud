@@ -6,6 +6,7 @@ import { GALLERY } from '../views/Gallery'
 import ImageUploader from 'CONNECTED/ImageUploader'
 
 export default function GalleryHeader({ gallery, uploadImages, galleryActions, isRoot }) {
+  const canWrite = gallery.getIn(['accessToken', 'access']) === 'write'
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -16,26 +17,41 @@ export default function GalleryHeader({ gallery, uploadImages, galleryActions, i
       {!isRoot && <p className={styles.description}>{gallery.get('description')}</p>}
       <ul className={styles.galleryControl}>
         {!isRoot && (
-          <li title="Bilder hochladen">
-            <ImageUploader busyTarget={GALLERY} uploadImages={uploadImages}>
-              <span className="fa fa-lg fa-upload" />
-            </ImageUploader>
+          <li title="Gallerie downloaden" onClick={galleryActions.zip}>
+            <span className="fa fa-lg fa-download" />
           </li>
         )}
-        <li title="Gallerie erstellen" onClick={galleryActions.create}>
-          <span className="fa fa-lg fa-plus" />
-        </li>
-        {!isRoot && [
-          <li key={1} title="Gallerie berarbeiten" onClick={galleryActions.edit}>
-            <span className="fa fa-lg fa-pencil" />
-          </li>,
-          <li key={2} title="Gallerie löschen" onClick={galleryActions.delete}>
-            <span className="fa fa-lg fa-trash" />
-          </li>,
-          <li key={3} title="Gallerie teilen" onClick={galleryActions.share}>
-            <span className="fa fa-lg fa-share-square-o" />
-          </li>,
-        ]}
+        {!isRoot &&
+          canWrite && (
+            <li title="Bilder hochladen">
+              <ImageUploader busyTarget={GALLERY} uploadImages={uploadImages}>
+                <span className="fa fa-lg fa-upload" />
+              </ImageUploader>
+            </li>
+          )}
+        {(canWrite || isRoot) && (
+          <li title="Gallerie erstellen" onClick={galleryActions.create}>
+            <span className="fa fa-lg fa-plus" />
+          </li>
+        )}
+        {!isRoot &&
+          canWrite && (
+            <li title="Gallerie berarbeiten" onClick={galleryActions.edit}>
+              <span className="fa fa-lg fa-pencil" />
+            </li>
+          )}
+        {!isRoot &&
+          canWrite && (
+            <li title="Gallerie löschen" onClick={galleryActions.delete}>
+              <span className="fa fa-lg fa-trash" />
+            </li>
+          )}
+        {!isRoot &&
+          canWrite && (
+            <li title="Gallerie teilen" onClick={galleryActions.share}>
+              <span className="fa fa-lg fa-share-square-o" />
+            </li>
+          )}
       </ul>
     </div>
   )

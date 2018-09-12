@@ -55,6 +55,7 @@ class InputRow extends React.Component {
       valid,
       placeholder,
       element,
+      autoFocus,
     } = this.props
 
     const HtmlElement = element
@@ -73,6 +74,7 @@ class InputRow extends React.Component {
           autoComplete={autoComplete}
           value={value}
           onChange={this.handleInput}
+          autoFocus={autoFocus}
           className={
             (valid !== undefined
             ? !valid
