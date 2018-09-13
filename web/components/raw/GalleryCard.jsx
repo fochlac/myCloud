@@ -8,7 +8,7 @@ function GalleryCard({ gallery }) {
   return (
     <Link to={`/gallery/${gallery.get('id')}`}>
       <Card image={gallery.getIn(['images', 0])}>
-        <p>{gallery.get('name')}</p>
+        <p title={gallery.get('name')}>{gallery.get('name')}</p>
       </Card>
     </Link>
   )
