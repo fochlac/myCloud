@@ -1,6 +1,6 @@
 import { mkdir as mkdirRaw, pathExists as pathExistsRaw, remove as removeRaw } from 'fs-extra'
 
-import logger from 'utils/logger'
+import logger from './logger'
 
 const mkdir = path => mkdirRaw(global.storage + path)
 const remove = path => removeRaw(global.storage + path)

@@ -1,9 +1,9 @@
-import galleryDb from 'modules/db/gallery'
-import imageDb from 'modules/db/image'
-import { deleteFile } from 'utils/fs';
+import galleryDb from '../../modules/db/gallery'
+import imageDb from '../../modules/db/image'
+import { deleteFile } from '../../utils/fs'
 
 export default {
-  delete: async ({id, gallery}) => {
+  delete: async ({ id, gallery }) => {
     const image = imageDb.get(id)
     if (!image) return
     await deleteFile(image.path)

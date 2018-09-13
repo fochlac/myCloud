@@ -7,8 +7,8 @@ import {
   readJSON as readJSONRaw,
 } from 'fs-extra'
 
-import error from 'utils/error'
-import logger from 'utils/logger'
+import error from './error'
+import logger from './logger'
 
 const { internalError } = error('fileDb')
 const outputFile = (path, data, options) => outputFileRaw(global.storage + path, data, options)

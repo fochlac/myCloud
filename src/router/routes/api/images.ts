@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { checkImageAccess } from 'middleware/authentication'
-import error from 'utils/error'
-import getImage from 'utils/image'
-import imageDb from 'modules/db/image'
-import { regexpValidator, validate } from 'middleware/validate'
+import { checkImageAccess } from '../../middleware/authentication'
+import error from '../../../utils/error'
+import getImage from '../../../utils/image'
+import imageDb from '../../../modules/db/image'
+import { regexpValidator, validate } from '../../middleware/validate'
 
 const { routerError } = error('image-router')
 

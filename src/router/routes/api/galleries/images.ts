@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { checkGalleryAccessToken } from 'middleware/authentication'
-import error from 'utils/error'
-import image from 'controller/images'
-import imageStore from 'middleware/images'
-import { validate, regexpValidator } from 'middleware/validate'
+import { checkGalleryAccessToken } from '../../../middleware/authentication'
+import error from '../../../../utils/error'
+import image from '../../../controller/images'
+import imageStore from '../../../middleware/images'
+import { validate, regexpValidator } from '../../../middleware/validate'
 
 const { routerError } = error('images-router')
 

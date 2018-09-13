@@ -1,4 +1,4 @@
-import initDb from 'utils/fileDb'
+import initDb from '../../utils/fileDb'
 
 class UrlDb {
   db: Core.FileDb

@@ -1,10 +1,10 @@
-import { Create, Delete, Update } from 'controller/urls'
+import { Create, Delete, Update } from '../../../controller/urls'
 
 import { Router } from 'express'
-import { checkGalleryAccessToken } from 'middleware/authentication'
-import error from 'utils/error'
-import { randomUrl } from 'utils/url'
-import { regexpValidator, validate, oneOfValidator } from 'middleware/validate'
+import { checkGalleryAccessToken } from '../../../middleware/authentication'
+import error from '../../../../utils/error'
+import { randomUrl } from '../../../../utils/url'
+import { regexpValidator, validate, oneOfValidator } from '../../../middleware/validate'
 
 const { routerError } = error('urls-router')
 

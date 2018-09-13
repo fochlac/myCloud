@@ -1,4 +1,4 @@
-import log from 'utils/logger'
+import log from './logger'
 
 const error = (location: string): Core.ErrorConstructor => ({
   internalError: (level: number, ...message: Array<any>) => (detail: Error): void => {
@@ -8,9 +8,8 @@ const error = (location: string): Core.ErrorConstructor => ({
     detail: Error,
   ): void => {
     log(level, location, ...message, detail)
-    res.status(500).send({success: false})
+    res.status(500).send({ success: false })
   },
 })
-
 
 export default error

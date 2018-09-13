@@ -1,5 +1,5 @@
-import galleryDb from 'modules/db/gallery'
-import urlDb from 'modules/db/url'
+import galleryDb from '../../modules/db/gallery'
+import urlDb from '../../modules/db/url'
 
 export async function Delete(id: Core.Id) {
   const url = urlDb.get(id)

@@ -7,17 +7,11 @@
     "start": "npm-run-all -p start_server watch",
     "start_server": "nodemon --exec ts-node -- -r tsconfig-paths/register src/index.ts",
     "build_client": "webpack -p --webpack-config webpack.config.production.js",
-    "build_server": "tsc",
+    "build_server": "rm -rf ./dist && tsc && chmod +x ./dist/index.js",
     "build": "npm-run-all -p build_client build_server",
     "test": "jest --coverage",
     "watch": "webpack -w"
   },
-"_moduleAliases": {
-      "utils/": "dist/utils/",
-      "controller/": "dist/router/controller/",
-      "middleware/": "dist/router/middleware/",
-      "modules/": "dist/modules/"
-},
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -29,7 +23,6 @@
     "fs-extra": "^7.0.0",
     "jsonwebtoken": "^8.3.0",
     "mime-types": "^2.1.20",
-    "module-alias": "^2.1.0",
     "multer": "^1.3.1",
     "path": "^0.12.7",
     "redux-immutable": "^4.0.0",

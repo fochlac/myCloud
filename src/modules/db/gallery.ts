@@ -1,7 +1,7 @@
-import imageDb from 'modules/db/image'
-import initDb from 'utils/fileDb'
-import urlDb from 'modules/db/url'
-import { randomUrl } from 'utils/url'
+import imageDb from '../../modules/db/image'
+import initDb from '../../utils/fileDb'
+import urlDb from '../../modules/db/url'
+import { randomUrl } from '../../utils/url'
 
 class GalleryDb {
   db: Core.FileDb
@@ -85,7 +85,7 @@ class GalleryDb {
         [gallery.parent]: oldParent,
       })
     } else {
-      result = (await this.db.setMultiple({ [id]: { ...gallery, name, description } }))
+      result = await this.db.setMultiple({ [id]: { ...gallery, name, description } })
     }
     return Object.values(result).map((gallery: Core.BareGallery) => enrichGallery(gallery))
   }
@@ -122,7 +122,7 @@ class GalleryDb {
       }
       return Promise.reject(err)
     })
-    return Object.values(result).map(gallery => enrichGallery(gallery))
+    return Object.values(result).map((gallery: Core.BareGallery) => enrichGallery(gallery))
   }
 }
 

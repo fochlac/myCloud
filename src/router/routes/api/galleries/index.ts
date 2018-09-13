@@ -1,12 +1,12 @@
 import { Router } from 'express'
-import { addToAccessMap } from 'utils/jwt'
-import { checkGalleryAccessToken, hasGalleryAccessToken } from 'middleware/authentication'
-import error from 'utils/error'
-import gallery from 'controller/gallery'
+import { addToAccessMap } from '../../../../utils/jwt'
+import { checkGalleryAccessToken, hasGalleryAccessToken } from '../../../middleware/authentication'
+import error from '../../../../utils/error'
+import gallery from '../../../controller/gallery'
 import images from './images'
 import urls from './urls'
-import galleryDb from 'modules/db/gallery'
-import { validate, regexpValidator } from 'middleware/validate'
+import galleryDb from '../../../../modules/db/gallery'
+import { validate, regexpValidator } from '../../../middleware/validate'
 const { routerError } = error('galleries-router')
 
 const galleries = Router()

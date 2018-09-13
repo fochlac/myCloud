@@ -1,9 +1,9 @@
 import { addToAccessMap, decodeJWT } from '../../utils/jwt'
 
-import galleryDb from 'modules/db/gallery'
-import imageDb from 'modules/db/image'
+import galleryDb from '../../modules/db/gallery'
+import imageDb from '../../modules/db/image'
 import log from '../../utils/logger'
-import urlDb from 'modules/db/url'
+import urlDb from '../../modules/db/url'
 
 function extractTokenFromRequest(request): string | null {
   if (request.headers.jwt) {

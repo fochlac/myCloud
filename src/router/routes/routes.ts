@@ -1,6 +1,6 @@
 import { Router, static as serveStatic } from 'express'
-import { authenticate, checkShortUrl } from 'middleware/authentication'
-import { serveIndex } from 'controller/index'
+import { authenticate, checkShortUrl } from '../middleware/authentication'
+import { serveIndex } from '../controller/index'
 
 import apiRouter from './api/index'
 import { join } from 'path'

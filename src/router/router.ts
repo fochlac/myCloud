@@ -5,7 +5,7 @@ import * as xssFilter from 'x-xss-protection'
 
 import { Router } from 'express'
 import routes from './routes/routes'
-import logger from 'utils/logger'
+import logger from '../utils/logger'
 
 const router = Router()
 

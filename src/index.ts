@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-require('module-alias/register')
 import './config'
 
 import * as express from 'express'

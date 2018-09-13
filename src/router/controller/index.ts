@@ -1,7 +1,7 @@
 import { readFile } from 'fs-extra'
 import { join } from 'path'
-import { ReadAll } from 'controller/gallery'
-import { sanitizeHtml } from 'utils/sanitize'
+import { ReadAll } from './gallery'
+import { sanitizeHtml } from '../../utils/sanitize'
 
 export async function serveIndex(req, res) {
   const file = await readFile(join(global.appRoot, 'static/index.html'), 'utf8')

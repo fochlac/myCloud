@@ -1,8 +1,8 @@
-import { createFolder, deleteFolder } from 'utils/fs'
+import { createFolder, deleteFolder } from '../../utils/fs'
 
-import error from 'utils/error'
-import galleryDb from 'modules/db/gallery'
-import { hasGalleryAccessToken } from 'middleware/authentication'
+import error from '../../utils/error'
+import galleryDb from '../../modules/db/gallery'
+import { hasGalleryAccessToken } from '../middleware/authentication'
 
 const location = 'controller/gallery.ts'
 const { internalError } = error(location)
