@@ -26,7 +26,7 @@ export default class ManageUrlDialog extends React.Component {
     ]
 
     return (
-      <Dialog onClose={onClose} header={<h4>Gallerie teilen</h4>}>
+      <Dialog onClose={onClose} header={<h4>Galerie teilen</h4>}>
         <div className={styles.body}>
           <h4 className={styles.head}>Links:</h4>
           <table className={styles.table}>

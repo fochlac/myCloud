@@ -43,6 +43,7 @@ class FileDb {
   async set(id, value) {
     this.content[id] = clone(value)
     await write(this.content, this.path)
+    logger(5, `updated element ${id} from db ${this.path}`)
     return clone(value)
   }
 
@@ -52,6 +53,7 @@ class FileDb {
       ...clone(map),
     }
     await write(this.content, this.path)
+    logger(5, `updated elements ${Object.keys(map).join(', ')} from db ${this.path}`)
     return clone(map)
   }
 

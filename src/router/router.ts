@@ -5,6 +5,7 @@ import * as xssFilter from 'x-xss-protection'
 
 import { Router } from 'express'
 import routes from './routes/routes'
+import logger from 'utils/logger'
 
 const router = Router()
 
@@ -16,7 +17,7 @@ router.use(compression())
 router.use(xssFilter())
 
 router.use((req, res, next) => {
-  console.log(req.originalUrl)
+  logger(7, `${req.method} call to ${req.originalUrl}`)
 
   next()
 })

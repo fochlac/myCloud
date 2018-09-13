@@ -86,7 +86,7 @@ export default class ZipDialog extends React.Component {
       case 'settings':
         return [
           <div key="1" className={styles.selectSize}>
-            <h4>Gallerie herunterladen</h4>
+            <h4>Galerie herunterladen</h4>
             <p>
               Bitte wählen sie die maximale Bildgröße aus, in der Sie die Bilder herunterladen
               wollen.

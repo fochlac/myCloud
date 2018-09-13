@@ -6,7 +6,7 @@ export default async function getImage(
   format?: 'webp',
 ): Promise<File> {
   const resizedImage = await sharp(global.storage + image.path)
-    .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 920)
+    .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
     .max()
     .toBuffer()
 

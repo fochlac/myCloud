@@ -21,6 +21,7 @@ export async function createFolder(name: string, parent: Core.Path): Promise<Cor
 export async function deleteFile(path: string) {
   if (await pathExists(path)) {
     await remove(path)
+    logger(6, 'successfully deleted file', path)
   }
 }
 
@@ -31,7 +32,5 @@ function cleanName(string) {
 }
 
 export async function deleteFolder(path: string) {
-  if (await pathExists(path)) {
-    return await remove(path)
-  }
+  return deleteFile(path)
 }

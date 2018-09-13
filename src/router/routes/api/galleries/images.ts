@@ -3,6 +3,7 @@ import { checkGalleryAccessToken } from 'middleware/authentication'
 import error from 'utils/error'
 import image from 'controller/images'
 import imageStore from 'middleware/images'
+import { validate, regexpValidator } from 'middleware/validate'
 
 const { routerError } = error('images-router')
 
@@ -10,8 +11,23 @@ const images = Router()
 
 images.post(
   '/:id/images',
+  validate(
+    {
+      params: { id: regexpValidator(/^[0-9]{1,200}$/) },
+    },
+    { nextOnFail: true },
+  ),
   checkGalleryAccessToken(['write']),
   imageStore.single('image'),
+  validate(
+    {
+      body: {
+        name: regexpValidator(/^.{1,100}$/),
+        description: regexpValidator(/^.{1,2000}$/, true),
+      },
+    },
+    { nextOnFail: false },
+  ),
   ({ params: { id }, body: { name, description }, file }, res) => {
     image
       .create({ gallery: id, name, description, file })
@@ -21,7 +37,22 @@ images.post(
 )
 images.put(
   '/:id/images/:imageId',
+  validate(
+    {
+      params: { id: regexpValidator(/^[0-9]{1,200}$/), imageId: regexpValidator(/^[0-9]{1,200}$/) },
+    },
+    { nextOnFail: true },
+  ),
   checkGalleryAccessToken(['write']),
+  validate(
+    {
+      body: {
+        name: regexpValidator(/^.{1,100}$/),
+        description: regexpValidator(/^.{1,2000}$/, true),
+      },
+    },
+    { nextOnFail: false },
+  ),
   imageStore.single('image'),
   ({ params: { imageId, id }, body: { name, description } }, res) => {
     image
@@ -32,6 +63,12 @@ images.put(
 )
 images.delete(
   '/:id/images/:imageId',
+  validate(
+    {
+      params: { id: regexpValidator(/^[0-9]{1,200}$/), imageId: regexpValidator(/^[0-9]{1,200}$/) },
+    },
+    { nextOnFail: true },
+  ),
   checkGalleryAccessToken(['write']),
   ({ params: { imageId, id } }, res) => {
     image

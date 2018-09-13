@@ -3,29 +3,47 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './Image.less'
 
-function Image({ image, size, src, title, width, height, background }) {
-  const url =
-    (image &&
-      `/api/images/${image.get('id')}?width=${width || size - 10}&height=${height || size - 10}`) ||
-    src
+class Image extends React.Component {
+  constructor() {
+    super()
 
-  return (
-    <div
-      className={styles.wrapper}
-      style={{ height: `${height || size}px`, width: `${width || size}px`, background }}
-    >
-      {image || src ? (
-        <img
-          style={{ maxHeight: `${height || size}px`, maxWidth: `${width || size}px` }}
-          className={styles.image}
-          title={title}
-          src={url}
-        />
-      ) : (
-        <span className={`fa fa-image ${styles.placeholder}`} />
-      )}
-    </div>
-  )
+    this.state = {
+      ready: false,
+    }
+  }
+
+  render() {
+    const { image, size, src, title, width, height, background } = this.props
+    const { ready } = this.state
+    const url =
+      (image &&
+        `/api/images/${image.get('id')}?width=${width || size - 10}&height=${height ||
+          size - 10}`) ||
+      src
+
+    const loadingCircleSize = Math.ceil(size / 100) || 1
+
+    return (
+      <div
+        className={styles.wrapper}
+        style={{ height: `${height || size}px`, width: `${width || size}px`, background }}
+      >
+        {image || src ? (
+          <img
+            style={{ maxHeight: `${height || size}px`, maxWidth: `${width || size}px` }}
+            className={this.state.ready ? styles.image : styles.hidden}
+            title={title}
+            src={url}
+            onLoad={() => this.setState({ ready: true })}
+          />
+        ) : (
+          <span className={`fa fa-image ${styles.placeholder}`} />
+        )}
+        {(image || src) &&
+          !ready && <span className={`fa fa-${loadingCircleSize}x fa-circle-o-notch fa-spin `} />}
+      </div>
+    )
+  }
 }
 
 Image.defaultProps = {

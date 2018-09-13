@@ -11,13 +11,13 @@ export default function GalleryHeader({ gallery, uploadImages, galleryActions, i
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <div />
-        <h3 className={styles.name}>{isRoot ? 'Gallerieübersicht' : gallery.get('name')}</h3>
+        <h3 className={styles.name}>{isRoot ? 'Galerieübersicht' : gallery.get('name')}</h3>
         <div />
       </div>
       {!isRoot && <p className={styles.description}>{gallery.get('description')}</p>}
       <ul className={styles.galleryControl}>
         {!isRoot && (
-          <li title="Gallerie downloaden" onClick={galleryActions.zip}>
+          <li title="Galerie downloaden" onClick={galleryActions.zip}>
             <span className="fa fa-lg fa-download" />
           </li>
         )}
@@ -30,25 +30,25 @@ export default function GalleryHeader({ gallery, uploadImages, galleryActions, i
             </li>
           )}
         {(canWrite || isRoot) && (
-          <li title="Gallerie erstellen" onClick={galleryActions.create}>
+          <li title="Galerie erstellen" onClick={galleryActions.create}>
             <span className="fa fa-lg fa-plus" />
           </li>
         )}
         {!isRoot &&
           canWrite && (
-            <li title="Gallerie berarbeiten" onClick={galleryActions.edit}>
+            <li title="Galerie berarbeiten" onClick={galleryActions.edit}>
               <span className="fa fa-lg fa-pencil" />
             </li>
           )}
         {!isRoot &&
           canWrite && (
-            <li title="Gallerie löschen" onClick={galleryActions.delete}>
+            <li title="Galerie löschen" onClick={galleryActions.delete}>
               <span className="fa fa-lg fa-trash" />
             </li>
           )}
         {!isRoot &&
           canWrite && (
-            <li title="Gallerie teilen" onClick={galleryActions.share}>
+            <li title="Galerie teilen" onClick={galleryActions.share}>
               <span className="fa fa-lg fa-share-square-o" />
             </li>
           )}

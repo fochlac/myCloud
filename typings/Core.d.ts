@@ -30,6 +30,18 @@ declare namespace Core {
     accessToken?: AccessUrl
   }
 
+  interface BareGallery {
+    name: string
+    id: Id
+    description?: string
+    path: Path
+    parent: Id
+    images: Id[]
+    urls: Id[]
+    ancestors: Id[]
+    children: Id[]
+  }
+
   interface Image {
     path: Path
     id: Id
@@ -56,7 +68,7 @@ declare namespace Core {
 
   class FileDb {
     set: (id: Id, value: any) => Promise<any>
-    setMultiple: (update: ObjectMap) => Promise<any[]>
+    setMultiple: (update: ObjectMap) => Promise<{ [id: string]: any }>
     nextIndex: Id
     delete: (id: Id) => Promise<Id>
     list: () => any[]
@@ -112,5 +124,22 @@ declare namespace Core {
   interface Dimensions {
     width?: number
     height?: number
+  }
+
+  interface ValidationInfo {
+    type: 'REGEXP' | 'ONEOF'
+    regexp?: RegExp
+    list?: string[]
+    allowUndefined: boolean
+  }
+
+  interface ValidationMap {
+    [property: string]: ValidationInfo
+  }
+
+  interface RequestValidationMap {
+    body?: ValidationMap
+    params?: ValidationMap
+    search?: ValidationMap
   }
 }

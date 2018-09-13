@@ -7,4 +7,8 @@ const api = Router()
 api.use('/galleries', galleries)
 api.use('/images', imageRouter)
 
+api.all('*', (req, res) => {
+  res.status(404).send({ success: false, reason: 'unknown_route' })
+})
+
 export default api

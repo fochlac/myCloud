@@ -31,7 +31,7 @@ class CreateGalleryCard extends React.Component {
     ]
     return (
       <div className={styles.card}>
-        <h3 className={styles.head}>Gallerie hinzufügen</h3>
+        <h3 className={styles.head}>Galerie hinzufügen</h3>
         <InputRow
           onChange={name => this.setState({ name })}
           defaultValue={this.state.name}

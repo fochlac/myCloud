@@ -55,7 +55,7 @@ export function checkGalleryAccessToken(level = ['read', 'write']) {
     if (!gallery) {
       res.status(400).send({
         success: false,
-        message: 'Gallerie nicht gefunden',
+        message: 'Galerie nicht gefunden',
       })
     } else {
       const accessToken = token && hasGalleryAccessToken(gallery, token.accessMap)
@@ -82,7 +82,7 @@ export function checkImageAccess(req, res, next) {
   if (!imageGallery) {
     res.status(400).send({
       success: false,
-      message: 'Gallerie nicht gefunden',
+      message: 'Galerie nicht gefunden',
     })
   } else {
     const accessToken = token && hasGalleryAccessToken(imageGallery, token.accessMap)

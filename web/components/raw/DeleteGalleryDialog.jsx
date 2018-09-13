@@ -19,11 +19,10 @@ export default function DeleteGalleryDialog({ onConfirm, onClose }) {
   ]
 
   return (
-    <Dialog onClose={onClose} header={<h4>Gallerie löschen</h4>}>
+    <Dialog onClose={onClose} header={<h4>Galerie löschen</h4>}>
       <div className={styles.body}>
         <p>
-          Sind Sie sich sicher, dass Sie diese Gallerie und alle enthaltenen Gallerien löschen
-          wollen?
+          Sind Sie sich sicher, dass Sie diese Galerie und alle enthaltenen Galerien löschen wollen?
         </p>
         <ButtonBar buttons={buttons} />
       </div>

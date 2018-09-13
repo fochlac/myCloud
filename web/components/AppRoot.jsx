@@ -12,20 +12,18 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 class App extends React.Component {
-  componentDidMount() {
-    this.props.loadGalleries()
-  }
-
   render() {
     const { app } = this.props
     const busy = app.get('busy').includes('APP_ROOT')
 
     if (busy) {
-      return <Router>
-        <DefaultPage>
-          <BusyScreen />
-        </DefaultPage>
-      </Router>
+      return (
+        <Router>
+          <DefaultPage>
+            <BusyScreen />
+          </DefaultPage>
+        </Router>
+      )
     }
 
     return (
@@ -33,7 +31,9 @@ class App extends React.Component {
         <Switch>
           <Route
             path="/gallery/:id/slideshow"
-            render={({ match: { params }, location: {search} }) => <Slideshow params={params} image={extractQuery(search, 'image')} />}
+            render={({ match: { params }, location: { search } }) => (
+              <Slideshow params={params} image={extractQuery(search, 'image')} />
+            )}
           />
           <Route
             path="/gallery/:id"
@@ -53,12 +53,12 @@ App.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  app: state.get('app')
+  app: state.get('app'),
 })
 
 export default connect(
   mapStateToProps,
-  (dispatch) =>( { loadGalleries: () => dispatch(loadGalleries()) }),
+  dispatch => ({ loadGalleries: () => dispatch(loadGalleries()) }),
 )(App)
 
 function extractQuery(search, param) {

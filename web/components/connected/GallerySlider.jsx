@@ -1,5 +1,6 @@
 import { deleteImage, updateImage } from 'STORE/actions'
 
+import { withRouter } from 'react-router-dom'
 import Image from 'RAW/Image'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -39,8 +40,20 @@ class GallerySlider extends React.Component {
     document.removeEventListener('keydown', this.handleKeys)
   }
 
+  componentDidUpdate() {
+    const {
+      state: { index },
+      props: { gallery },
+    } = this
+    window.history.replaceState(
+      '',
+      '',
+      `/gallery/${gallery.get('id')}/slideshow?image=${gallery.getIn(['images', index, 'id'])}`,
+    )
+  }
+
   handleKeys({ keyCode }) {
-    const { gallery } = this.props
+    const { gallery, history } = this.props
     const { index } = this.state
 
     switch (keyCode) {
@@ -51,6 +64,9 @@ class GallerySlider extends React.Component {
       case 39:
         if (index === gallery.get('images').size - 1) return
         this.setState({ index: index + 1 })
+        break
+      case 27:
+        history.push(`/gallery/${gallery.get('id')}`)
         break
     }
   }
@@ -95,7 +111,7 @@ class GallerySlider extends React.Component {
     const maxWidth = Math.floor((window.innerWidth - 50) / 25) * 25
 
     return (
-      <div className={`${styles.slide} ${additionalClass}`}>
+      <div key={image.get('id')} className={`${styles.slide} ${additionalClass}`}>
         {![SLIDE.NEW, SLIDE.OLD].includes(type) && (
           <Image image={image} width={maxWidth} height={maxHeight} background="black" />
         )}
@@ -122,12 +138,17 @@ function getSlideType(index, active) {
 
 GallerySlider.propTypes = {
   gallery: GalleryType.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   startImage: PropTypes.string,
   deleteImage: PropTypes.func.isRequired,
   updateImage: PropTypes.func.isRequired,
 }
 
-export default connect(
-  () => ({}),
-  { deleteImage, updateImage },
-)(GallerySlider)
+export default withRouter(
+  connect(
+    () => ({}),
+    { deleteImage, updateImage },
+  )(GallerySlider),
+)

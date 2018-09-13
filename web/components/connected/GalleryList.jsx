@@ -8,6 +8,7 @@ import {
   createUrl,
   deleteUrl,
 } from 'STORE/actions'
+import { withRouter } from 'react-router-dom'
 
 import CreateGalleryCard from 'RAW/CreateGalleryCard'
 import DnDLayer from 'RAW/DnDLayer'
@@ -54,6 +55,7 @@ class GalleryList extends React.Component {
       deleteGallery,
       createUrl,
       deleteUrl,
+      history,
     } = this.props
     const {
       dndImages,
@@ -104,7 +106,7 @@ class GalleryList extends React.Component {
         {showCreateGallery && (
           <Dialog
             onClose={() => this.setState({ showCreateGallery: false, editGallery: false })}
-            header={editGallery ? <h4>Gallerie bearbeiten</h4> : <h4>Gallerie erstellen</h4>}
+            header={editGallery ? <h4>Galerie bearbeiten</h4> : <h4>Galerie erstellen</h4>}
           >
             <CreateGalleryCard
               onClose={() => this.setState({ showCreateGallery: false, editGallery: false })}
@@ -123,6 +125,7 @@ class GalleryList extends React.Component {
             onConfirm={() => {
               deleteGallery(gallery.get('id'))
               this.setState({ showConfirmDelete: false })
+              history.push(gallery.get('parent') ? `/gallery/${gallery.get('parent')}` : '/')
             }}
           />
         )}
@@ -187,30 +190,35 @@ GalleryList.propTypes = {
   deleteGallery: PropTypes.func.isRequired,
   createUrl: PropTypes.func.isRequired,
   deleteUrl: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 }
 
 GalleryList.defaultProps = {
   gallery: Map(),
 }
 
-export default connect(
-  (state, ownProps) => ({
-    hasParent:
-      !!ownProps.gallery &&
-      !!ownProps.gallery.get('id') &&
-      !!state.getIn(['galleries', ownProps.gallery.get('id')]),
-  }),
-  {
-    deleteImage,
-    updateImage,
-    createGallery,
-    createImage,
-    updateGallery,
-    deleteGallery,
-    createUrl,
-    deleteUrl,
-  },
-)(GalleryList)
+export default withRouter(
+  connect(
+    (state, ownProps) => ({
+      hasParent:
+        !!ownProps.gallery &&
+        !!ownProps.gallery.get('id') &&
+        !!state.getIn(['galleries', ownProps.gallery.get('id')]),
+    }),
+    {
+      deleteImage,
+      updateImage,
+      createGallery,
+      createImage,
+      updateGallery,
+      deleteGallery,
+      createUrl,
+      deleteUrl,
+    },
+  )(GalleryList),
+)
 
 function listGalleriesFirst(a, b) {
   if (isGallery(a) === isGallery(b)) {
