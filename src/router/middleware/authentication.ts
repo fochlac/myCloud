@@ -130,7 +130,7 @@ export async function checkShortUrl(req: Express.Request, res: Express.Response,
 
   if (accessUrl) {
     await addToAccessMap(req, res, accessUrl)
-    req.token = { accessMap: [accessUrl] } as Core.WebToken
+    req.token = { accessMap: { [accessUrl.gallery]: accessUrl } } as Core.WebToken
   }
   next()
 }
