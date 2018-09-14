@@ -46,6 +46,7 @@ declare namespace Core {
     path: Path
     id: Id
     gallery: Id
+    created: string
     name: string
     description: string
   }

@@ -10,11 +10,12 @@ export default {
     await galleryDb.deleteImage(gallery, imageDb.get(id))
     return await imageDb.delete(id)
   },
-  create: async ({ gallery, name, description, file }) => {
+  create: async ({ gallery, name, description, file, created }) => {
     const image = await imageDb.create({
       gallery,
       name,
       description,
+      created,
       path: file.path.split(global.storage)[1],
     })
     await galleryDb.insertImage(gallery, image)

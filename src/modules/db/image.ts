@@ -21,9 +21,9 @@ class ImageDb {
     return newImage as Core.Image
   }
 
-  async create({ name, description = '', path, gallery }): Promise<Core.Image> {
+  async create({ name, description = '', path, gallery, created }): Promise<Core.Image> {
     const id = this.db.nextIndex
-    const Image = { name, description, path, gallery, id }
+    const Image = { name, description, path, gallery, id, created }
     await this.db.set(id, Image)
     return Image as Core.Image
   }

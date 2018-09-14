@@ -24,13 +24,14 @@ images.post(
       body: {
         name: regexpValidator(/^.{1,100}$/),
         description: regexpValidator(/^.{1,2000}$/, true),
+        created: regexpValidator(/^[0-9]{1,20}$/, true),
       },
     },
     { nextOnFail: false },
   ),
-  ({ params: { id }, body: { name, description }, file }, res) => {
+  ({ params: { id }, body: { name, description, created }, file }, res) => {
     image
-      .create({ gallery: id, name, description, file })
+      .create({ gallery: id, name, description, file, created })
       .then(image => res.status(200).send(image))
       .catch(routerError(2, res, 'error creating image', { parent: id, name, description }))
   },
