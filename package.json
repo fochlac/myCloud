@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "npm-run-all -p start_server watch",
-    "start_server": "nodemon --exec ts-node -- -r tsconfig-paths/register src/index.ts",
+    "start_server": "nodemon --exec ts-node -- src/index.ts",
     "build_client": "webpack -p --webpack-config webpack.config.production.js",
     "build_server": "rm -rf ./dist && tsc && chmod +x ./dist/index.js",
     "build": "npm-run-all -p build_client build_server",

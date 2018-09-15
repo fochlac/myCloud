@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { SET_BUSY } from '../actions';
+import { SET_BUSY } from '../actions'
 
 const appReducer = (app = Map, action) => {
   switch (action.type) {

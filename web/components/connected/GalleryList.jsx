@@ -25,15 +25,15 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import style from './GalleryList.less'
-import GalleryHeader from '../raw/GalleryHeader'
+import GalleryHeader from 'RAW/GalleryHeader'
+import { sortImages } from 'UTILS/sortImages'
+import uploadQueue from 'CONNECTED/UploadQueue'
 
 class GalleryList extends React.Component {
   constructor() {
     super()
 
     this.state = {
-      dndImages: [],
-      uploadQueue: Promise.resolve(),
       showCreateGallery: false,
       showManageUrl: false,
       editGallery: false,
@@ -56,9 +56,10 @@ class GalleryList extends React.Component {
       createUrl,
       deleteUrl,
       history,
+      queue,
+      busy,
     } = this.props
     const {
-      dndImages,
       showCreateGallery,
       editGallery,
       showConfirmDelete,
@@ -81,6 +82,7 @@ class GalleryList extends React.Component {
           uploadImages={this.uploadImages}
           isRoot={!gallery.get('id')}
           galleryActions={galleryActions}
+          busy={busy}
         />
         <div className={style.list}>
           {elements
@@ -99,9 +101,10 @@ class GalleryList extends React.Component {
                   />
                 ),
             )}
-          {dndImages.map(image => (
-            <ImageUploadCard key={image.id} image={image} />
-          ))}
+          {queue.get('images') &&
+            queue
+              .get('images')
+              .map(image => <ImageUploadCard key={image.get('id')} image={image} />)}
         </div>
         {showCreateGallery && (
           <Dialog
@@ -144,37 +147,15 @@ class GalleryList extends React.Component {
     )
   }
 
+  uploadImages(images) {
+    const { gallery, uploadImages } = this.props
+
+    uploadImages(images, gallery)
+  }
+
   handleEdit(image) {
     const { updateImage } = this.props
     updateImage(image)
-  }
-
-  uploadImages(images) {
-    const { gallery, createImage } = this.props
-    const { dndImages, uploadQueue } = this.state
-    this.setState({
-      dndImages: dndImages.concat(images.map(image => ({ ...image, isUploading: true }))),
-    })
-
-    const newQueue = images.reduce((promise, image) => {
-      return promise
-        .then(() => {
-          return createImage(image, gallery.get('id'))
-        })
-        .then(() => {
-          const dndImages = this.state.dndImages.filter(img => image.id !== img.id)
-          this.setState({ dndImages })
-        })
-        .catch(() => {
-          const dndImages = this.state.dndImages.map(
-            img =>
-              image.id === img.id ? { ...img, uploadingFailed: true, isUploading: false } : img,
-          )
-          this.setState({ dndImages })
-        })
-    }, uploadQueue)
-
-    this.setState({ uploadQueue: newQueue })
   }
 }
 
@@ -193,36 +174,44 @@ GalleryList.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  uploadImages: PropTypes.func.isRequired,
+  queue: ImmuTypes.map,
+  busy: ImmuTypes.list,
 }
 
 GalleryList.defaultProps = {
   gallery: Map(),
+  queue: Map(),
 }
 
-export default withRouter(
-  connect(
-    (state, ownProps) => ({
-      hasParent:
-        !!ownProps.gallery &&
-        !!ownProps.gallery.get('id') &&
-        !!state.getIn(['galleries', ownProps.gallery.get('id')]),
-    }),
-    {
-      deleteImage,
-      updateImage,
-      createGallery,
-      createImage,
-      updateGallery,
-      deleteGallery,
-      createUrl,
-      deleteUrl,
-    },
-  )(GalleryList),
+export default uploadQueue(
+  withRouter(
+    connect(
+      (state, ownProps) => ({
+        hasParent:
+          !!ownProps.gallery &&
+          !!ownProps.gallery.get('id') &&
+          !!state.getIn(['galleries', ownProps.gallery.get('id')]),
+        queue: ownProps.gallery && state.getIn(['uploadQueue', ownProps.gallery.get('id')]),
+        busy: state.getIn(['app', 'busy']),
+      }),
+      {
+        deleteImage,
+        updateImage,
+        createGallery,
+        createImage,
+        updateGallery,
+        deleteGallery,
+        createUrl,
+        deleteUrl,
+      },
+    )(GalleryList),
+  ),
 )
 
 function listGalleriesFirst(a, b) {
   if (isGallery(a) === isGallery(b)) {
-    return 0
+    return isGallery(a) ? 0 : sortImages(a, b)
   }
   return isGallery(a) ? -1 : 1
 }

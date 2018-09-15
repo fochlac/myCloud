@@ -21,7 +21,7 @@ class Image extends React.Component {
           size - 10}`) ||
       src
 
-    const loadingCircleSize = Math.ceil(size / 100) || 1
+    const loadingCircleSize = Math.ceil((width + height || size) / 300) || 1
 
     return (
       <div

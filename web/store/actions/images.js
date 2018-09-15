@@ -40,6 +40,10 @@ export function createImage(image, parent) {
         created: image.created,
       }),
     },
+    payload: {
+      image,
+      galleryId: parent,
+    },
   }
 }
 

@@ -20,7 +20,8 @@ export async function serveIndex(req, res) {
                   app:{
                     busy: []
                   },
-                  galleries:${sanitizeHtml(JSON.stringify(galleries))}
+                  galleries:${sanitizeHtml(JSON.stringify(galleries))},
+                  uploadQueue: {},
                 }
           </script>`,
     ),
