@@ -14,7 +14,7 @@ const updateQueueReducer = (updateQueue = Map, action) => {
       } else if (action.status === FAILURE) {
         const position = updateQueue
           .getIn([action.payload.galleryId, 'images'])
-          .findIndex(image => image.get('id') === action.payload.image.get.id)
+          .findIndex(image => image.get('id') === action.payload.image.id)
         updateQueue = updateQueue.updateIn(
           [action.payload.galleryId, 'images', position],
           image => {

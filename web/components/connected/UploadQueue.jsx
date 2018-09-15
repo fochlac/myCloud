@@ -21,7 +21,8 @@ export default function uploadQueue(Component) {
       const { queue, updateQueue, createImage } = this.props
 
       let galleryQueue =
-        queue.get(gallery.get('id')) || fromJS({ promise: Promise.resolve(), images: [] })
+        (queue && queue.get(gallery.get('id'))) ||
+        fromJS({ promise: Promise.resolve(), images: [] })
 
       galleryQueue = galleryQueue.set(
         'images',
