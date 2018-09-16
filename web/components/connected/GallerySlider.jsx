@@ -23,7 +23,10 @@ class GallerySlider extends React.Component {
 
     const index =
       props.startImage &&
-      props.gallery.get('images').findIndex(image => image.get('id') === props.startImage)
+      props.gallery
+        .get('images')
+        .sort(sortImages)
+        .findIndex(image => image.get('id') === props.startImage)
 
     this.state = {
       index: (index !== -1 && index) || 0,
