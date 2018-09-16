@@ -1,12 +1,13 @@
 import { deleteImage, updateImage } from 'STORE/actions'
 
-import { withRouter } from 'react-router-dom'
+import { GalleryType } from '../../types/api-types'
 import Image from 'RAW/Image'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { sortImages } from 'UTILS/sortImages'
 import styles from './GallerySlider.less'
-import { GalleryType } from '../../types/api-types'
+import { withRouter } from 'react-router-dom'
 
 export const SLIDE = {
   ACTIVE: 'ACTIVE',
@@ -88,6 +89,7 @@ class GallerySlider extends React.Component {
         <div className={styles.imageWrapper}>
           {gallery
             .get('images')
+            .sort(sortImages)
             .map((image, slide) =>
               this.renderSlide({ image: image, type: getSlideType(slide, index) }),
             )}
