@@ -32,6 +32,7 @@ export default class DefaultPage extends React.Component {
             </div>
           )}
           <h3 className={style.name}>Gallery</h3>
+          <LoginButton />
         </div>
         <div className={`${style.content} ${additionalClass}`}>{children}</div>
       </div>

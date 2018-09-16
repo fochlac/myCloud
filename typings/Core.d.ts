@@ -17,6 +17,20 @@ declare namespace Core {
   type Path = string
   type Id = string
 
+  interface User {
+    name: string
+    id: Id
+    urls: AccessUrl[]
+  }
+
+  interface RawUser {
+    name: string
+    id: Id
+    hash: string
+    salt: string
+    urls: Id[]
+  }
+
   interface Gallery {
     name: string
     id: Id
@@ -109,6 +123,16 @@ declare namespace Core {
     create: (rawAccessUrl: object) => Promise<AccessUrl>
   }
 
+  class UserDb {
+    db: FileDb
+    get: (id: Id) => RawUser
+    list: () => RawUser[]
+    find: (key: string, value: any) => RawUser[]
+    delete: (id: Id) => Promise<Id>
+    update: (rawUser: object) => Promise<RawUser>
+    create: (rawUser: object) => Promise<RawUser>
+  }
+
   interface RawGallery {
     name: string
     id?: Id
@@ -118,6 +142,7 @@ declare namespace Core {
 
   interface WebToken {
     accessMap: AccessMap
+    user?: Id
     iss?: string
     iat?: number
   }

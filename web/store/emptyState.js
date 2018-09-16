@@ -6,4 +6,5 @@ export default Map({
     busy: List(),
   }),
   uploadQueue: Map(),
+  user: Map(),
 })

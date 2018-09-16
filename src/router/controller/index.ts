@@ -21,6 +21,7 @@ export async function serveIndex(req, res) {
                     busy: []
                   },
                   galleries:${sanitizeHtml(JSON.stringify(galleries))},
+                  user:${req.user ? sanitizeHtml(JSON.stringify(req.user)) : '{}'},
                   uploadQueue: {},
                 }
           </script>`,

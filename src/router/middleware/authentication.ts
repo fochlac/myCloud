@@ -2,8 +2,10 @@ import { addToAccessMap, decodeJWT } from '../../utils/jwt'
 
 import galleryDb from '../../modules/db/gallery'
 import imageDb from '../../modules/db/image'
+import userDb from '../../modules/db/user'
 import log from '../../utils/logger'
 import urlDb from '../../modules/db/url'
+import { enrichUser } from '../controller/user'
 
 function extractTokenFromRequest(request): string | null {
   if (request.headers.jwt) {
@@ -33,6 +35,9 @@ export async function authenticate(req, res, next): Promise<void> {
       const parsedToken = await decodeJWT(token!)
       req.token = parsedToken
       req.authenticated = true
+      if (req.token.user) {
+        req.user = enrichUser(userDb.get(req.token.user))
+      }
     } catch (err) {
       log(2, 'error validating jwt', err)
       req.authenticated = false

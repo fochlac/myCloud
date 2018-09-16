@@ -31,21 +31,47 @@ export function decodeJWT(token: string): Promise<Core.WebToken> {
   })
 }
 
-const newToken:Core.WebToken = {
-  accessMap: {}
+const newToken: Core.WebToken = {
+  accessMap: {},
 }
 
-export async function addToAccessMap(req: Express.Request, res: Express.Response, accessUrl: Core.AccessUrl) {
+export async function addToAccessMap(
+  req: Express.Request,
+  res: Express.Response,
+  accessUrl: Core.AccessUrl,
+) {
   let baseToken = req.token || newToken
   delete baseToken.iss
   delete baseToken.iat
 
   const token = await createJWT({
-      ...baseToken,
-      accessMap: {
-        ...baseToken.accessMap,
-        [accessUrl.gallery]: accessUrl,
-      }
-    })
-  res.cookie('jwt', token, { secure: false, httpOnly: true, expires: new Date(Date.now() + 1000 * 3600 * 24 * 7) })
+    ...baseToken,
+    accessMap: {
+      ...baseToken.accessMap,
+      [accessUrl.gallery]: accessUrl,
+    },
+  })
+  res.cookie('jwt', token, jwtCookieOptions)
+}
+
+export async function createUserToken(
+  req: Express.Request,
+  res: Express.Response,
+  user: Core.User,
+) {
+  const token = await createJWT({
+    user: user.id,
+    accessMap: user.urls.reduce((accessMap, url) => {
+      accessMap[url.gallery] = url
+      return accessMap
+    }, {}),
+  })
+
+  res.cookie('jwt', token, jwtCookieOptions)
+}
+
+const jwtCookieOptions = {
+  secure: false,
+  httpOnly: true,
+  expires: new Date(Date.now() + 1000 * 3600 * 24 * 31),
 }
