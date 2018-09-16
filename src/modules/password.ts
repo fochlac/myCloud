@@ -1,6 +1,7 @@
+import * as crypto from 'crypto'
+
 import log from '../utils/logger'
 import userDb from './db/user'
-import crypto from 'crypto'
 
 const conf = {
   iterations: 20000,
@@ -48,6 +49,7 @@ export async function createUserHash(password: string): Promise<{ salt: string; 
 export async function verifyUser({ password, name }) {
   const user = userDb.find('name', name)[0]
   if (!user) {
+    console.log('rejected')
     return Promise.reject({ status: 400, type: 'BAD_USER' })
   }
   return generateHash(password, user.salt).then(

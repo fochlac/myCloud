@@ -1,5 +1,5 @@
 import Image from './Image'
-import ImmuTypes from 'immutable-prop-types'
+import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './Card.less'

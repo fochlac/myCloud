@@ -1,5 +1,7 @@
 import React from 'react'
 import styles from './InputRow.less'
+let index = 0
+
 class InputRow extends React.Component {
   constructor(props) {
     super()
@@ -11,6 +13,7 @@ class InputRow extends React.Component {
     }
     this.handleInput = this.handleInput.bind(this)
     this.handleBlur = this.handleBlur.bind(this)
+    this.id = `input_${index++}`
   }
 
   handleInput({ target }) {
@@ -49,7 +52,7 @@ class InputRow extends React.Component {
       required,
       userInterface,
       autoComplete,
-      id,
+      id = this.id,
       label,
       type,
       valid,
@@ -92,7 +95,6 @@ class InputRow extends React.Component {
 
 InputRow.defaultProps = {
   type: 'text',
-  id: `input_${Math.floor(Date.now() * Math.random())}`,
   required: false,
   className: styles.fullWidth,
   userInterface: /.*/,

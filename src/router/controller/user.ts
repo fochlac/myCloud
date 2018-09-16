@@ -1,6 +1,7 @@
-import { createUserHash, verifyUser } from '../../modules/crypto'
-import userDb from '../../modules/db/user'
+import { createUserHash, verifyUser } from '../../modules/password'
+
 import urlDb from '../../modules/db/url'
+import userDb from '../../modules/db/user'
 
 export async function Create({ name, password, token }: loginData): Promise<Core.User> {
   const users = userDb.find('name', name)

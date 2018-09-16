@@ -1,7 +1,7 @@
 import Card from './Card'
+import ImmuTypes from 'react-immutable-proptypes'
 import { Map } from 'immutable'
 import PropTypes from 'prop-types'
-import ImmuTypes from 'immutable-prop-types'
 import React from 'react'
 import styles from './ImageUploadCard.less'
 

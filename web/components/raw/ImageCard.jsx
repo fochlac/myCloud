@@ -1,5 +1,5 @@
 import Card from './Card'
-import ImmuTypes from 'immutable-prop-types'
+import ImmuTypes from 'react-immutable-proptypes'
 import { Link } from 'react-router-dom'
 import { Map } from 'immutable'
 import PropTypes from 'prop-types'

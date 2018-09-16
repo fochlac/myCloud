@@ -1,10 +1,9 @@
-import { Router } from 'express'
-import error from '../../../utils/error'
-import getImage from '../../../utils/image'
-import imageDb from '../../../modules/db/image'
+import { Create, login } from '../../controller/user'
 import { regexpValidator, validate } from '../../middleware/validate'
-import { login, Create } from '../../controller/user'
+
+import { Router } from 'express'
 import { createUserToken } from '../../../utils/jwt'
+import error from '../../../utils/error'
 
 const { routerError } = error('user-router')
 
@@ -29,9 +28,9 @@ user.post(
       } = req
       const user = await Create({ name, password, token })
       await createUserToken(req, res, user)
-      res.status(200).send({ success: true })
+      res.status(200).send(user)
     } catch (error) {
-      routerError(3, res, 'error creating user')
+      routerError(3, res, 'error creating user')(error)
     }
   },
 )
@@ -55,9 +54,9 @@ user.post(
       } = req
       const user = await login({ name, password, token })
       await createUserToken(req, res, user)
-      res.status(200).send({ success: true })
+      res.status(200).send(user)
     } catch (error) {
-      routerError(3, res, 'error logging in user')
+      routerError(3, res, 'error logging in user')(error)
     }
   },
 )

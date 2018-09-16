@@ -1,33 +1,33 @@
 import {
   createGallery,
-  deleteImage,
-  updateImage,
   createImage,
-  updateGallery,
-  deleteGallery,
   createUrl,
+  deleteGallery,
+  deleteImage,
   deleteUrl,
+  updateGallery,
+  updateImage,
 } from 'STORE/actions'
-import { withRouter } from 'react-router-dom'
 
 import CreateGalleryCard from 'RAW/CreateGalleryCard'
+import DeleteGalleryDialog from 'RAW/DeleteGalleryDialog'
+import Dialog from 'RAW/Dialog'
 import DnDLayer from 'RAW/DnDLayer'
 import GalleryCard from 'RAW/GalleryCard'
-import ZipDialog from 'RAW/ZipDialog'
+import GalleryHeader from 'RAW/GalleryHeader'
 import ImageCard from 'RAW/ImageCard'
-import DeleteGalleryDialog from 'RAW/DeleteGalleryDialog'
-import ManageUrlDialog from 'RAW/ManageUrlDialog'
-import Dialog from 'RAW/Dialog'
 import ImageUploadCard from 'RAW/ImageUploadCard'
-import ImmuTypes from 'immutable-prop-types'
+import ImmuTypes from 'react-immutable-proptypes'
+import ManageUrlDialog from 'RAW/ManageUrlDialog'
 import { Map } from 'immutable'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ZipDialog from 'RAW/ZipDialog'
 import { connect } from 'react-redux'
-import style from './GalleryList.less'
-import GalleryHeader from 'RAW/GalleryHeader'
 import { sortImages } from 'UTILS/sortImages'
+import style from './GalleryList.less'
 import uploadQueue from 'CONNECTED/UploadQueue'
+import { withRouter } from 'react-router-dom'
 
 class GalleryList extends React.Component {
   constructor() {

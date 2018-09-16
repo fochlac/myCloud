@@ -1,10 +1,11 @@
 import BusyScreen from 'RAW/BusyScreen'
 import DefaultPage from 'RAW/DefaultPage'
-import PageMissing from 'RAW/PageMissing'
 import GalleryList from 'CONNECTED/GalleryList'
-import ImmuTypes from 'immutable-prop-types'
+import ImmuTypes from 'react-immutable-proptypes'
+import PageMissing from 'RAW/PageMissing'
 import React from 'react'
 import { connect } from 'react-redux'
+
 export const GALLERY = 'GALLERY'
 
 export class Gallery extends React.Component {

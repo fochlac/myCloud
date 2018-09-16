@@ -1,5 +1,5 @@
+import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
-import ImmuTypes from 'immutable-prop-types'
 
 export const AccessTokenType = ImmuTypes.shape({
   url: PropTypes.string.isRequired,

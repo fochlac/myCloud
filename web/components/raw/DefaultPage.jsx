@@ -3,6 +3,7 @@ import './BaseStyle.less'
 import { removeResizeFocus, resizeFocus } from 'UTILS/resizeFocus.js'
 
 import { Link } from 'react-router-dom'
+import LoginButton from 'CONNECTED/LoginButton'
 import PropTypes from 'prop-types'
 import React from 'react'
 import style from './DefaultPage.less'

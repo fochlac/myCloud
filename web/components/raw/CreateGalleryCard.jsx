@@ -1,9 +1,9 @@
+import ButtonBar from 'RAW/ButtonBar'
+import ImmuTypes from 'react-immutable-proptypes'
+import InputRow from './InputRow'
+import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './CreateGalleryCard.less'
-import InputRow from './InputRow'
-import ImmuTypes from 'immutable-prop-types'
-import PropTypes from 'prop-types'
-import ButtonBar from 'RAW/ButtonBar'
 
 class CreateGalleryCard extends React.Component {
   constructor(props) {

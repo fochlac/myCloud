@@ -56,6 +56,7 @@ export const apiMiddleware = store => next => action => {
         if (action.enqueue) {
           store.dispatch(action.enqueue(data))
         }
+        return data
       })
       .catch(err => {
         console.log(err)
@@ -63,6 +64,7 @@ export const apiMiddleware = store => next => action => {
         action.data = err
         action.status = FAILURE
         store.dispatch(action)
+        return Promise.reject(err)
       })
   } else {
     return next(action)

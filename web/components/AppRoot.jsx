@@ -1,15 +1,15 @@
 import { Redirect, Route, BrowserRouter as Router, Switch } from 'react-router-dom'
-import { loadGalleries } from 'STORE/actions.js'
-import ImmuTypes from 'immutable-prop-types'
-import PropTypes from 'prop-types'
 
-import Gallery from './views/Gallery'
-import Slideshow from './views/Slideshow'
-import Dashboard from './views/Dashboard'
 import BusyScreen from 'RAW/BusyScreen'
+import Dashboard from './views/Dashboard'
 import DefaultPage from 'RAW/DefaultPage'
+import Gallery from './views/Gallery'
+import ImmuTypes from 'react-immutable-proptypes'
+import PropTypes from 'prop-types'
 import React from 'react'
+import Slideshow from './views/Slideshow'
 import { connect } from 'react-redux'
+import { loadGalleries } from 'STORE/actions.js'
 
 class App extends React.Component {
   render() {

@@ -1,12 +1,13 @@
+import { checkGalleryAccessToken, hasGalleryAccessToken } from '../../../middleware/authentication'
+import { regexpValidator, validate } from '../../../middleware/validate'
+
 import { Router } from 'express'
 import { addToAccessMap } from '../../../../utils/jwt'
-import { checkGalleryAccessToken, hasGalleryAccessToken } from '../../../middleware/authentication'
 import error from '../../../../utils/error'
 import gallery from '../../../controller/gallery'
+import galleryDb from '../../../../modules/db/gallery'
 import images from './images'
 import urls from './urls'
-import galleryDb from '../../../../modules/db/gallery'
-import { validate, regexpValidator } from '../../../middleware/validate'
 const { routerError } = error('galleries-router')
 
 const galleries = Router()
@@ -88,7 +89,6 @@ galleries.post(
       if (!parent) {
         await addToAccessMap(req, res, galleries[0].urls[0])
         galleries[0].accessToken = galleries[0].urls[0]
-        console.log('called', galleries[0].urls[0])
       } else {
         galleries = galleries.map(gallery => ({ ...gallery, accessToken }))
       }

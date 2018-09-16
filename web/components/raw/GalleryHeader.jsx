@@ -1,8 +1,8 @@
-import ImmuTypes from 'immutable-prop-types'
+import ImageUploader from 'RAW/ImageUploader'
+import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './GalleryHeader.less'
-import ImageUploader from 'RAW/ImageUploader'
 
 const defaultState = {
   current: 0,

@@ -1,18 +1,24 @@
-import ImmuTypes from 'immutable-prop-types'
+import { loadGalleries, login, register } from 'STORE/actions'
+
+import ButtonBar from 'RAW/ButtonBar'
+import Dialog from 'RAW/Dialog'
+import ImmuTypes from 'react-immutable-proptypes'
+import InputRow from 'RAW/InputRow'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import styles from './LoginButton.less'
-import { login, register } from 'STORE/actions'
-import Dialog from 'RAW/Dialog'
-import InputRow from 'RAW/InputRow'
-import ButtonBar from 'RAW/ButtonBar'
 import { generateHash } from '../../utils/crypto'
+import styles from './LoginButton.less'
 
 const initialState = {
   showLogin: false,
   name: '',
   password: '',
+}
+
+const ui = {
+  name: /^[a-zA-Z0-9]{5,20}$/,
+  password: /^.{5,200}$/,
 }
 
 class LoginButton extends React.Component {
@@ -43,6 +49,7 @@ class LoginButton extends React.Component {
   }
 
   renderLogin() {
+    const { error } = this.state
     const buttons = [
       { type: 'secondary', text: 'Abbrechen', onClick: () => this.setState(initialState) },
       { text: 'Anmelden', onClick: this.login },
@@ -50,12 +57,20 @@ class LoginButton extends React.Component {
     ]
 
     return (
-      <Dialog header="Anmeldung">
+      <Dialog header="Anmeldung" onClose={() => this.setState(initialState)}>
         <div className={styles.wrapper}>
-          <InputRow label="Name" onChange={name => this.setState({ name })} />
+          {error && (
+            <div className={styles.error}>Fehler bei der Anmeldung. Bitte versuche es erneut.</div>
+          )}
+          <InputRow
+            label="Name"
+            onChange={name => this.setState({ name })}
+            userInterface={ui.name}
+          />
           <InputRow
             label="Passwort"
             type="password"
+            userInterface={ui.password}
             onChange={password => this.setState({ password })}
           />
           <ButtonBar buttons={buttons} />
@@ -67,13 +82,25 @@ class LoginButton extends React.Component {
   async login() {
     let { name, password } = this.state
     password = await generateHash(password)
-    this.props.login({ name, password })
+    this.props
+      .login({ name, password })
+      .then(() => {
+        this.setState(initialState)
+        this.props.loadGalleries()
+      })
+      .catch(() => this.setState({ error: true }))
   }
 
   async register() {
     let { name, password } = this.state
     password = await generateHash(password)
-    this.props.register({ name, password })
+    this.props
+      .register({ name, password })
+      .then(() => {
+        this.setState(initialState)
+        this.props.loadGalleries()
+      })
+      .catch(() => this.setState({ error: true }))
   }
 }
 
@@ -83,6 +110,7 @@ LoginButton.propTypes = {
     id: PropTypes.string,
     urls: ImmuTypes.list,
   }),
+  loadGalleries: PropTypes.func,
   login: PropTypes.func,
   register: PropTypes.func,
 }
@@ -91,5 +119,5 @@ export default connect(
   state => ({
     user: state.get('user'),
   }),
-  { login, register },
+  { login, register, loadGalleries },
 )(LoginButton)

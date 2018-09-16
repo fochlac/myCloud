@@ -1,9 +1,10 @@
+import { createImage, updateQueue } from 'STORE/actions'
+
+import ImmuTypes from 'react-immutable-proptypes'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { fromJS } from 'immutable'
-import { updateQueue, createImage } from 'STORE/actions'
-import ImmuTypes from 'immutable-prop-types'
-import PropTypes from 'prop-types'
 
 const propTypes = {
   queue: ImmuTypes.map.isRequired,

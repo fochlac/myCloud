@@ -1,8 +1,8 @@
 import Card from './Card'
+import ImmuTypes from 'react-immutable-proptypes'
 import { Link } from 'react-router-dom'
 import { Map } from 'immutable'
 import React from 'react'
-import ImmuTypes from 'immutable-prop-types'
 
 function GalleryCard({ gallery }) {
   return (

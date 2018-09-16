@@ -1,7 +1,7 @@
 import BusyScreen from 'RAW/BusyScreen'
 import DefaultPage from 'RAW/DefaultPage'
 import GallerySlider from 'CONNECTED/GallerySlider'
-import ImmuTypes from 'immutable-prop-types'
+import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
