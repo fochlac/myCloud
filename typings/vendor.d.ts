@@ -15,6 +15,7 @@ declare namespace Express {
     authenticated: boolean
     path: string
     accessToken: Core.AccessUrl
+    user?: Core.User
   }
 
   export interface Response {

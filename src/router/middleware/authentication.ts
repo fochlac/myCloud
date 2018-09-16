@@ -1,11 +1,11 @@
 import { addToAccessMap, decodeJWT } from '../../utils/jwt'
 
+import { enrichUser } from '../controller/user'
 import galleryDb from '../../modules/db/gallery'
 import imageDb from '../../modules/db/image'
-import userDb from '../../modules/db/user'
 import log from '../../utils/logger'
 import urlDb from '../../modules/db/url'
-import { enrichUser } from '../controller/user'
+import userDb from '../../modules/db/user'
 
 function extractTokenFromRequest(request): string | null {
   if (request.headers.jwt) {
@@ -134,6 +134,9 @@ export async function checkShortUrl(req: Express.Request, res: Express.Response,
   const accessUrl = urlDb.find('url', req.path)[0]
 
   if (accessUrl) {
+    if (req.user) {
+      userDb.addUserUrl(req.user.id, accessUrl)
+    }
     await addToAccessMap(req, res, accessUrl)
     req.token = { accessMap: { [accessUrl.gallery]: accessUrl } } as Core.WebToken
   }

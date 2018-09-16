@@ -23,6 +23,17 @@ class UserDb {
     return newUser as Core.RawUser
   }
 
+  async addUserUrl(id, url) {
+    const user = this.get(id)
+
+    if (user.urls.includes(url.id)) {
+      return user
+    }
+
+    const newUser = await this.db.set(id, { ...user, urls: [...user.urls, url.id] })
+    return newUser as Core.RawUser
+  }
+
   async create({ urls, name, hash, salt }): Promise<Core.RawUser> {
     const id = this.db.nextIndex
     const User = await this.db.set(id, { urls, name, hash, id, salt })
