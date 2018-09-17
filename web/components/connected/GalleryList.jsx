@@ -231,6 +231,9 @@ function isGallery(element) {
 function getGalleryImage(gallery, galleries) {
   return (
     gallery.get('images')[0] ||
-    gallery.children.map(id => galleries.getIn([id, 'images'])).flatten(0)[0]
+    gallery
+      .get('children')
+      .map(id => galleries.getIn([id, 'images']))
+      .flatten(0)[0]
   )
 }
