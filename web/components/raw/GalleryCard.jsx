@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 import { Map } from 'immutable'
 import React from 'react'
 
-function GalleryCard({ gallery }) {
+function GalleryCard({ gallery, image }) {
   return (
     <Link to={`/gallery/${gallery.get('id')}`}>
-      <Card image={gallery.getIn(['images', 0])}>
+      <Card image={image}>
         <p title={gallery.get('name')}>{gallery.get('name')}</p>
       </Card>
     </Link>

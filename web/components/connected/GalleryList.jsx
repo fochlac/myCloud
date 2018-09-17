@@ -58,6 +58,7 @@ class GalleryList extends React.Component {
       history,
       queue,
       busy,
+      galleries,
     } = this.props
     const {
       showCreateGallery,
@@ -91,7 +92,11 @@ class GalleryList extends React.Component {
             .map(
               element =>
                 isGallery(element) ? (
-                  <GalleryCard key={'gal_' + element.get('id')} gallery={element} />
+                  <GalleryCard
+                    key={'gal_' + element.get('id')}
+                    gallery={element}
+                    image={getGalleryImage(element, galleries)}
+                  />
                 ) : (
                   <ImageCard
                     key={'img_' + element.get('id')}
@@ -162,6 +167,7 @@ class GalleryList extends React.Component {
 GalleryList.propTypes = {
   elements: ImmuTypes.list.isRequired,
   gallery: ImmuTypes.map,
+  galleries: ImmuTypes.map,
   hasParent: PropTypes.bool,
   createGallery: PropTypes.func.isRequired,
   createImage: PropTypes.func.isRequired,
@@ -180,6 +186,7 @@ GalleryList.propTypes = {
 }
 
 GalleryList.defaultProps = {
+  galleries: Map(),
   gallery: Map(),
   queue: Map(),
 }
@@ -194,6 +201,7 @@ export default uploadQueue(
           !!state.getIn(['galleries', ownProps.gallery.get('id')]),
         queue: ownProps.gallery && state.getIn(['uploadQueue', ownProps.gallery.get('id')]),
         busy: state.getIn(['app', 'busy']),
+        galleries: state.get('galleries'),
       }),
       {
         deleteImage,
@@ -218,4 +226,11 @@ function listGalleriesFirst(a, b) {
 
 function isGallery(element) {
   return !!element.get('images')
+}
+
+function getGalleryImage(gallery, galleries) {
+  return (
+    gallery.get('images')[0] ||
+    gallery.children.map(id => galleries.getIn([id, 'images'])).flatten(0)[0]
+  )
 }

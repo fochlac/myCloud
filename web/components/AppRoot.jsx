@@ -40,7 +40,7 @@ class App extends React.Component {
             render={({ match: { params } }) => <Gallery params={params} />}
           />
           <Route path="/" exact render={() => <Dashboard />} />
-          <Redirect to="/" />
+          <Redirect to={app.get('startGallery') ? `/gallery/${app.get('startGallery')}` : '/'} />
         </Switch>
       </Router>
     )

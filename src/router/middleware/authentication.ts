@@ -137,8 +137,9 @@ export async function checkShortUrl(req: Express.Request, res: Express.Response,
     if (req.user) {
       userDb.addUserUrl(req.user.id, accessUrl)
     }
-    await addToAccessMap(req, res, accessUrl)
-    req.token = { accessMap: { [accessUrl.gallery]: accessUrl } } as Core.WebToken
+    const token = await addToAccessMap(req, res, accessUrl)
+    req.token = token
+    req.startGallery = accessUrl.gallery
   }
   next()
 }

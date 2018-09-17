@@ -16,6 +16,7 @@ declare namespace Express {
     path: string
     accessToken: Core.AccessUrl
     user?: Core.User
+    startGallery?: Core.Id
   }
 
   export interface Response {

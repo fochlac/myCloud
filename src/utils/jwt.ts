@@ -39,19 +39,22 @@ export async function addToAccessMap(
   req: Express.Request,
   res: Express.Response,
   accessUrl: Core.AccessUrl,
-) {
+): Promise<Core.WebToken> {
   let baseToken = req.token || newToken
   delete baseToken.iss
   delete baseToken.iat
 
-  const token = await createJWT({
+  const rawToken = {
     ...baseToken,
     accessMap: {
       ...baseToken.accessMap,
       [accessUrl.gallery]: accessUrl,
     },
-  })
+  }
+
+  const token = await createJWT(rawToken)
   res.cookie('jwt', token, jwtCookieOptions)
+  return rawToken
 }
 
 export async function createUserToken(

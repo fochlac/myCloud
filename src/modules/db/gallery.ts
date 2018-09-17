@@ -1,7 +1,7 @@
 import imageDb from '../../modules/db/image'
 import initDb from '../../utils/fileDb'
-import urlDb from '../../modules/db/url'
 import { randomUrl } from '../../utils/url'
+import urlDb from '../../modules/db/url'
 
 class GalleryDb {
   db: Core.FileDb
@@ -16,6 +16,7 @@ class GalleryDb {
 
     await Promise.all(gallery.children.map(id => this.delete(id)))
     await Promise.all(gallery.images.map(id => imageDb.delete(id)))
+    await Promise.all(gallery.urls.map(id => urlDb.delete(id)))
 
     if (parent) {
       parent.children = parent.children.filter(childId => id !== childId)

@@ -1,6 +1,6 @@
-import { readFile } from 'fs-extra'
-import { join } from 'path'
 import { ReadAll } from './gallery'
+import { join } from 'path'
+import { readFile } from 'fs-extra'
 import { sanitizeHtml } from '../../utils/sanitize'
 
 export async function serveIndex(req, res) {
@@ -18,7 +18,8 @@ export async function serveIndex(req, res) {
       `<script>
       window.defaultStore = {
                   app:{
-                    busy: []
+                    busy: [],
+                    ${req.startGallery ? `startGallery: ${req.startGallery},` : ''}
                   },
                   galleries:${sanitizeHtml(JSON.stringify(galleries))},
                   user:${req.user ? sanitizeHtml(JSON.stringify(req.user)) : '{}'},
