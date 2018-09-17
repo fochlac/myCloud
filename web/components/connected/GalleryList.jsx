@@ -233,8 +233,7 @@ function getGalleryImage(gallery, galleries) {
     gallery.getIn(['images', 0]) ||
     gallery
       .get('children')
-      .map(id => galleries.getIn([id, 'images']))
-      .flatten(0)
+      .flatMap(id => galleries.getIn([id, 'images']))
       .get(0)
   )
 }
