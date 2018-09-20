@@ -49,7 +49,6 @@ export async function createUserHash(password: string): Promise<{ salt: string; 
 export async function verifyUser({ password, name }) {
   const user = userDb.find('name', name)[0]
   if (!user) {
-    console.log('rejected')
     return Promise.reject({ status: 400, type: 'BAD_USER' })
   }
   return generateHash(password, user.salt).then(

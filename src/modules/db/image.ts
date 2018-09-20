@@ -14,16 +14,23 @@ class ImageDb {
     })
   }
 
-  async update({ name, description, id, gallery }) {
+  async update({ name, description, id }) {
     const Image = this.get(id)
 
     const newImage = await this.db.set(id, { ...Image, name, description })
     return newImage as Core.Image
   }
 
+  async modify({ id }) {
+    const Image = this.get(id)
+
+    const newImage = await this.db.set(id, { ...Image, lastModified: Date.now() })
+    return newImage as Core.Image
+  }
+
   async create({ name, description = '', path, gallery, created }): Promise<Core.Image> {
     const id = this.db.nextIndex
-    const Image = { name, description, path, gallery, id, created }
+    const Image = { name, description, path, gallery, id, created, lastModified: Date.now() }
     await this.db.set(id, Image)
     return Image as Core.Image
   }

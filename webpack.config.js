@@ -1,8 +1,9 @@
-const path = require('path'),
-  HtmlWebpackPlugin = require('html-webpack-plugin'),
-  webpack = require('webpack'),
-  ExtractTextPlugin = require('extract-text-webpack-plugin'),
-  ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: ['./web/index.js'],
@@ -17,7 +18,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: /(node_modules|static)/,
       },
       {
         test: /\.jsx$/,
@@ -74,14 +75,6 @@ module.exports = {
         loader: 'file-loader',
         exclude: /static/,
       },
-      {
-        test: /\.(json|png|ico|xml|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]',
-        },
-        type: 'javascript/auto',
-      },
     ],
   },
   resolve: {
@@ -98,6 +91,12 @@ module.exports = {
     },
   },
   plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: 'web/static/',
+        to: '',
+      },
+    ]),
     new ExtractTextPlugin({
       filename: 'styles.css',
     }),

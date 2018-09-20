@@ -1,9 +1,10 @@
+import { oneOfValidator, regexpValidator, validate } from '../../../middleware/validate'
+
 import { Router } from 'express'
 import { checkGalleryAccessToken } from '../../../middleware/authentication'
 import error from '../../../../utils/error'
 import image from '../../../controller/images'
 import imageStore from '../../../middleware/images'
-import { validate, regexpValidator } from '../../../middleware/validate'
 
 const { routerError } = error('images-router')
 
@@ -76,6 +77,29 @@ images.delete(
       .delete({ gallery: id, id: imageId })
       .then(imageId => res.status(200).send({ gallery: id, id: imageId }))
       .catch(routerError(2, res, 'error deleting image', { id: imageId }))
+  },
+)
+
+images.post(
+  '/:id/images/:imageId/rotate',
+  validate(
+    {
+      params: { id: regexpValidator(/^[0-9]{1,200}$/), imageId: regexpValidator(/^[0-9]{1,200}$/) },
+    },
+    { nextOnFail: true },
+  ),
+  checkGalleryAccessToken(['write']),
+  validate(
+    {
+      body: { direction: oneOfValidator(['left', 'right']) },
+    },
+    { nextOnFail: false },
+  ),
+  async ({ params: { imageId }, body: { direction } }, res) => {
+    image
+      .rotate({ id: imageId, direction })
+      .then(image => res.status(200).send(image))
+      .catch(routerError(2, res, 'error rotating image', { id: imageId, direction }))
   },
 )
 

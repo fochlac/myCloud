@@ -18,7 +18,7 @@ class Image extends React.Component {
     const url =
       (image &&
         `/api/images/${image.get('id')}?width=${width || size - 10}&height=${height ||
-          size - 10}`) ||
+          size - 10}&lastModified=${image.get('lastModified')}`) ||
       src
 
     const loadingCircleSize = Math.ceil((width + height || size) / 300) || 1

@@ -25,6 +25,21 @@ export function updateImage(image) {
   }
 }
 
+export const ROTATE_IMAGE = 'ROTATE_IMAGE'
+export function rotateImage(image, direction = 'right') {
+  return {
+    type: ROTATE_IMAGE,
+    status: INITIALIZED,
+    api: {
+      method: 'post',
+      url: `galleries/${image.get('gallery')}/images/${image.get('id')}/rotate`,
+      body: {
+        direction,
+      },
+    },
+  }
+}
+
 export const CREATE_IMAGE = 'CREATE_IMAGE'
 export function createImage(image, parent) {
   return {

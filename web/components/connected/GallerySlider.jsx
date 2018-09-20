@@ -1,11 +1,11 @@
-import { deleteImage, updateImage } from 'STORE/actions'
+import { GalleryType, ImageType } from '../../types/api-types'
+import { deleteImage, rotateImage, updateImage } from 'STORE/actions'
 
-import { GalleryType } from '../../types/api-types'
 import Image from 'RAW/Image'
+import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import { sortImages } from 'UTILS/sortImages'
 import styles from './GallerySlider.less'
 import { withRouter } from 'react-router-dom'
 
@@ -22,11 +22,7 @@ class GallerySlider extends React.Component {
     super()
 
     const index =
-      props.startImage &&
-      props.gallery
-        .get('images')
-        .sort(sortImages)
-        .findIndex(image => image.get('id') === props.startImage)
+      props.startImage && props.images.findIndex(image => image.get('id') === props.startImage)
 
     this.state = {
       index: (index !== -1 && index) || 0,
@@ -47,13 +43,20 @@ class GallerySlider extends React.Component {
   componentDidUpdate() {
     const {
       state: { index },
-      props: { gallery },
+      props: { gallery, images, history },
     } = this
-    window.history.replaceState(
-      '',
-      '',
-      `/gallery/${gallery.get('id')}/slideshow?image=${gallery.getIn(['images', index, 'id'])}`,
-    )
+
+    if (!images.getIn([index, 'id']) && images.size) {
+      this.setState({ index: images.size - 1 })
+    } else if (!images.getIn([index, 'id'])) {
+      history.push(`/gallery/${gallery.get('id')}/`)
+    } else {
+      window.history.replaceState(
+        '',
+        '',
+        `/gallery/${gallery.get('id')}/slideshow?image=${images.getIn([index, 'id'])}`,
+      )
+    }
   }
 
   handleKeys({ keyCode }) {
@@ -76,7 +79,7 @@ class GallerySlider extends React.Component {
   }
 
   render() {
-    const { gallery } = this.props
+    const { gallery, images } = this.props
     const { index } = this.state
 
     return (
@@ -90,14 +93,11 @@ class GallerySlider extends React.Component {
           </span>
         )}
         <div className={styles.imageWrapper}>
-          {gallery
-            .get('images')
-            .sort(sortImages)
-            .map((image, slide) =>
-              this.renderSlide({ image: image, type: getSlideType(slide, index) }),
-            )}
+          {images.map((image, slide) =>
+            this.renderSlide({ image: image, type: getSlideType(slide, index) }),
+          )}
         </div>
-        {index < gallery.get('images').size - 1 && (
+        {index < images.size - 1 && (
           <span
             onClick={() => this.setState({ index: index + 1 })}
             className={`${styles.button} ${styles.right}`}
@@ -111,7 +111,7 @@ class GallerySlider extends React.Component {
 
   renderSlide({ image, type }) {
     const additionalClass = [SLIDE.OLD, SLIDE.LAST].includes(type) ? styles.old : ''
-
+    const { deleteImage, rotateImage } = this.props
     const maxHeight = Math.floor((window.innerHeight - 48) / 25) * 25
     const maxWidth = Math.floor((window.innerWidth - 50) / 25) * 25
 
@@ -119,6 +119,13 @@ class GallerySlider extends React.Component {
       <div key={image.get('id')} className={`${styles.slide} ${additionalClass}`}>
         {![SLIDE.NEW, SLIDE.OLD].includes(type) && (
           <Image image={image} width={maxWidth} height={maxHeight} background="black" />
+        )}
+        {type === SLIDE.ACTIVE && (
+          <div className={styles.editBar}>
+            <span className="fa fa-trash fa-5x" onClick={() => deleteImage(image)} />
+            <span className="fa fa-undo fa-5x" onClick={() => rotateImage(image, 'left')} />
+            <span className="fa fa-repeat fa-5x" onClick={() => rotateImage(image)} />
+          </div>
         )}
       </div>
     )
@@ -143,6 +150,7 @@ function getSlideType(index, active) {
 
 GallerySlider.propTypes = {
   gallery: GalleryType.isRequired,
+  images: ImmuTypes.listOf(ImageType).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
@@ -154,6 +162,6 @@ GallerySlider.propTypes = {
 export default withRouter(
   connect(
     () => ({}),
-    { deleteImage, updateImage },
+    { deleteImage, updateImage, rotateImage },
   )(GallerySlider),
 )

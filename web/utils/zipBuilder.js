@@ -85,9 +85,8 @@ export default class ZipBuilder {
 }
 
 function loadImage(image, { size }) {
-  return fetch(`/api/images/${image.get('id')}?width=${size}&height=${size}`).then(res =>
-    res.blob(),
-  )
+  const query = size === 'raw' ? 'raw=raw' : 'width=${size}&height=${size}'
+  return fetch(`/api/images/${image.get('id')}?${query}`).then(res => res.blob())
 }
 
 function saveAs(objectUrl, name) {

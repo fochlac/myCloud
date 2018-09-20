@@ -1,10 +1,10 @@
-import Dialog from 'RAW/Dialog'
 import ButtonBar from 'RAW/ButtonBar'
+import Dialog from 'RAW/Dialog'
+import { GalleryType } from '../../types/api-types'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { GalleryType } from '../../types/api-types'
-import styles from './ZipDialog.less'
 import ZipBuilder from 'UTILS/zipBuilder'
+import styles from './ZipDialog.less'
 
 export default class ZipDialog extends React.Component {
   constructor() {
@@ -95,7 +95,7 @@ export default class ZipDialog extends React.Component {
               <option value="1280">HD 720p</option>
               <option value="1920">Full HD</option>
               <option value="3840">UHD 4k</option>
-              <option value="100000">Unverändert</option>
+              <option value="raw">Unverändert</option>
             </select>
             <button onClick={this.loadGallery}>Download starten</button>
           </div>,

@@ -69,3 +69,34 @@
 .right {
   right: 0;
 }
+
+.editBar {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  height: 100px;
+  width: 100%;
+  left: 0;
+  background: #000000;
+  border-top: #272727 solid 1px;
+  align-items: center;
+  box-shadow: #717171 5px 0 6px -2px;
+  justify-content: space-around;
+  padding: 0 calc((100vw - 400px) / 2);
+  box-sizing: border-box;
+  color: #999;
+  opacity: 0;
+  transition: 0.3s;
+
+  &:hover {
+    opacity: 0.5;
+  }
+
+  span {
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}

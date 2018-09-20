@@ -5,6 +5,7 @@ import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { sortImages } from 'UTILS/sortImages'
 import styles from './Slideshow.less'
 
 export class Slideshow extends React.Component {
@@ -16,7 +17,11 @@ export class Slideshow extends React.Component {
     return (
       <DefaultPage parent={gallery.get('id')} showButtons additionalClass={styles.black}>
         {(busy && <BusyScreen />) || null}
-        <GallerySlider gallery={gallery} startImage={startImage} />
+        <GallerySlider
+          gallery={gallery}
+          images={gallery.get('images').sort(sortImages)}
+          startImage={startImage}
+        />
       </DefaultPage>
     )
   }

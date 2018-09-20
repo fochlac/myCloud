@@ -1,6 +1,7 @@
+import { deleteFile } from '../../utils/fs'
 import galleryDb from '../../modules/db/gallery'
 import imageDb from '../../modules/db/image'
-import { deleteFile } from '../../utils/fs'
+import { rotateImage } from '../../utils/image'
 
 export default {
   delete: async ({ id, gallery }) => {
@@ -23,11 +24,16 @@ export default {
   },
   update: async ({ id, name, description, gallery }) => {
     const image = await imageDb.update({
-      gallery,
       name,
       description,
       id,
     })
     return image
+  },
+  rotate: async ({ id, direction }) => {
+    let image = imageDb.get(id)
+    image = await rotateImage(image, direction === 'right')
+
+    return imageDb.modify({ id })
   },
 }

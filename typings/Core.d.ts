@@ -63,6 +63,7 @@ declare namespace Core {
     created: string
     name: string
     description: string
+    lastModified: number
   }
 
   interface AccessUrl {
@@ -166,6 +167,6 @@ declare namespace Core {
   interface RequestValidationMap {
     body?: ValidationMap
     params?: ValidationMap
-    search?: ValidationMap
+    query?: ValidationMap
   }
 }

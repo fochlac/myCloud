@@ -1,15 +1,17 @@
-import { COMPLETE } from '../middleware/api'
 import {
-  LOAD_GALLERIES,
   CREATE_GALLERY,
-  UPDATE_GALLERY,
   CREATE_IMAGE,
-  UPDATE_IMAGE,
-  DELETE_IMAGE,
-  DELETE_GALLERY,
-  DELETE_URL,
   CREATE_URL,
+  DELETE_GALLERY,
+  DELETE_IMAGE,
+  DELETE_URL,
+  LOAD_GALLERIES,
+  ROTATE_IMAGE,
+  UPDATE_GALLERY,
+  UPDATE_IMAGE,
 } from '../actions'
+
+import { COMPLETE } from '../middleware/api'
 import { Map } from 'immutable'
 
 const galleriesReducer = (galleries = Map, action) => {
@@ -43,6 +45,7 @@ const galleriesReducer = (galleries = Map, action) => {
       }
       return galleries
     case UPDATE_IMAGE:
+    case ROTATE_IMAGE:
       if (action.status === COMPLETE) {
         const image = action.data
 
