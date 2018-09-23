@@ -5,7 +5,6 @@ import ImmuTypes from 'react-immutable-proptypes'
 import { List } from 'immutable'
 import React from 'react'
 import { connect } from 'react-redux'
-import style from './Dashboard.less'
 
 class Dashboard extends React.Component {
   render() {

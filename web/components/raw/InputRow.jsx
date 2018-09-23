@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './InputRow.less'
 let index = 0
@@ -59,6 +60,7 @@ class InputRow extends React.Component {
       placeholder,
       element,
       autoFocus,
+      disabled,
     } = this.props
 
     const HtmlElement = element
@@ -74,6 +76,7 @@ class InputRow extends React.Component {
         <HtmlElement
           type={type}
           id={id}
+          disabled={disabled}
           autoComplete={autoComplete}
           value={value}
           onChange={this.handleInput}
@@ -99,6 +102,24 @@ InputRow.defaultProps = {
   className: styles.fullWidth,
   userInterface: /.*/,
   element: 'input',
+}
+
+InputRow.propTypes = {
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  className: PropTypes.string,
+  defaultValue: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  userInterface: PropTypes.any,
+  autoComplete: PropTypes.bool,
+  id: PropTypes.string,
+  label: PropTypes.any,
+  type: PropTypes.string,
+  valid: PropTypes.bool,
+  placeholder: PropTypes.string,
+  element: PropTypes.any,
+  autoFocus: PropTypes.bool,
 }
 
 export default InputRow

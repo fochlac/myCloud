@@ -33,29 +33,35 @@ class GallerySlider extends React.Component {
   }
 
   componentDidMount() {
+    const {
+      state: { index },
+      props: { onChangeIndex },
+    } = this
     document.addEventListener('keydown', this.handleKeys)
+    onChangeIndex && onChangeIndex(index)
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeys)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(lastProps, lastState) {
     const {
       state: { index },
-      props: { gallery, images, history },
+      props: { gallery, images, history, onChangeIndex },
     } = this
 
     if (!images.getIn([index, 'id']) && images.size) {
       this.setState({ index: images.size - 1 })
     } else if (!images.getIn([index, 'id'])) {
-      history.push(`/gallery/${gallery.get('id')}/`)
-    } else {
+      history.push(`/gallery/${gallery.get('id')}`)
+    } else if (lastState.index !== index) {
       window.history.replaceState(
         '',
         '',
         `/gallery/${gallery.get('id')}/slideshow?image=${images.getIn([index, 'id'])}`,
       )
+      onChangeIndex && onChangeIndex(index)
     }
   }
 
@@ -73,13 +79,13 @@ class GallerySlider extends React.Component {
         this.setState({ index: index + 1 })
         break
       case 27:
-        history.push(`/gallery/${gallery.get('id')}`)
+        history.push(`/gallery/${gallery.get('id')}?active=${index}`)
         break
     }
   }
 
   render() {
-    const { gallery, images } = this.props
+    const { images } = this.props
     const { index } = this.state
 
     return (
@@ -155,7 +161,9 @@ GallerySlider.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   startImage: PropTypes.string,
+  onChangeIndex: PropTypes.func,
   deleteImage: PropTypes.func.isRequired,
+  rotateImage: PropTypes.func.isRequired,
   updateImage: PropTypes.func.isRequired,
 }
 

@@ -1,5 +1,4 @@
-import './Dialog.less'
-
+import PropTypes from 'prop-types'
 import React from 'react'
 import cx from 'UTILS/classnames'
 import styles from './Dialog.less'
@@ -50,4 +49,12 @@ export default class Dialog extends React.Component {
       </div>
     )
   }
+}
+
+Dialog.propTypes = {
+  closeOnBackdrop: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  children: PropTypes.any,
+  header: PropTypes.any,
+  onClose: PropTypes.func.isRequired,
 }

@@ -20,6 +20,7 @@ import ImageUploadCard from 'RAW/ImageUploadCard'
 import ImmuTypes from 'react-immutable-proptypes'
 import ManageUrlDialog from 'RAW/ManageUrlDialog'
 import { Map } from 'immutable'
+import Pager from 'RAW/pager'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ZipDialog from 'RAW/ZipDialog'
@@ -42,6 +43,30 @@ class GalleryList extends React.Component {
 
     this.handleEdit = this.handleEdit.bind(this)
     this.uploadImages = this.uploadImages.bind(this)
+
+    this.galleryActions = {
+      zip: () => this.setState({ showCreateZip: true }),
+      create: () => this.setState({ showCreateGallery: true }),
+      edit: () => this.setState({ showCreateGallery: true, editGallery: true }),
+      delete: () => this.setState({ showConfirmDelete: true }),
+      share: () => this.setState({ showManageUrl: true }),
+    }
+    this.handleResize = this.handleResize.bind(this)
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
+  }
+
+  handleResize() {
+    clearTimeout(this.resizeTimeout)
+    this.resizeTimeout = setTimeout(() => {
+      this.forceUpdate()
+    }, 300)
   }
 
   render() {
@@ -59,6 +84,7 @@ class GalleryList extends React.Component {
       queue,
       busy,
       galleries,
+      location,
     } = this.props
     const {
       showCreateGallery,
@@ -68,13 +94,12 @@ class GalleryList extends React.Component {
       showCreateZip,
     } = this.state
 
-    const galleryActions = {
-      zip: () => this.setState({ showCreateZip: true }),
-      create: () => this.setState({ showCreateGallery: true }),
-      edit: () => this.setState({ showCreateGallery: true, editGallery: true }),
-      delete: () => this.setState({ showConfirmDelete: true }),
-      share: () => this.setState({ showManageUrl: true }),
-    }
+    const size =
+      Math.floor((window.outerWidth - 50) / 180) * Math.floor((window.outerHeight - 200) / 220)
+
+    const active = location.search.split('active=')[1]
+      ? location.search.split('active=')[1].split('&')[0]
+      : 1
 
     return (
       <DnDLayer onDrop={this.uploadImages} active={hasParent}>
@@ -82,10 +107,17 @@ class GalleryList extends React.Component {
           gallery={gallery}
           uploadImages={this.uploadImages}
           isRoot={!gallery.get('id')}
-          galleryActions={galleryActions}
+          galleryActions={this.galleryActions}
           busy={busy}
         />
-        <div className={style.list}>
+        <Pager
+          size={size}
+          activeItem={+active}
+          wrapper={children => <div className={style.list}>{children}</div>}
+          onChange={index =>
+            window.history.replaceState('', '', `/gallery/${gallery.get('id')}?active=${index}`)
+          }
+        >
           {elements
             .filter(el => !!el)
             .sort(listGalleriesFirst)
@@ -105,12 +137,15 @@ class GalleryList extends React.Component {
                     deleteImage={deleteImage}
                   />
                 ),
+            )
+            .concat(
+              (queue.get('images') &&
+                queue
+                  .get('images')
+                  .map(image => <ImageUploadCard key={image.get('id')} image={image} />)) ||
+                [],
             )}
-          {queue.get('images') &&
-            queue
-              .get('images')
-              .map(image => <ImageUploadCard key={image.get('id')} image={image} />)}
-        </div>
+        </Pager>
         {showCreateGallery && (
           <Dialog
             onClose={() => this.setState({ showCreateGallery: false, editGallery: false })}
@@ -166,6 +201,9 @@ class GalleryList extends React.Component {
 
 GalleryList.propTypes = {
   elements: ImmuTypes.list.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }),
   gallery: ImmuTypes.map,
   galleries: ImmuTypes.map,
   hasParent: PropTypes.bool,

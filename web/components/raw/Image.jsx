@@ -1,4 +1,4 @@
-import ImmuTypes from 'react-immutable-proptypes'
+import { ImageType } from '../../types/api-types'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './Image.less'
@@ -54,7 +54,7 @@ Image.defaultProps = {
 }
 
 Image.propTypes = {
-  image: ImmuTypes.map,
+  image: ImageType,
   size: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,

@@ -9,18 +9,30 @@ import { sortImages } from 'UTILS/sortImages'
 import styles from './Slideshow.less'
 
 export class Slideshow extends React.Component {
+  constructor() {
+    super()
+    this.state = {}
+  }
+
   render() {
     const { app, gallery, startImage } = this.props
+    const { active } = this.state
     const busy = app.get('busy').includes('DETAIL')
     if (!gallery) return null
 
     return (
-      <DefaultPage parent={gallery.get('id')} showButtons additionalClass={styles.black}>
+      <DefaultPage
+        parent={gallery.get('id')}
+        showButtons
+        additionalClass={styles.black}
+        activeImage={active}
+      >
         {(busy && <BusyScreen />) || null}
         <GallerySlider
           gallery={gallery}
           images={gallery.get('images').sort(sortImages)}
           startImage={startImage}
+          onChangeIndex={active => this.setState({ active })}
         />
       </DefaultPage>
     )

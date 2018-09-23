@@ -1,5 +1,6 @@
+import { GalleryType, ImageType } from '../../types/api-types'
+
 import Card from './Card'
-import ImmuTypes from 'react-immutable-proptypes'
 import { Link } from 'react-router-dom'
 import { Map } from 'immutable'
 import React from 'react'
@@ -19,7 +20,8 @@ GalleryCard.defaultProps = {
 }
 
 GalleryCard.propTypes = {
-  gallery: ImmuTypes.map,
+  gallery: GalleryType,
+  image: ImageType,
 }
 
 export default GalleryCard

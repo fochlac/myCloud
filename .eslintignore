@@ -3,3 +3,4 @@ node_modules/
 coverage/
 build_scripts/
 dist/
+web/static

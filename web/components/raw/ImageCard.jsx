@@ -1,5 +1,5 @@
 import Card from './Card'
-import ImmuTypes from 'react-immutable-proptypes'
+import { ImageType } from '../../types/api-types'
 import { Link } from 'react-router-dom'
 import { Map } from 'immutable'
 import PropTypes from 'prop-types'
@@ -24,7 +24,7 @@ ImageCard.defaultProps = {
 }
 
 ImageCard.propTypes = {
-  image: ImmuTypes.map,
+  image: ImageType,
   editImage: PropTypes.func,
   deleteImage: PropTypes.func,
 }
