@@ -53,7 +53,7 @@ export async function addToAccessMap(
   }
 
   const token = await createJWT(rawToken)
-  res.cookie('jwt', token, jwtCookieOptions)
+  res.cookie('jwt', token, jwtCookieOptions())
   return rawToken
 }
 
@@ -70,11 +70,11 @@ export async function createUserToken(
     }, {}),
   })
 
-  res.cookie('jwt', token, jwtCookieOptions)
+  res.cookie('jwt', token, jwtCookieOptions())
 }
 
-const jwtCookieOptions = {
+const jwtCookieOptions = () => ({
   secure: false,
   httpOnly: true,
   expires: new Date(Date.now() + 1000 * 3600 * 24 * 31),
-}
+})

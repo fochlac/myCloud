@@ -8,6 +8,7 @@ import gallery from '../../../controller/gallery'
 import galleryDb from '../../../../modules/db/gallery'
 import images from './images'
 import urls from './urls'
+
 const { routerError } = error('galleries-router')
 
 const galleries = Router()
@@ -16,7 +17,7 @@ galleries.use(images)
 galleries.use(urls)
 
 galleries.get('/', (req, res) => {
-  res.status(200).send(req.token && gallery.ReadAll(req.token.accessMap))
+  res.status(200).send(gallery.ReadAll(req.token && req.token.accessMap))
 })
 galleries.get(
   '/:id',
