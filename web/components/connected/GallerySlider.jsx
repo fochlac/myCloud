@@ -5,6 +5,7 @@ import Image from 'RAW/Image'
 import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { Swipeable } from '../../utils/Swipe'
 import { connect } from 'react-redux'
 import styles from './GallerySlider.less'
 import { withRouter } from 'react-router-dom'
@@ -16,6 +17,8 @@ export const SLIDE = {
   OLD: 'OLD',
   NEW: 'NEW',
 }
+
+const SwipableDiv = Swipeable(props => <div {...props} />)
 
 class GallerySlider extends React.Component {
   constructor(props) {
@@ -30,6 +33,8 @@ class GallerySlider extends React.Component {
 
     this.handleEdit = this.handleEdit.bind(this)
     this.handleKeys = this.handleKeys.bind(this)
+    this.prevImage = this.prevImage.bind(this)
+    this.nextImage = this.nextImage.bind(this)
   }
 
   componentDidMount() {
@@ -71,17 +76,28 @@ class GallerySlider extends React.Component {
 
     switch (keyCode) {
       case 37:
-        if (!index) return
-        this.setState({ index: index - 1 })
+        this.prevImage()
         break
       case 39:
-        if (index === gallery.get('images').size - 1) return
-        this.setState({ index: index + 1 })
+        this.nextImage()
         break
       case 27:
         history.push(`/gallery/${gallery.get('id')}?active=${index}`)
         break
     }
+  }
+
+  nextImage() {
+    const { gallery } = this.props
+    const { index } = this.state
+    if (index === gallery.get('images').size - 1) return
+    this.setState({ index: index + 1 })
+  }
+
+  prevImage() {
+    const { index } = this.state
+    if (!index) return
+    this.setState({ index: index - 1 })
   }
 
   render() {
@@ -122,7 +138,12 @@ class GallerySlider extends React.Component {
     const maxWidth = Math.floor((window.innerWidth - 50) / 25) * 25
 
     return (
-      <div key={image.get('id')} className={`${styles.slide} ${additionalClass}`}>
+      <SwipableDiv
+        onSwipeLeft={this.nextImage}
+        onSwipeRight={this.prevImage}
+        key={image.get('id')}
+        className={`${styles.slide} ${additionalClass}`}
+      >
         {![SLIDE.NEW, SLIDE.OLD].includes(type) && (
           <Image image={image} width={maxWidth} height={maxHeight} background="black" />
         )}
@@ -133,7 +154,7 @@ class GallerySlider extends React.Component {
             <span className="fa fa-repeat fa-5x" onClick={() => rotateImage(image)} />
           </div>
         )}
-      </div>
+      </SwipableDiv>
     )
   }
 

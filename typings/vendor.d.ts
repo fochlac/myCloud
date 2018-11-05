@@ -17,6 +17,14 @@ declare namespace Express {
     accessToken: Core.AccessUrl
     user?: Core.User
     startGallery?: Core.Id
+    params?: Params
+    cookies?: {
+      jwt?: string
+    }
+  }
+
+  interface Params {
+    [key: string]: any
   }
 
   export interface Response {

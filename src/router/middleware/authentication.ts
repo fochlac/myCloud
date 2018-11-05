@@ -1,4 +1,4 @@
-import { addToAccessMap, decodeJWT } from '../../utils/jwt'
+import { addToAccessMap, decodeJWT, generateUserAccessMap } from '../../utils/jwt'
 
 import { enrichUser } from '../controller/user'
 import galleryDb from '../../modules/db/gallery'
@@ -27,7 +27,7 @@ function extractTokenFromRequest(request): string | null {
   return null
 }
 
-export async function authenticate(req, res, next): Promise<void> {
+export async function authenticate(req: Express.Request, res, next): Promise<void> {
   const token = extractTokenFromRequest(req)
 
   if (token) {
@@ -37,6 +37,7 @@ export async function authenticate(req, res, next): Promise<void> {
       req.authenticated = true
       if (req.token.user) {
         req.user = enrichUser(userDb.get(req.token.user))
+        req.token.accessMap = generateUserAccessMap(req.user)
       }
     } catch (err) {
       log(2, 'error validating jwt', err)
@@ -50,7 +51,7 @@ export async function authenticate(req, res, next): Promise<void> {
 }
 
 export function checkGalleryAccessToken(level = ['read', 'write']) {
-  return (req, res, next) => {
+  return (req: Express.Request, res, next) => {
     const {
       token,
       params: { id },
@@ -77,7 +78,7 @@ export function checkGalleryAccessToken(level = ['read', 'write']) {
   }
 }
 
-export function checkImageAccess(req, res, next) {
+export function checkImageAccess(req: Express.Request, res, next) {
   const {
     token,
     params: { id },
@@ -119,7 +120,7 @@ export function hasGalleryAccessToken(
   }
 }
 
-export function isAuthenticated(req, res, next) {
+export function isAuthenticated(req: Express.Request, res: Express.Response, next) {
   if (req.authenticated) {
     next()
   } else {
@@ -130,7 +131,7 @@ export function isAuthenticated(req, res, next) {
   }
 }
 
-export async function checkShortUrl(req: Express.Request, res: Express.Response, next) {
+export async function checkShortUrl(req, res: Express.Response, next) {
   const accessUrl = urlDb.find('url', req.path)[0]
 
   if (accessUrl) {

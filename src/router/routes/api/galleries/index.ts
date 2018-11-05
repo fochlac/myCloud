@@ -8,6 +8,7 @@ import gallery from '../../../controller/gallery'
 import galleryDb from '../../../../modules/db/gallery'
 import images from './images'
 import urls from './urls'
+import userDb from '../../../../modules/db/user'
 
 const { routerError } = error('galleries-router')
 
@@ -89,6 +90,9 @@ galleries.post(
       let galleries = await gallery.Create({ name, parent, description })
       if (!parent) {
         await addToAccessMap(req, res, galleries[0].urls[0])
+        if (req.user) {
+          await userDb.addUserUrl(req.user.id, galleries[0].urls[0])
+        }
         galleries[0].accessToken = galleries[0].urls[0]
       } else {
         galleries = galleries.map(gallery => ({ ...gallery, accessToken }))

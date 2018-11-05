@@ -64,10 +64,7 @@ export async function createUserToken(
 ) {
   const token = await createJWT({
     user: user.id,
-    accessMap: user.urls.reduce((accessMap, url) => {
-      accessMap[url.gallery] = url
-      return accessMap
-    }, {}),
+    accessMap: generateUserAccessMap(user),
   })
 
   res.cookie('jwt', token, jwtCookieOptions())
@@ -78,3 +75,10 @@ const jwtCookieOptions = () => ({
   httpOnly: true,
   expires: new Date(Date.now() + 1000 * 3600 * 24 * 31),
 })
+
+export function generateUserAccessMap(user: Core.User): Core.AccessMap {
+  return user.urls.reduce((accessMap, url) => {
+    accessMap[url.gallery] = url
+    return accessMap
+  }, {})
+}

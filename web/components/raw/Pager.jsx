@@ -1,8 +1,11 @@
 import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { Swipeable } from 'UTILS/Swipe'
 import cx from 'UTILS/classnames'
 import styles from './Pager.less'
+
+const SwipableDiv = Swipeable(props => <div {...props} />)
 
 export default class Pager extends React.Component {
   constructor(props) {
@@ -13,6 +16,8 @@ export default class Pager extends React.Component {
     }
 
     this.setPage = this.setPage.bind(this)
+    this.nextPage = this.nextPage.bind(this)
+    this.prevPage = this.prevPage.bind(this)
   }
 
   renderPagerLinks() {
@@ -34,7 +39,7 @@ export default class Pager extends React.Component {
       return (
         <span className={styles.pagerList}>
           {page > 1 && <span className="fa fa-angle-double-left" onClick={() => this.setPage(1)} />}
-          {page > 1 && <span className="fa fa-angle-left" onClick={() => this.setPage(page - 1)} />}
+          {page > 1 && <span className="fa fa-angle-left" onClick={this.prevPage} />}
           {pages.map(pageNumber => (
             <span
               key={pageNumber}
@@ -44,9 +49,7 @@ export default class Pager extends React.Component {
               {pageNumber}
             </span>
           ))}
-          {page < pageCount && (
-            <span className="fa fa-angle-right" onClick={() => this.setPage(page + 1)} />
-          )}
+          {page < pageCount && <span className="fa fa-angle-right" onClick={this.nextPage} />}
           {page < pageCount && (
             <span className="fa fa-angle-double-right" onClick={() => this.setPage(pageCount)} />
           )}
@@ -93,6 +96,28 @@ export default class Pager extends React.Component {
     )
   }
 
+  nextPage() {
+    const {
+      props: { size, children },
+      state: { page },
+    } = this
+    const pageCount = Math.ceil(children.size / size)
+
+    if (page < pageCount) {
+      this.setState({ page: page + 1 })
+    }
+  }
+
+  prevPage() {
+    const {
+      state: { page },
+    } = this
+
+    if (page > 1) {
+      this.setState({ page: page - 1 })
+    }
+  }
+
   render() {
     const { size, children, top, bottom, inactive, wrapper } = this.props
     const { page } = this.state
@@ -102,7 +127,11 @@ export default class Pager extends React.Component {
     }
 
     return (
-      <div className={styles.pagedList}>
+      <SwipableDiv
+        onSwipeLeft={this.nextPage}
+        onSwipeRight={this.prevPage}
+        className={styles.pagedList}
+      >
         {top && this.renderPager()}
         <div className="pagedContent">
           {wrapper(
@@ -110,7 +139,7 @@ export default class Pager extends React.Component {
           )}
         </div>
         {bottom && this.renderPager(styles.bottom)}
-      </div>
+      </SwipableDiv>
     )
   }
 }

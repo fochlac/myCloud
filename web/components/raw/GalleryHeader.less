@@ -16,6 +16,7 @@
   top: 0px;
   z-index: 1;
   background: white;
+  height: 1.2em;
 }
 
 .uploadInfo {
@@ -66,5 +67,27 @@
     text-align: center;
     margin: 3px 0;
     flex-grow: 10;
+  }
+}
+
+@media (max-width: 500px) {
+  .header {
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .name {
+      text-align: left !important;
+      margin-left: 10px !important;
+    }
+
+    & > div:first-child {
+      display: none;
+    }
+  }
+}
+
+@media (pointer: coarse) {
+  .galleryControl li {
+    margin: 0 7px;
   }
 }
