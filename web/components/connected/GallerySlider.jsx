@@ -1,7 +1,7 @@
 import { GalleryType, ImageType } from '../../types/api-types'
 import { deleteImage, rotateImage, updateImage } from 'STORE/actions'
 
-import Image from 'RAW/Image'
+import Image from 'CONNECTED/Image'
 import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'

@@ -1,4 +1,4 @@
-import Image from './Image'
+import Image from 'CONNECTED/Image'
 import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'

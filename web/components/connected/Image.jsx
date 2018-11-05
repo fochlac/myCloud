@@ -1,9 +1,10 @@
 import { ImageType } from '../../types/api-types'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { connect } from 'react-redux'
 import styles from './Image.less'
 
-class Image extends React.Component {
+class Image extends React.PureComponent {
   constructor() {
     super()
 
@@ -13,10 +14,11 @@ class Image extends React.Component {
   }
 
   render() {
-    const { image, size, src, title, width, height, background } = this.props
+    const { image, size, src, title, width, height, background, hd } = this.props
     const { ready } = this.state
-    const imgWidth = Math.ceil(((width || size) * 1.2) / 100) * 100
-    const imgHeight = Math.ceil(((height || size) * 1.2) / 100) * 100
+    const factor = hd ? 2 : 1.2
+    const imgWidth = Math.ceil(((width || size) * factor) / 100) * 100
+    const imgHeight = Math.ceil(((height || size) * factor) / 100) * 100
     const url =
       (image &&
         `/api/images/${image.get('id')}?width=${imgWidth}&height=${imgHeight}` +
@@ -50,6 +52,7 @@ class Image extends React.Component {
 
 Image.defaultProps = {
   size: 200,
+  hd: false,
   src: null,
   title: '',
   background: 'white',
@@ -63,6 +66,9 @@ Image.propTypes = {
   src: PropTypes.string,
   title: PropTypes.string,
   background: PropTypes.string,
+  hd: PropTypes.bool,
 }
 
-export default Image
+export default connect(state => ({
+  hd: state.getIn(['app', 'hd']),
+}))(Image)

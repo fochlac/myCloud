@@ -1,5 +1,6 @@
 import './BaseStyle.less'
 
+import HdButton from 'CONNECTED/HdButton'
 import { Link } from 'react-router-dom'
 import LoginButton from 'CONNECTED/LoginButton'
 import PropTypes from 'prop-types'
@@ -26,6 +27,7 @@ export default function DefaultPage({
           </div>
         )}
         <h3 className={style.name}>Gallery</h3>
+        <HdButton />
         <LoginButton />
       </div>
       <div className={`${style.content} ${additionalClass}`}>{children}</div>
