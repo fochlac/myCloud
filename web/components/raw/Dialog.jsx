@@ -52,7 +52,7 @@ export default class Dialog extends React.Component {
 }
 
 Dialog.propTypes = {
-  closeOnBackdrop: PropTypes.func.isRequired,
+  closeOnBackdrop: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.any,
   header: PropTypes.any,

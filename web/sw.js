@@ -2,7 +2,7 @@
 
 'use strict'
 const serverUrl = location.origin
-let version = '1'
+let version = '2'
 let assets = global.serviceWorkerOption.assets.map(asset => serverUrl + '/static' + asset)
 let staticContent = [...assets, '/manifest.json']
 let staticRegex = staticContent.length
@@ -13,9 +13,10 @@ let staticRegex = staticContent.length
 
 function handleFetch(event) {
   if (
-    event.request.url.includes('localhorst') ||
+    event.request.url.includes('localhost') ||
     // Ensure that chrome-extension:// requests don't trigger the default route.
-    event.request.url.indexOf('http') !== 0
+    event.request.url.indexOf('http') !== 0 ||
+    event.request.method.toLowerCase() !== 'get'
   ) {
     return
   }

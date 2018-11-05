@@ -15,10 +15,12 @@ class Image extends React.Component {
   render() {
     const { image, size, src, title, width, height, background } = this.props
     const { ready } = this.state
+    const imgWidth = Math.ceil(((width || size) * 1.2) / 100) * 100
+    const imgHeight = Math.ceil(((height || size) * 1.2) / 100) * 100
     const url =
       (image &&
-        `/api/images/${image.get('id')}?width=${width || size - 10}&height=${height ||
-          size - 10}&lastModified=${image.get('lastModified')}`) ||
+        `/api/images/${image.get('id')}?width=${imgWidth}&height=${imgHeight}` +
+          `&lastModified=${image.get('lastModified')}`) ||
       src
 
     const loadingCircleSize = Math.ceil((width + height || size) / 300) || 1
