@@ -1,12 +1,10 @@
 import { List, Map } from 'immutable'
 
-const hd = localStorage.hd !== undefined ? localStorage.hd : true
-
 export default Map({
   galleries: Map(),
   app: Map({
     busy: List(),
-    hd,
+    hd: !localStorage || (localStorage.hd !== 'false' && true),
   }),
   uploadQueue: Map(),
   user: Map(),
