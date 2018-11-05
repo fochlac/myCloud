@@ -7,6 +7,7 @@ const appReducer = (app = Map, action) => {
     case SET_BUSY:
       return app.set('busy', action.busy)
     case SET_HD:
+      localStorage.hd = action.hd
       return app.set('hd', action.hd)
     default:
       return app
