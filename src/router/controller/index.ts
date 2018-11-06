@@ -19,13 +19,14 @@ export async function serveIndex(req, res) {
       window.defaultStore = {
                   app:{
                     busy: [],
+                    hd: !localStorage || (localStorage.hd !== 'false' && true),
                     ${req.startGallery ? `startGallery: ${req.startGallery},` : ''}
                   },
                   galleries:${sanitizeHtml(JSON.stringify(galleries))},
                   user:${req.user ? sanitizeHtml(JSON.stringify(req.user)) : '{}'},
                   uploadQueue: {},
                 }
-          </script>`,
+        </script>`,
     ),
   )
 }

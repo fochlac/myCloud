@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import Slideshow from './views/Slideshow'
 import { connect } from 'react-redux'
-import { loadGalleries } from 'STORE/actions.js'
+import { loadGalleries } from 'STORE/actions'
 
 class App extends React.Component {
   render() {

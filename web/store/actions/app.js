@@ -26,5 +26,3 @@ export function setHd(hd) {
     hd,
   }
 }
-
-export const INIT = '@@INIT'
