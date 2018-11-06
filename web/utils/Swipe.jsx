@@ -10,7 +10,7 @@ export function Swipeable(Elem) {
     onSwipeRight = noop,
     onSwipe = noop,
     onSwipeEnd = noop,
-    delta = 50,
+    delta = 30,
     ...props
   }) => {
     let startPosition
