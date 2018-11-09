@@ -1,5 +1,6 @@
 import { GalleryType, ImageType } from '../../types/api-types'
 import { deleteImage, rotateImage, updateImage } from 'STORE/actions'
+import { exitFullscreen, requestFullscreen } from 'UTILS/fullscreen'
 
 import Image from 'CONNECTED/Image'
 import ImmuTypes from 'react-immutable-proptypes'
@@ -7,6 +8,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Swipeable } from '../../utils/Swipe'
 import { connect } from 'react-redux'
+import cx from 'UTILS/classnames'
+import { setFullscreen } from 'STORE/actions/app'
 import styles from './GallerySlider.less'
 import { withRouter } from 'react-router-dom'
 
@@ -35,6 +38,7 @@ class GallerySlider extends React.Component {
     this.handleKeys = this.handleKeys.bind(this)
     this.prevImage = this.prevImage.bind(this)
     this.nextImage = this.nextImage.bind(this)
+    this.forceUpdate = this.forceUpdate.bind(this, undefined)
   }
 
   componentDidMount() {
@@ -43,11 +47,13 @@ class GallerySlider extends React.Component {
       props: { onChangeIndex },
     } = this
     document.addEventListener('keydown', this.handleKeys)
+    window.addEventListener('resize', this.forceUpdate)
     onChangeIndex && onChangeIndex(index)
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeys)
+    window.removeEventListener('resize', this.forceUpdate)
   }
 
   componentDidUpdate(lastProps, lastState) {
@@ -101,12 +107,12 @@ class GallerySlider extends React.Component {
   }
 
   render() {
-    const { images } = this.props
+    const { fullscreen, images } = this.props
     const { index } = this.state
 
     return (
       <section className={styles.detail}>
-        {index !== 0 && (
+        {!fullscreen && index !== 0 && (
           <span
             onClick={() => this.setState({ index: index - 1 })}
             className={`${styles.button} ${styles.left}`}
@@ -119,7 +125,7 @@ class GallerySlider extends React.Component {
             this.renderSlide({ image: image, type: getSlideType(slide, index) }),
           )}
         </div>
-        {index < images.size - 1 && (
+        {!fullscreen && index < images.size - 1 && (
           <span
             onClick={() => this.setState({ index: index + 1 })}
             className={`${styles.button} ${styles.right}`}
@@ -132,10 +138,13 @@ class GallerySlider extends React.Component {
   }
 
   renderSlide({ image, type }) {
+    const { index } = this.state
+    const { fullscreen, setFullscreen } = this.props
+
     const additionalClass = [SLIDE.OLD, SLIDE.LAST].includes(type) ? styles.old : ''
     const { deleteImage, rotateImage } = this.props
-    const maxHeight = Math.floor((window.innerHeight - 48) / 25) * 25
-    const maxWidth = Math.floor((window.innerWidth - 50) / 25) * 25
+    const maxHeight = Math.floor((window.innerHeight - (fullscreen ? 0 : 48)) / 25) * 25
+    const maxWidth = Math.floor((window.innerWidth - (fullscreen ? 0 : 50)) / 25) * 25
 
     return (
       <SwipableDiv
@@ -149,9 +158,29 @@ class GallerySlider extends React.Component {
         )}
         {type === SLIDE.ACTIVE && (
           <div className={styles.editBar}>
+            {fullscreen && (
+              <span
+                className="fa fa-chevron-left fa-5x"
+                onClick={() => this.setState({ index: index - 1 })}
+              />
+            )}
             <span className="fa fa-trash fa-5x" onClick={() => deleteImage(image)} />
             <span className="fa fa-undo fa-5x" onClick={() => rotateImage(image, 'left')} />
             <span className="fa fa-repeat fa-5x" onClick={() => rotateImage(image)} />
+
+            <span
+              className={cx('fa fa-5x', fullscreen ? 'fa-compress' : 'fa-expand')}
+              onClick={() => {
+                setFullscreen(!fullscreen)
+                ;(fullscreen ? exitFullscreen : requestFullscreen)()
+              }}
+            />
+            {fullscreen && (
+              <span
+                className="fa fa-chevron-right fa-5x"
+                onClick={() => this.setState({ index: index + 1 })}
+              />
+            )}
           </div>
         )}
       </SwipableDiv>
@@ -186,11 +215,15 @@ GallerySlider.propTypes = {
   deleteImage: PropTypes.func.isRequired,
   rotateImage: PropTypes.func.isRequired,
   updateImage: PropTypes.func.isRequired,
+  setFullscreen: PropTypes.func.isRequired,
+  fullscreen: PropTypes.bool,
 }
 
 export default withRouter(
   connect(
-    () => ({}),
-    { deleteImage, updateImage, rotateImage },
+    state => ({
+      fullscreen: state.getIn(['app', 'fullscreen']),
+    }),
+    { deleteImage, updateImage, rotateImage, setFullscreen },
   )(GallerySlider),
 )

@@ -1,3 +1,11 @@
-export default function cx(...classNames) {
-  return classNames.filter(classname => !!(classname && classname.length)).join(' ')
+export default function cx(...args) {
+  return args
+    .map(arg =>
+      typeof arg === 'object'
+        ? Object.keys(arg)
+            .filter(key => arg[key])
+            .join(' ')
+        : arg,
+    )
+    .join(' ')
 }

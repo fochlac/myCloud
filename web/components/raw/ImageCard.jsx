@@ -6,9 +6,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './ImageCard.less'
 
-function ImageCard({ image, editImage, deleteImage }) {
+function ImageCard({ image, editImage, deleteImage, onClick }) {
   return (
-    <Link to={`/gallery/${image.get('gallery')}/slideshow?image=${image.get('id')}`}>
+    <Link
+      to={`/gallery/${image.get('gallery')}/slideshow?image=${image.get('id')}`}
+      onClick={onClick}
+    >
       <Card image={image} imageTitle={image.get('name')} className={styles.card}>
         <div className={styles.toolbar}>
           {/* <span className="fa fa-pencil" onClick={prevent(editImage, image)} /> */}
@@ -27,6 +30,7 @@ ImageCard.propTypes = {
   image: ImageType,
   editImage: PropTypes.func,
   deleteImage: PropTypes.func,
+  onClick: PropTypes.func,
 }
 export default ImageCard
 

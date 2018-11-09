@@ -5,13 +5,24 @@ import ImmuTypes from 'react-immutable-proptypes'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { exitFullscreen } from '../../utils/fullscreen'
+import { setFullscreen } from 'STORE/actions/app'
 import { sortImages } from 'UTILS/sortImages'
 import styles from './Slideshow.less'
 
 export class Slideshow extends React.Component {
   constructor() {
     super()
+
     this.state = {}
+  }
+
+  componentWillUnmount() {
+    const { app, setFullscreen } = this.props
+    if (app.get('fullscreen')) {
+      setFullscreen(false)
+      exitFullscreen()
+    }
   }
 
   render() {
@@ -24,6 +35,7 @@ export class Slideshow extends React.Component {
       <DefaultPage
         parent={gallery.get('id')}
         showButtons
+        fullscreen={app.get('fullscreen')}
         additionalClass={styles.black}
         activeImage={active}
       >
@@ -43,6 +55,7 @@ Slideshow.propTypes = {
   app: ImmuTypes.map.isRequired,
   gallery: ImmuTypes.map,
   startImage: PropTypes.string,
+  setFullscreen: PropTypes.func.isRequired,
 }
 
 const mapStoreToProps = (store, ownProps) => ({
@@ -51,4 +64,7 @@ const mapStoreToProps = (store, ownProps) => ({
   startImage: ownProps.image,
 })
 
-export default connect(mapStoreToProps)(Slideshow)
+export default connect(
+  mapStoreToProps,
+  { setFullscreen },
+)(Slideshow)

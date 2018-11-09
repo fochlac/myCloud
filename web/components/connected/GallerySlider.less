@@ -64,8 +64,7 @@
   }
 
   @media (hover: none) {
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.7);
+    display: none;
   }
 }
 .left {
@@ -87,14 +86,15 @@
   align-items: center;
   box-shadow: #717171 5px 0 6px -2px;
   justify-content: space-around;
-  padding: 0 calc((100vw - 400px) / 2);
+  padding: 0 calc((100vw - 700px) / 2);
   box-sizing: border-box;
   color: #999;
   opacity: 0;
-  transition: 0.3s;
 
   @media (hover: none) {
     opacity: 0.5;
+    font-size: 0.4em;
+    height: 50px;
   }
 
   &:hover {

@@ -2,7 +2,7 @@
 
 'use strict'
 const serverUrl = location.origin
-let version = '5'
+let version = '6'
 let assets = global.serviceWorkerOption.assets.map(asset => serverUrl + '/static' + asset)
 let staticContent = [...assets, '/manifest.json']
 let staticRegex = staticContent.length

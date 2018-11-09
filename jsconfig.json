@@ -2,15 +2,15 @@
   "compilerOptions": {
     "target": "esnext",
     "allowSyntheticDefaultImports": false,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "COMPONENTS/*": ["web/components/*"],
-      "RAW/*": ["web/components/raw/*"],
-      "DIALOG/*": ["web/components/dialog/*"],
-      "CONNECTED/*": ["web/components/connected/*"],
-      "PAGES/*": ["web/components/views/*"],
-      "UTILS/*": ["web/utils/*"],
-      "STORE/*": ["web/store/*"],
+      "RAW/*": ["./web/components/raw/*"],
+      "DIALOG/*": ["./web/components/dialog/*"],
+      "CONNECTED/*": ["./web/components/connected/*"],
+      "PAGES/*": ["./web/components/views/*"],
+      "UTILS/*": ["./web/utils/*"],
+      "STORE/*": ["./web/store/*"],
+      "COMPONENTS/*": ["./web/components/*"],
       "SW/*": ["node_modules/serviceworker-webpack-plugin/lib/*"]
     }
   },

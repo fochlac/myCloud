@@ -25,6 +25,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import ZipDialog from 'RAW/ZipDialog'
 import { connect } from 'react-redux'
+import { requestFullscreen } from 'UTILS/fullscreen'
+import { setFullscreen } from 'STORE/actions/app'
 import { sortImages } from 'UTILS/sortImages'
 import style from './GalleryList.less'
 import uploadQueue from 'CONNECTED/UploadQueue'
@@ -52,6 +54,7 @@ class GalleryList extends React.Component {
       share: () => this.setState({ showManageUrl: true }),
     }
     this.handleResize = this.handleResize.bind(this)
+    this.handleOpenSlideshow = this.handleOpenSlideshow.bind(this)
   }
 
   componentDidMount() {
@@ -121,22 +124,22 @@ class GalleryList extends React.Component {
           {elements
             .filter(el => !!el)
             .sort(listGalleriesFirst)
-            .map(
-              element =>
-                isGallery(element) ? (
-                  <GalleryCard
-                    key={'gal_' + element.get('id')}
-                    gallery={element}
-                    image={getGalleryImage(element, galleries)}
-                  />
-                ) : (
-                  <ImageCard
-                    key={'img_' + element.get('id')}
-                    image={element}
-                    editImage={this.handleEdit}
-                    deleteImage={deleteImage}
-                  />
-                ),
+            .map(element =>
+              isGallery(element) ? (
+                <GalleryCard
+                  key={'gal_' + element.get('id')}
+                  gallery={element}
+                  image={getGalleryImage(element, galleries)}
+                />
+              ) : (
+                <ImageCard
+                  key={'img_' + element.get('id')}
+                  image={element}
+                  editImage={this.handleEdit}
+                  deleteImage={deleteImage}
+                  onClick={this.handleOpenSlideshow}
+                />
+              ),
             )
             .concat(
               (queue.get('images') &&
@@ -187,6 +190,13 @@ class GalleryList extends React.Component {
     )
   }
 
+  handleOpenSlideshow(evt) {
+    if (window.outerHeight < 700 || window.outerWidth < 700) {
+      requestFullscreen()
+      this.props.setFullscreen(true)
+    }
+  }
+
   uploadImages(images) {
     const { gallery, uploadImages } = this.props
 
@@ -214,6 +224,7 @@ GalleryList.propTypes = {
   updateGallery: PropTypes.func.isRequired,
   deleteGallery: PropTypes.func.isRequired,
   createUrl: PropTypes.func.isRequired,
+  setFullscreen: PropTypes.func.isRequired,
   deleteUrl: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
@@ -250,6 +261,7 @@ export default uploadQueue(
         deleteGallery,
         createUrl,
         deleteUrl,
+        setFullscreen,
       },
     )(GalleryList),
   ),

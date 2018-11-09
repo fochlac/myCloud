@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import LoginButton from 'CONNECTED/LoginButton'
 import PropTypes from 'prop-types'
 import React from 'react'
+import cx from 'UTILS/classnames'
 import style from './DefaultPage.less'
 
 export default function DefaultPage({
@@ -13,10 +14,11 @@ export default function DefaultPage({
   showButtons,
   additionalClass,
   activeImage,
+  fullscreen,
 }) {
   return (
-    <div className={style.body}>
-      <div className={style.topbar}>
+    <div className={cx(style.body, { [style.fullscreenBody]: fullscreen })}>
+      <div className={cx(style.topbar, { [style.fullscreen]: fullscreen })}>
         {showButtons && (
           <div className={style.buttons}>
             <Link
@@ -26,8 +28,8 @@ export default function DefaultPage({
             <Link to="/" className="fa fa-home" />
           </div>
         )}
-        <h3 className={style.name}>Gallery</h3>
-        <HdButton />
+        {!fullscreen && <h3 className={style.name}>Gallery</h3>}
+        <HdButton {...{ fullscreen }} />
         <LoginButton />
       </div>
       <div className={`${style.content} ${additionalClass}`}>{children}</div>
@@ -40,6 +42,7 @@ DefaultPage.propTypes = {
   activeImage: PropTypes.number,
   children: PropTypes.any,
   showButtons: PropTypes.bool,
+  fullscreen: PropTypes.bool,
   additionalClass: PropTypes.string,
 }
 

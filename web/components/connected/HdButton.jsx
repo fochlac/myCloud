@@ -1,12 +1,20 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import cx from 'UTILS/classnames'
 import { setHd } from 'STORE/actions'
 import styles from './HdButton.less'
 
-function HdButton({ hd, setHd }) {
+function HdButton({ hd, setHd, fullscreen }) {
   return (
-    <div className={hd ? styles.active : styles.inactive} onClick={() => setHd(!hd)}>
+    <div
+      className={cx({
+        [styles.active]: hd,
+        [styles.inactive]: !hd,
+        [styles.fullscreen]: fullscreen,
+      })}
+      onClick={() => setHd(!hd)}
+    >
       HD
     </div>
   )
@@ -14,6 +22,7 @@ function HdButton({ hd, setHd }) {
 
 HdButton.propTypes = {
   hd: PropTypes.bool,
+  fullscreen: PropTypes.bool,
   setHd: PropTypes.func.isRequired,
 }
 

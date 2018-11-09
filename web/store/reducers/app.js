@@ -1,6 +1,7 @@
 import { SET_BUSY, SET_HD } from '../actions'
 
 import { Map } from 'immutable'
+import { SET_FULLSCREEN } from '../actions/app'
 
 const appReducer = (app = Map, action) => {
   console.log(action)
@@ -12,6 +13,8 @@ const appReducer = (app = Map, action) => {
         localStorage.hd = action.hd
       }
       return app.set('hd', action.hd)
+    case SET_FULLSCREEN:
+      return app.set('fullscreen', action.fullscreen)
     default:
       return app
   }
