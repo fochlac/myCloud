@@ -1,4 +1,4 @@
-import { checkGalleryAccessToken, hasGalleryAccessToken } from '../../../middleware/authentication'
+import { checkGalleryAccessToken, getGalleryAccessToken } from '../../../middleware/authentication'
 import { regexpValidator, validate } from '../../../middleware/validate'
 
 import { Router } from 'express'
@@ -79,7 +79,7 @@ galleries.post(
       parent &&
       token &&
       galleryDb.get(parent) &&
-      hasGalleryAccessToken(galleryDb.get(parent), token.accessMap)
+      getGalleryAccessToken(galleryDb.get(parent), token.accessMap)
 
     if (parent && !accessToken) {
       return res

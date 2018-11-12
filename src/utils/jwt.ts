@@ -53,7 +53,7 @@ export async function addToAccessMap(
   }
 
   const token = await createJWT(rawToken)
-  res.cookie('jwt', token, jwtCookieOptions())
+  res.cookie('gallery-jwt', token, jwtCookieOptions())
   return rawToken
 }
 
@@ -67,7 +67,7 @@ export async function createUserToken(
     accessMap: generateUserAccessMap(user),
   })
 
-  res.cookie('jwt', token, jwtCookieOptions())
+  res.cookie('gallery-jwt', token, jwtCookieOptions())
 }
 
 const jwtCookieOptions = () => ({
@@ -78,7 +78,10 @@ const jwtCookieOptions = () => ({
 
 export function generateUserAccessMap(user: Core.User): Core.AccessMap {
   return user.urls.reduce((accessMap, url) => {
-    accessMap[url.gallery] = url
+    // remove invalid ids from the token list
+    if (url && url.gallery) {
+      accessMap[url.gallery] = url
+    }
     return accessMap
   }, {})
 }

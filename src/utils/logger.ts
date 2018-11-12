@@ -17,31 +17,13 @@ import * as fs from 'fs'
  *
  **/
 
-let logStream,
-  date,
-  timeout,
-  getDate = () => {
-    if (!timeout) {
-      timeout = true
-      setTimeout(() => {
-        timeout = false
-      }, 100)
-
-      date = new Date()
-      date = {
-        day: date.getFullYear() + '_' + date.getMonth() + '_' + date.getDate(),
-        time: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
-      }
-    }
-    return date
-  },
-  currentDate = getDate().day
+let currentDate = getDate().day
 
 if (!fs.existsSync(global.appRoot + 'log')) {
   fs.mkdirSync(global.appRoot + 'log')
 }
 
-logStream = fs.createWriteStream(global.appRoot + 'log/output' + getDate().day + '.txt', {
+let logStream = fs.createWriteStream(global.appRoot + 'log/output' + getDate().day + '.txt', {
   flags: 'a',
   encoding: 'utf8',
   autoClose: true,
@@ -52,41 +34,13 @@ logStream.on('error', err => {
 })
 
 export default (level: number, ...message: any[]): void => {
-  if (level > global.logLevel) {
-    return
+  const now = getDate()
+  const messages = message.map(parseMessage).join(' ')
+  const logMessage = `${now.day} - ${now.time} - ${level} - ${messages} \n`
+
+  if (level <= global.logLevel) {
+    console.log(logMessage)
   }
-
-  let now = getDate(),
-    logMessage =
-      now.day +
-      ' - ' +
-      now.time +
-      ' - ' +
-      level +
-      ' - ' +
-      message
-        .map(item => {
-          let output
-          if (typeof item === 'string') {
-            output = item
-          } else {
-            try {
-              if (Object.prototype.toString.call(item) === '[object Error]') {
-                output = item.stack.replace(/\n\s*/g, ' |-| ')
-              } else {
-                output = JSON.stringify(item)
-              }
-            } catch (err) {
-              console.log(item)
-              output = err
-            }
-          }
-          return output
-        })
-        .join(' ') +
-      '\n'
-
-  console.log(logMessage)
 
   if (currentDate !== getDate().day) {
     currentDate = getDate().day
@@ -99,4 +53,31 @@ export default (level: number, ...message: any[]): void => {
   }
 
   logStream.write(logMessage)
+}
+
+function parseMessage(item) {
+  let output
+  if (typeof item === 'string') {
+    output = item
+  } else {
+    try {
+      if (Object.prototype.toString.call(item) === '[object Error]') {
+        output = item.stack.replace(/\n\s*/g, ' |-| ')
+      } else {
+        output = JSON.stringify(item)
+      }
+    } catch (err) {
+      console.log(item)
+      output = err
+    }
+  }
+  return output
+}
+
+function getDate() {
+  const date = new Date()
+  return {
+    day: date.getFullYear() + '_' + date.getMonth() + '_' + date.getDate(),
+    time: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(),
+  }
 }

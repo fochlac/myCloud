@@ -2,7 +2,7 @@ import { createFolder, deleteFolder } from '../../utils/fs'
 
 import error from '../../utils/error'
 import galleryDb from '../../modules/db/gallery'
-import { hasGalleryAccessToken } from '../middleware/authentication'
+import { getGalleryAccessToken } from '../middleware/authentication'
 
 const location = 'controller/gallery.ts'
 const { internalError } = error(location)
@@ -55,7 +55,7 @@ export function ReadAll(accessMap: Core.AccessMap) {
   const galleries = galleryDb.list()
   return galleries
     .map(gallery => {
-      const accessToken = hasGalleryAccessToken(gallery, accessMap)
+      const accessToken = getGalleryAccessToken(gallery, accessMap)
       if (accessToken && accessToken.access === 'read') {
         gallery.urls = []
       }

@@ -21,7 +21,7 @@ function extractTokenFromRequest(request): string | null {
     request.headers.cookie.split('; ').forEach(str => {
       cookie[str.split('=')[0]] = str.split('=')[1]
     })
-    return cookie['jwt'] || null
+    return cookie['gallery-jwt'] || cookie['jwt'] || null
   }
 
   return null
@@ -64,7 +64,7 @@ export function checkGalleryAccessToken(level = ['read', 'write']) {
         message: 'Galerie nicht gefunden',
       })
     } else {
-      const accessToken = token && hasGalleryAccessToken(gallery, token.accessMap)
+      const accessToken = token && getGalleryAccessToken(gallery, token.accessMap)
       if (accessToken && level.includes(accessToken.access)) {
         req.accessToken = accessToken
         next()
@@ -91,7 +91,7 @@ export function checkImageAccess(req: Express.Request, res, next) {
       message: 'Galerie nicht gefunden',
     })
   } else {
-    const accessToken = token && hasGalleryAccessToken(imageGallery, token.accessMap)
+    const accessToken = token && getGalleryAccessToken(imageGallery, token.accessMap)
     if (accessToken) {
       req.accessToken = accessToken
       next()
@@ -104,19 +104,19 @@ export function checkImageAccess(req: Express.Request, res, next) {
   }
 }
 
-export function hasGalleryAccessToken(
+export function getGalleryAccessToken(
   gallery: Core.Gallery,
   accessMap: Core.AccessMap,
 ): Core.AccessUrl {
-  if (gallery) {
-    const accessToken =
-      (accessMap && accessMap[gallery.id] && urlDb.get(accessMap[gallery.id].id)) ||
-      accessMap[
-        gallery.ancestors.find(
-          ancestor => !!accessMap[ancestor] && !!urlDb.get(accessMap[ancestor].id),
-        )
-      ]
-    return accessToken && urlDb.get(accessToken.id)
+  if (gallery && accessMap) {
+    const currentGalleryToken = accessMap[gallery.id] && urlDb.get(accessMap[gallery.id].id)
+    const listedAncestorId =
+      !currentGalleryToken &&
+      gallery.ancestors.find(
+        ancestor => !!accessMap[ancestor] && !!urlDb.get(accessMap[ancestor].id),
+      )
+
+    return currentGalleryToken || urlDb.get(accessMap[listedAncestorId].id)
   }
 }
 
