@@ -116,7 +116,7 @@ export function getGalleryAccessToken(
         ancestor => !!accessMap[ancestor] && !!urlDb.get(accessMap[ancestor].id),
       )
 
-    return currentGalleryToken || urlDb.get(accessMap[listedAncestorId].id)
+    return currentGalleryToken || (listedAncestorId && urlDb.get(accessMap[listedAncestorId].id))
   }
 }
 
