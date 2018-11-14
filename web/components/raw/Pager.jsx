@@ -20,15 +20,6 @@ export default class Pager extends React.Component {
     this.prevPage = this.prevPage.bind(this)
   }
 
-  static getDerivedStateFromProps({ id, activeItem, size }) {
-    if (id !== this.props.id) {
-      return {
-        page: Math.floor(activeItem / size) + 1,
-      }
-    }
-    return null
-  }
-
   renderPagerLinks() {
     const { size, children } = this.props
     const { page } = this.state

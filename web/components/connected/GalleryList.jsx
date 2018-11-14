@@ -116,7 +116,7 @@ class GalleryList extends React.Component {
         <Pager
           size={size}
           activeItem={+active}
-          id={gallery.get('id')}
+          key={gallery.get('id') || 'root'}
           wrapper={children => <div className={style.list}>{children}</div>}
           onChange={index =>
             window.history.replaceState('', '', `/gallery/${gallery.get('id')}?active=${index}`)
