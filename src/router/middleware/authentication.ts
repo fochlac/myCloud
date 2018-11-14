@@ -10,15 +10,18 @@ import userDb from '../../modules/db/user'
 const log = (level, ...message) => logger(level, 'authentication.ts -', ...message)
 
 function extractTokenFromRequest(request): string | null {
-  if (request.headers.jwt) {
-    return request.headers.jwt
+  if (request.headers['gallery-jwt'] || request.headers.jwt) {
+    log(10, 'got token from header')
+    return request.headers['gallery-jwt'] || request.headers.jwt
   }
 
   if (request.cookies) {
-    return request.cookies.jwt || null
+    log(10, 'got token from request.cookies')
+    return request.cookies['gallery-jwt'] || request.cookies.jwt || null
   }
 
   if (request.headers.cookie) {
+    log(10, 'got token from request.headers.cookie')
     let cookie = {}
     request.headers.cookie.split('; ').forEach(str => {
       cookie[str.split('=')[0]] = str.split('=')[1]
@@ -125,9 +128,10 @@ export function getGalleryAccessToken(
       gallery.ancestors.find(
         ancestor => !!accessMap[ancestor] && !!urlDb.get(accessMap[ancestor].id),
       )
+    const accessUrl = currentGalleryToken || (listedAncestorId && urlDb.get(accessMap[listedAncestorId].id))
 
-    log(7, `Gallery ${gallery.id} found in access map`)
-    return currentGalleryToken || (listedAncestorId && urlDb.get(accessMap[listedAncestorId].id))
+    log(accessUrl ? 7 : 4, `Gallery ${gallery.id} ${!accessUrl && 'not'} found in access map`)
+    return accessUrl
   }
 }
 
