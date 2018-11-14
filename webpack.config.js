@@ -109,5 +109,8 @@ module.exports = {
       filename: 'index.html',
       inject: 'body',
     }),
+    new webpack.DefinePlugin({
+      __SWVERSION__: `"version_${Date.now()}"`,
+    }),
   ],
 }
