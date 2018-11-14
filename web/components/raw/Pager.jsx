@@ -20,12 +20,13 @@ export default class Pager extends React.Component {
     this.prevPage = this.prevPage.bind(this)
   }
 
-  static deriveStateFromProps({ id, activeItem, size }) {
+  static getDerivedStateFromProps({ id, activeItem, size }) {
     if (id !== this.props.id) {
-      this.setState({
+      return {
         page: Math.floor(activeItem / size) + 1,
-      })
+      }
     }
+    return null
   }
 
   renderPagerLinks() {
