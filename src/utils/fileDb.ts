@@ -10,7 +10,7 @@ import {
 import error from './error'
 import logger from './logger'
 
-const log = (level, ...message) => logger(level, '- fileDb -', ...message)
+const log = (level, ...message) => logger(level, 'fileDb -', ...message)
 const { internalError } = error('fileDb')
 const outputFile = (path, data, options) => outputFileRaw(global.storage + path, data, options)
 const pathExists = path => pathExistsRaw(global.storage + path)

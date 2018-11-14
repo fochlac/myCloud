@@ -1,6 +1,6 @@
 import logger from './logger'
 
-const log = (level, ...message) => logger(level, '- error -', ...message)
+const log = (level, ...message) => logger(level, 'error -', ...message)
 
 const error = (location: string): Core.ErrorConstructor => ({
   internalError: (level: number, ...message: Array<any>) => (detail: Error): void => {

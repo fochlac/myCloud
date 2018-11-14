@@ -4,7 +4,7 @@ import imageDb from '../../modules/db/image'
 import { rotateImage } from '../../utils/image'
 import logger from '../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- controller/images.ts -', ...message)
+const log = (level, ...message) => logger(level, 'controller/images.ts -', ...message)
 
 export default {
   delete: async ({ id, gallery }) => {

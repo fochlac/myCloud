@@ -2,7 +2,7 @@ import galleryDb from '../../modules/db/gallery'
 import urlDb from '../../modules/db/url'
 import logger from '../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- controller/urls.ts -', ...message)
+const log = (level, ...message) => logger(level, 'controller/urls.ts -', ...message)
 
 export async function Delete(id: Core.Id) {
   log(7, `deleting url ${id}`)

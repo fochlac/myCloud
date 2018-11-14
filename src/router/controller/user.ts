@@ -4,7 +4,7 @@ import urlDb from '../../modules/db/url'
 import userDb from '../../modules/db/user'
 import logger from '../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- controller/user.ts -', ...message)
+const log = (level, ...message) => logger(level, 'controller/user.ts -', ...message)
 
 export async function Create({ name, password, token }: loginData): Promise<Core.User> {
   log(6, `creating user ${name}`)

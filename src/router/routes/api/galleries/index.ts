@@ -11,7 +11,7 @@ import urls from './urls'
 import userDb from '../../../../modules/db/user'
 import logger from '../../../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- api/gallery/index.ts -', ...message)
+const log = (level, ...message) => logger(level, 'api/gallery/index.ts -', ...message)
 
 const { routerError } = error('galleries-router')
 

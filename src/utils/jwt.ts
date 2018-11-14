@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken'
 
 import logger from './logger'
 
-const log = (level, ...message) => logger(level, '- jwt -', ...message)
+const log = (level, ...message) => logger(level, 'jwt -', ...message)
 
 export function createJWT(token: Core.WebToken): Promise<string> {
   return new Promise((resolve, reject) => {

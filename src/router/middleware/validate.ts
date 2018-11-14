@@ -1,6 +1,6 @@
 import logger from '../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- validate.ts -', ...message)
+const log = (level, ...message) => logger(level, 'validate.ts -', ...message)
 
 export function validate(validationMap: Core.RequestValidationMap, settings) {
   return (req: Express.Request, res: Express.Response, next) => {

@@ -2,7 +2,7 @@ import { mkdir as mkdirRaw, pathExists as pathExistsRaw, remove as removeRaw } f
 
 import logger from './logger'
 
-const log = (level, ...message) => logger(level, '- fs -', ...message)
+const log = (level, ...message) => logger(level, 'fs -', ...message)
 
 const mkdir = path => mkdirRaw(global.storage + path)
 const remove = path => removeRaw(global.storage + path)

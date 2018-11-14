@@ -7,7 +7,7 @@ import logger from '../../utils/logger'
 import urlDb from '../../modules/db/url'
 import userDb from '../../modules/db/user'
 
-const log = (level, ...message) => logger(level, '- authentication.ts -', ...message)
+const log = (level, ...message) => logger(level, 'authentication.ts -', ...message)
 
 function extractTokenFromRequest(request): string | null {
   if (request.headers.jwt) {

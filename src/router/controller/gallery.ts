@@ -5,7 +5,7 @@ import galleryDb from '../../modules/db/gallery'
 import { getGalleryAccessToken } from '../middleware/authentication'
 import logger from '../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- controller/gallery.ts -', ...message)
+const log = (level, ...message) => logger(level, 'controller/gallery.ts -', ...message)
 
 const location = 'controller/gallery.ts'
 const { internalError } = error(location)

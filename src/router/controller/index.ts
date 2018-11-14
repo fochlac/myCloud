@@ -4,7 +4,7 @@ import { readFile } from 'fs-extra'
 import { sanitizeHtml } from '../../utils/sanitize'
 import logger from '../../utils/logger'
 
-const log = (level, ...message) => logger(level, '- controller/index.ts -', ...message)
+const log = (level, ...message) => logger(level, 'controller/index.ts -', ...message)
 
 export async function serveIndex(req, res) {
   const file = await readFile(join(global.appRoot, 'static/index.html'), 'utf8')
