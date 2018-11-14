@@ -9,6 +9,9 @@ import galleryDb from '../../../../modules/db/gallery'
 import images from './images'
 import urls from './urls'
 import userDb from '../../../../modules/db/user'
+import logger from '../../../../utils/logger'
+
+const log = (level, ...message) => logger(level, '- api/gallery/index.ts -', ...message)
 
 const { routerError } = error('galleries-router')
 
@@ -82,6 +85,7 @@ galleries.post(
       getGalleryAccessToken(galleryDb.get(parent), token.accessMap)
 
     if (parent && !accessToken) {
+      log(4, 'cannot create gallery since user lacks the access rights for the parent gallery')
       return res
         .status(403)
         .send({ success: false, message: 'Kein Zugriff auf die Eltern-Gallerie' })

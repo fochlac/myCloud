@@ -1,3 +1,7 @@
+import logger from '../../utils/logger'
+
+const log = (level, ...message) => logger(level, '- validate.ts -', ...message)
+
 export function validate(validationMap: Core.RequestValidationMap, settings) {
   return (req: Express.Request, res: Express.Response, next) => {
     const isValid = Object.keys(validationMap).every(reqKey =>
@@ -5,9 +9,12 @@ export function validate(validationMap: Core.RequestValidationMap, settings) {
     )
     if (isValid) {
       next()
+      log(7, `validation succeded for call to ${req.path}`)
     } else if (settings.nextOnFail) {
+      log(7, `validation failed for call to ${req.path}`)
       next('route')
     } else {
+      log(4, `validation failed for call to ${req.path}`)
       res.status(400).send({ success: false, reason: 'Bad_Request' })
     }
   }

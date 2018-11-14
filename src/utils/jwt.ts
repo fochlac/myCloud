@@ -1,6 +1,8 @@
 import * as jwt from 'jsonwebtoken'
 
-import log from './logger'
+import logger from './logger'
+
+const log = (level, ...message) => logger(level, '- jwt -', ...message)
 
 export function createJWT(token: Core.WebToken): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -19,9 +21,12 @@ export function createJWT(token: Core.WebToken): Promise<string> {
 export function decodeJWT(token: string): Promise<Core.WebToken> {
   return new Promise((resolve, reject) => {
     log(7, 'jwtVerify: decoding JWT-Token')
+    if (!token) {
+      log(4, 'jwtVerify: No Token provided.')
+    }
     jwt.verify(token, global.secretKey, (err, decodedToken) => {
       if (err) {
-        log(5, 'jwtVerify: No valid Token provided.', err)
+        log(4, 'jwtVerify: No valid Token provided.', err)
         reject(err)
       } else {
         log(7, 'jwtVerify: JWT-Token is valid')

@@ -2,6 +2,8 @@ import { mkdir as mkdirRaw, pathExists as pathExistsRaw, remove as removeRaw } f
 
 import logger from './logger'
 
+const log = (level, ...message) => logger(level, '- fs -', ...message)
+
 const mkdir = path => mkdirRaw(global.storage + path)
 const remove = path => removeRaw(global.storage + path)
 const pathExists = path => pathExistsRaw(global.storage + path)
@@ -14,14 +16,14 @@ export async function createFolder(name: string, parent: Core.Path): Promise<Cor
     path = parent + cleanName(name)
   }
   await mkdir(path)
-  logger(6, 'successfully created folder', path)
+  log(6, 'successfully created folder', path)
   return path + '/'
 }
 
 export async function deleteFile(path: string) {
   if (await pathExists(path)) {
     await remove(path)
-    logger(6, 'successfully deleted file', path)
+    log(6, 'successfully deleted file', path)
   }
 }
 

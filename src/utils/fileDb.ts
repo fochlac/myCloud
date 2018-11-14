@@ -10,6 +10,7 @@ import {
 import error from './error'
 import logger from './logger'
 
+const log = (level, ...message) => logger(level, '- fileDb -', ...message)
 const { internalError } = error('fileDb')
 const outputFile = (path, data, options) => outputFileRaw(global.storage + path, data, options)
 const pathExists = path => pathExistsRaw(global.storage + path)
@@ -29,21 +30,24 @@ class FileDb {
   }
 
   list() {
+    log(8, `listed all elements from db ${this.path}`)
     return clone(Object.values(this.content)) as any[]
   }
 
   get(id: Core.Id) {
+    log(8, `read element ${id} from db ${this.path}`)
     return clone(this.content[id])
   }
 
   find(key: string, value: string) {
+    log(8, `searched for ${value} in column ${key} from db ${this.path}`)
     return clone(Object.values(this.content).filter(elem => elem[key] === value)) as any[]
   }
 
   async set(id, value) {
     this.content[id] = clone(value)
     await write(this.content, this.path)
-    logger(5, `updated element ${id} from db ${this.path}`)
+    log(8, `updated element ${id} from db ${this.path}`)
     return clone(value)
   }
 
@@ -53,7 +57,7 @@ class FileDb {
       ...clone(map),
     }
     await write(this.content, this.path)
-    logger(5, `updated elements ${Object.keys(map).join(', ')} from db ${this.path}`)
+    log(8, `updated elements ${Object.keys(map).join(', ')} from db ${this.path}`)
     return clone(map)
   }
 
@@ -65,7 +69,7 @@ class FileDb {
   async delete(id: Core.Id) {
     delete this.content[id]
     await write(this.content, this.path)
-    logger(5, `deleted element ${id} from db ${this.path}`)
+    log(8, `deleted element ${id} from db ${this.path}`)
     return id
   }
 }

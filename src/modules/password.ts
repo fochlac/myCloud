@@ -13,7 +13,7 @@ function generateSalt(): Promise<string> {
   return new Promise((resolve, reject) => {
     crypto.randomBytes(16, (err, salt) => {
       if (err) {
-        log(3, 'error creating salt', err)
+        log(2, 'error creating salt', err)
         return reject(err)
       }
       resolve(salt.toString('base64'))
@@ -23,13 +23,13 @@ function generateSalt(): Promise<string> {
 
 function generateHash(value: string, salt: string): Promise<{ salt: string; hash: string }> {
   if (!value || !value.length) {
-    log(5, 'error, no pass provided', value)
+    log(4, 'error, no pass provided', value)
     return Promise.reject({ status: 400, message: 'Kein Passwort' })
   }
   return new Promise((resolve, reject) => {
     crypto.pbkdf2(value, salt, conf.iterations, conf.hashBytes, conf.digest, (err, hash) => {
       if (err) {
-        log(5, 'error creating hash', err)
+        log(2, 'error creating hash', err)
         return reject(err)
       }
 
@@ -49,12 +49,18 @@ export async function createUserHash(password: string): Promise<{ salt: string; 
 export async function verifyUser({ password, name }) {
   const user = userDb.find('name', name)[0]
   if (!user) {
+    log(4, `unable to find user ${name}`)
     return Promise.reject({ status: 400, type: 'BAD_USER' })
   }
   return generateHash(password, user.salt).then(
-    newHash =>
-      user.hash === newHash.hash
-        ? Promise.resolve(user)
-        : Promise.reject({ status: 403, type: 'BAD_PASSWORD' }),
+    newHash => {
+      if (user.hash === newHash.hash) {
+        log(6, `user ${name} successfully logged in`)
+        return Promise.resolve(user)
+      } else {
+        log(4, `user ${name} failed to log in due to an invalid password`)
+        return Promise.reject({ status: 403, type: 'BAD_PASSWORD' })
+      }
+    }
   )
 }
