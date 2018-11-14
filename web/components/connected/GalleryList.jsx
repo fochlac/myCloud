@@ -98,7 +98,7 @@ class GalleryList extends React.Component {
     } = this.state
 
     const size =
-      Math.floor((window.outerWidth - 50) / 180) * Math.floor((window.outerHeight - 200) / 220)
+      Math.floor((window.outerWidth - 50) / 180) * Math.floor((window.outerHeight - 200) / 220) || 1
 
     const active = location.search.split('active=')[1]
       ? location.search.split('active=')[1].split('&')[0]
@@ -116,6 +116,7 @@ class GalleryList extends React.Component {
         <Pager
           size={size}
           activeItem={+active}
+          id={gallery.get('id')}
           wrapper={children => <div className={style.list}>{children}</div>}
           onChange={index =>
             window.history.replaceState('', '', `/gallery/${gallery.get('id')}?active=${index}`)
