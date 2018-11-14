@@ -37,7 +37,7 @@ export async function authenticate(req: Express.Request, res, next): Promise<voi
       const parsedToken = await decodeJWT(token!)
       req.token = parsedToken
       req.authenticated = true
-      log(7, 'authenticated call ', req.token.user)
+      log(7, `authenticated call from user ${req.token.user || 'unregisterd'}`)
       if (req.token.user) {
         req.user = enrichUser(userDb.get(req.token.user))
         req.token.accessMap = generateUserAccessMap(req.user)
