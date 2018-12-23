@@ -33,6 +33,12 @@ class GalleryDb {
     return gallery && enrichGallery(gallery)
   }
 
+  getBare(id: Core.Id): Core.BareGallery {
+    const gallery: Core.BareGallery = this.db.get(id)
+
+    return gallery
+  }
+
   list(): Core.Gallery[] {
     const galleries: Core.BareGallery[] = this.db.list()
     return galleries.map(enrichGallery)

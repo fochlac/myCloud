@@ -64,7 +64,7 @@ export function checkGalleryAccessToken(level = ['read', 'write']) {
       params: { id },
     } = req
 
-    let gallery = id && galleryDb.get(id)
+    let gallery = id && galleryDb.getBare(id)
     if (!gallery) {
       log(4, 'unknown gallery')
       res.status(400).send({
@@ -74,11 +74,11 @@ export function checkGalleryAccessToken(level = ['read', 'write']) {
     } else {
       const accessToken = token && getGalleryAccessToken(gallery, token.accessMap)
       if (accessToken && level.includes(accessToken.access)) {
-        log(7, `user ${req.user && req.user.id || 'unregistered'} may access gallery ${id} with access level ${level}`)
+        log(7, `user ${req.user ? req.user.id : 'unregistered'} may access gallery ${id} with access level ${level}`)
         req.accessToken = accessToken
         next()
       } else {
-        log(4, `user ${req.user && req.user.id || 'unregistered'} tried to access gallery ${id} without access rights`)
+        log(4, `user ${req.user ? req.user.id : 'unregistered'} tried to access gallery ${id} without access rights`)
         res.status(403).send({
           success: false,
           message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
@@ -94,7 +94,7 @@ export function checkImageAccess(req: Express.Request, res, next) {
     params: { id },
   } = req
   const { gallery } = imageDb.get(id)
-  const imageGallery = gallery && galleryDb.get(gallery)
+  const imageGallery = gallery && galleryDb.getBare(gallery)
   if (!imageGallery) {
     log(4, 'unknown gallery')
     res.status(400).send({
@@ -104,11 +104,11 @@ export function checkImageAccess(req: Express.Request, res, next) {
   } else {
     const accessToken = token && getGalleryAccessToken(imageGallery, token.accessMap)
     if (accessToken) {
-      log(7, `user ${req.user && req.user.id || 'unregistered'} may access image ${id} with access level ${accessToken.access}`)
+      log(7, `user ${req.user ? req.user.id : 'unregistered'} may access image ${id} with access level ${accessToken.access}`)
       req.accessToken = accessToken
       next()
     } else {
-      log(4, `user ${req.user && req.user.id || 'unregistered'} tried to access image ${id} without access rights`)
+      log(4, `user ${req.user ? req.user.id : 'unregistered'} tried to access image ${id} without access rights`)
       res.status(403).send({
         success: false,
         message: 'Sie haben unzureichende Rechte um diese Aktion auszuführen.',
@@ -118,7 +118,7 @@ export function checkImageAccess(req: Express.Request, res, next) {
 }
 
 export function getGalleryAccessToken(
-  gallery: Core.Gallery,
+  gallery: Core.Gallery | Core.BareGallery,
   accessMap: Core.AccessMap,
 ): Core.AccessUrl {
   if (gallery && accessMap) {
@@ -130,7 +130,7 @@ export function getGalleryAccessToken(
       )
     const accessUrl = currentGalleryToken || (listedAncestorId && urlDb.get(accessMap[listedAncestorId].id))
 
-    log(accessUrl ? 7 : 4, `Gallery ${gallery.id} ${!accessUrl && 'not'} found in access map`)
+    log(accessUrl ? 7 : 4, `Gallery ${gallery.id} ${accessUrl ? '' : 'not'} found in access map`)
     return accessUrl
   }
 }
@@ -151,7 +151,7 @@ export async function checkShortUrl(req, res: Express.Response, next) {
   const accessUrl = urlDb.find('url', req.path)[0]
 
   if (accessUrl) {
-    log(5, `added gallery ${accessUrl.gallery} to access map for user ${req.user && req.user.id || 'unregisterd'}`)
+    log(5, `added gallery ${accessUrl.gallery} to access map for user ${req.user ? req.user.id : 'unregisterd'}`)
     if (req.user) {
       userDb.addUserUrl(req.user.id, accessUrl)
     }

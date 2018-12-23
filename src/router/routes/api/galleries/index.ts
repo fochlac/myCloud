@@ -7,9 +7,9 @@ import error from '../../../../utils/error'
 import gallery from '../../../controller/gallery'
 import galleryDb from '../../../../modules/db/gallery'
 import images from './images'
+import logger from '../../../../utils/logger'
 import urls from './urls'
 import userDb from '../../../../modules/db/user'
-import logger from '../../../../utils/logger'
 
 const log = (level, ...message) => logger(level, 'api/gallery/index.ts -', ...message)
 
@@ -81,8 +81,8 @@ galleries.post(
     const accessToken =
       parent &&
       token &&
-      galleryDb.get(parent) &&
-      getGalleryAccessToken(galleryDb.get(parent), token.accessMap)
+      galleryDb.getBare(parent) &&
+      getGalleryAccessToken(galleryDb.getBare(parent), token.accessMap)
 
     if (parent && !accessToken) {
       log(4, 'cannot create gallery since user lacks the access rights for the parent gallery')

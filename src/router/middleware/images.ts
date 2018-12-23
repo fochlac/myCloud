@@ -11,14 +11,14 @@ const imageStore = multer({
 })
 
 function destinationFinder(req, file, cb) {
-  const { path } = galleryDb.get(req.params.id)
+  const { path } = galleryDb.getBare(req.params.id)
   cb(null, global.storage + path)
 }
 
 function fileName({ params: { imageId, id } }: any, { originalname }: any, cb) {
   if (!imageId || !imageDb.get(imageId)) return cb(null, originalname)
 
-  const filename = imageDb.get(imageId).path.split(galleryDb.get(id).path)[1]
+  const filename = imageDb.get(imageId).path.split(galleryDb.getBare(id).path)[1]
   cb(null, filename)
 }
 

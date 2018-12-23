@@ -15,7 +15,7 @@ export async function Create({
   parent,
   description,
 }: Core.RawGallery): Promise<Core.Gallery[]> {
-  const { path = '' } = galleryDb.get(parent) || {}
+  const { path = '' } = galleryDb.getBare(parent) || {}
 
   log(7, `creating new gallery ${name} as child of ${parent}`)
 
@@ -56,7 +56,7 @@ export async function Update({
 }
 
 export async function Delete(id: Core.Id): Promise<Core.Id> {
-  const { path } = galleryDb.get(id)
+  const { path } = galleryDb.getBare(id)
 
   log(7, `deleting gallery ${id}`)
 
