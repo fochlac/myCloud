@@ -6,7 +6,7 @@ import error from '../../../utils/error'
 import { getResizedImageStream } from '../../../utils/image'
 import imageDb from '../../../modules/db/image'
 
-const { routerError } = error('image-router')
+const { internalError } = error('image-router')
 
 const images = Router()
 
@@ -31,13 +31,13 @@ images.get(
       format,
       raw: !!raw && raw === 'raw',
     })
-    imageStream.on('error', routerError(3, res, 'failure getting image'))
 
     res
-      .status(200)
-      .contentType(format || 'image/jpeg')
+    .status(200)
+    .contentType(format || 'image/jpeg')
 
     imageStream.pipe(res)
+    imageStream.on('error', internalError(3, 'error in image stream'))
 
 })
 

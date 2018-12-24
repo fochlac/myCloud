@@ -9,16 +9,10 @@ sharp.cache(false)
 const resizers = {}
 
 function getResizer(width, height) {
-  const key = `${width}_${height}`
-
-  if (!resizers[key]) {
-    resizers[key] = sharp()
-      .rotate()
-      .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
-      .max()
-  }
-
-  return resizers[key]
+  return sharp()
+    .rotate()
+    .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
+    .max()
 }
 
 export function getResizedImageStream({
