@@ -1,26 +1,32 @@
 import * as sharp from 'sharp'
 
-import { readFile, writeFile } from 'fs-extra'
+import { createReadStream, writeFile } from 'fs-extra'
+
+import { Stream } from 'stream';
 
 sharp.cache(false)
 
-export async function getImage({
+function getResizer(width, height) {
+  return sharp()
+    .rotate()
+    .resize(width, height)
+    .max()
+}
+
+export function getResizedImageStream({
   image,
   dimensions: { width, height },
   raw = false,
   format,
-}: getImageType): Promise<File> {
-  if (raw) {
-    return readFile(global.storage + image.path)
+}: getImageType):Stream {
+  const stream = createReadStream(global.storage + image.path)
+
+  if (!raw) {
+    const resizer = getResizer(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
+    stream.pipe(resizer)
   }
 
-  const resizedImage = await sharp(global.storage + image.path)
-    .rotate()
-    .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
-    .max()
-    .toBuffer()
-
-  return resizedImage
+  return stream
 }
 
 export async function rotateImage(image: Core.Image, right: boolean = true) {
