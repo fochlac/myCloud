@@ -6,11 +6,19 @@ import { Stream } from 'stream';
 
 sharp.cache(false)
 
+const resizers = {}
+
 function getResizer(width, height) {
-  return sharp()
-    .rotate()
-    .resize(width, height)
-    .max()
+  const key = `${width}_${height}`
+
+  if (!resizers[key]) {
+    resizers[key] = sharp()
+      .rotate()
+      .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
+      .max()
+  }
+
+  return resizers[key]
 }
 
 export function getResizedImageStream({
@@ -21,12 +29,9 @@ export function getResizedImageStream({
 }: getImageType):Stream {
   const stream = createReadStream(global.storage + image.path)
 
-  if (!raw) {
-    const resizer = getResizer(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
-    stream.pipe(resizer)
-  }
-
-  return stream
+  return raw
+    ? stream
+    : stream.pipe(getResizer(width, height))
 }
 
 export async function rotateImage(image: Core.Image, right: boolean = true) {

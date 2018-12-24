@@ -2,8 +2,11 @@ import { regexpValidator, validate } from '../../middleware/validate'
 
 import { Router } from 'express'
 import { checkImageAccess } from '../../middleware/authentication'
+import error from '../../../utils/error'
 import { getResizedImageStream } from '../../../utils/image'
 import imageDb from '../../../modules/db/image'
+
+const { routerError } = error('image-router')
 
 const images = Router()
 
@@ -28,12 +31,14 @@ images.get(
       format,
       raw: !!raw && raw === 'raw',
     })
+    imageStream.on('error', routerError(3, res, 'failure getting image'))
 
     res
       .status(200)
       .contentType(format || 'image/jpeg')
 
     imageStream.pipe(res)
+
 })
 
 export default images
