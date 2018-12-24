@@ -130,7 +130,6 @@ export function getGalleryAccessToken(
       )
     const accessUrl = currentGalleryToken || (listedAncestorId && urlDb.get(accessMap[listedAncestorId].id))
 
-    log(accessUrl ? 7 : 4, `Gallery ${gallery.id} ${accessUrl ? '' : 'not'} found in access map`)
     return accessUrl
   }
 }
