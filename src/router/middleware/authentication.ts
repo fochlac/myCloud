@@ -93,8 +93,8 @@ export function checkImageAccess(req: Express.Request, res, next) {
     token,
     params: { id },
   } = req
-  const { gallery } = imageDb.get(id)
-  const imageGallery = gallery && galleryDb.getBare(gallery)
+  const image = imageDb.get(id)
+  const imageGallery = image.gallery && galleryDb.getBare(image.gallery)
   if (!imageGallery) {
     log(4, 'unknown gallery')
     res.status(400).send({
