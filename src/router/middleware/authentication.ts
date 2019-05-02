@@ -159,7 +159,7 @@ export async function checkShortUrl(req, res: Express.Response, next) {
     req.startGallery = accessUrl.gallery
   }
   else {
-    log(4, `invalid access url ${req.path} was called`)
+    log(6, `invalid access url ${req.path} was called`)
   }
   next()
 }

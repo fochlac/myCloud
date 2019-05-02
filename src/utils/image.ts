@@ -2,7 +2,10 @@ import * as sharp from 'sharp'
 
 import { createReadStream, writeFile } from 'fs-extra'
 
-import { Stream } from 'stream';
+import { Stream } from 'stream'
+import error from './error'
+
+const { internalError } = error('image-util')
 
 sharp.cache(false)
 
@@ -19,13 +22,12 @@ export function getResizedImageStream({
   image,
   dimensions: { width, height },
   raw = false,
-  format,
-}: getImageType):Stream {
+  format
+}: getImageType): Stream {
   const stream = createReadStream(global.storage + image.path)
 
-  return raw
-    ? stream
-    : stream.pipe(getResizer(width, height))
+  stream.on('error', internalError(3, 'error reading image: '))
+  return raw ? stream : stream.pipe(getResizer(width, height))
 }
 
 export async function rotateImage(image: Core.Image, right: boolean = true) {

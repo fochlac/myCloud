@@ -14,31 +14,33 @@ images.get(
   '/:id',
   validate(
     {
-      params: { id: regexpValidator(/^[0-9]{1,200}$/) },
+      params: { id: regexpValidator(/^[0-9]{1,200}$/) }
     },
-    { nextOnFail: true },
+    { nextOnFail: true }
   ),
   checkImageAccess,
   ({ params: { id }, query: { width, height, format, raw } }, res) => {
     const image = imageDb.get(id)
     const dimensions = {
       width: parseInt(width),
-      height: parseInt(height),
+      height: parseInt(height)
     }
     const imageStream = getResizedImageStream({
       image,
       dimensions,
       format,
-      raw: !!raw && raw === 'raw',
+      raw: !!raw && raw === 'raw'
     })
 
     res
-    .status(200)
-    .contentType(format || 'image/jpeg')
+      .status(200)
+      .contentType(
+        RegExp('image/.*').test(format || '') ? format : 'image/jpeg'
+      )
 
     imageStream.pipe(res)
     imageStream.on('error', internalError(3, 'error in image stream'))
-
-})
+  }
+)
 
 export default images

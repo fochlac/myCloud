@@ -1,5 +1,6 @@
 import './BaseStyle.less'
 
+import Footer from 'CONNECTED/Footer'
 import HdButton from 'CONNECTED/HdButton'
 import { Link } from 'react-router-dom'
 import LoginButton from 'CONNECTED/LoginButton'
@@ -33,6 +34,7 @@ export default function DefaultPage({
         <LoginButton />
       </div>
       <div className={`${style.content} ${additionalClass}`}>{children}</div>
+      <Footer />
     </div>
   )
 }
