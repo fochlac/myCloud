@@ -11,18 +11,36 @@ export default class Pager extends React.Component {
   constructor(props) {
     super()
 
+    const size = Math.floor((window.outerWidth - 50) / 180) * Math.floor((window.outerHeight - 200) / 220) || 1
     this.state = {
-      page: Math.floor(props.activeItem / props.size) + 1,
+      page: Math.floor(props.activeItem / size) + 1,
+      size
     }
 
+    this.wrapperRef = React.createRef()
+    this.updateSize = this.updateSize.bind(this)
     this.setPage = this.setPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.prevPage = this.prevPage.bind(this)
+
+    if (ResizeObserver) {
+      this.resizeObserver = new ResizeObserver(() => this.updateSize())
+    }
+  }
+
+  componentDidMount() {
+    this.updateSize()
+    this.resizeObserver.observe(this.wrapperRef.current)
+  }
+
+  componentWillUnmount () {
+    cancelAnimationFrame(this.sizeUpdateRequest)
+    this.resizeObserver && this.resizeObserver.disconnect()
   }
 
   renderPagerLinks() {
-    const { size, children } = this.props
-    const { page } = this.state
+    const { children } = this.props
+    const { size, page } = this.state
     const pageCount = Math.ceil(children.size / size)
 
     let pages = []
@@ -74,32 +92,45 @@ export default class Pager extends React.Component {
     }
   }
 
+  updateSize () {
+    const { top, bottom, elementSize, activeItem } = this.props
+    this.sizeUpdateRequest = requestAnimationFrame(() => {
+
+      if (this.wrapperRef.current) {
+        const { width, height } = this.wrapperRef.current.getBoundingClientRect()
+
+        const size = Math.floor(width / elementSize.width) * Math.floor((height - (top ? 35 : 0) - (bottom ? 35 : 0)) / elementSize.height) || 1
+
+        if (size !== this.state.size) {
+          this.setState({ page: Math.floor(activeItem / size) + 1, size })
+        }
+      }
+    })
+  }
+
   setPage(page) {
-    const { onChange, size } = this.props
+    const { onChange } = this.props
+    const { size } = this.state
     this.setState({ page }, () => {
       typeof onChange === 'function' && onChange(page * size - 1)
     })
   }
 
   renderPager(additionalClass = '') {
-    const { size, children } = this.props
-    const { page } = this.state
+    const { children } = this.props
+    const { size, page } = this.state
 
     return (
       <div className={cx(styles.pager, additionalClass)}>
         {size < children.size ? <span>{this.renderPagerLinks()}</span> : null}
-        <span className={styles.sizeArea}>
-          Anzahl:
-          {children.size % size === 0 || page < children.size / size ? size : children.size % size}
-        </span>
       </div>
     )
   }
 
   nextPage() {
     const {
-      props: { size, children },
-      state: { page },
+      props: { children },
+      state: { size, page },
     } = this
     const pageCount = Math.ceil(children.size / size)
 
@@ -119,11 +150,11 @@ export default class Pager extends React.Component {
   }
 
   render() {
-    const { size, children, top, bottom, inactive, wrapper } = this.props
-    const { page } = this.state
+    const { children, top, bottom, inactive, wrapper } = this.props
+    const { size, page } = this.state
 
-    if (inactive || children.size < size) {
-      return <span>{wrapper(children)}</span>
+    if (inactive || !size || children.size < size) {
+      return <div className={styles.wrapper} ref={this.wrapperRef}>{wrapper(children)}</div>
     }
 
     return (
@@ -132,20 +163,25 @@ export default class Pager extends React.Component {
         onSwipeRight={this.prevPage}
         className={styles.pagedList}
       >
-        {top && this.renderPager()}
-        <div className="pagedContent">
-          {wrapper(
-            children.filter((item, index) => index >= (page - 1) * size && index < page * size),
-          )}
+        <div className={cx(styles.wrapper, styles.pagedList)} ref={this.wrapperRef}>
+          {top && this.renderPager()}
+          <div className="pagedContent">
+            {wrapper(
+              children.filter((item, index) => index >= (page - 1) * size && index < page * size),
+            )}
+          </div>
+          {bottom && this.renderPager(styles.bottom)}
         </div>
-        {bottom && this.renderPager(styles.bottom)}
       </SwipableDiv>
     )
   }
 }
 
 Pager.defaultProps = {
-  size: 10,
+  elementSize: {
+    width: 100,
+    height: 100
+  },
   activeItem: 1,
   top: true,
   bottom: true,
@@ -155,7 +191,10 @@ Pager.defaultProps = {
 }
 
 Pager.propTypes = {
-  size: PropTypes.number,
+  elementSize: PropTypes.shape({
+    height: PropTypes.number,
+    width: PropTypes.number
+  }),
   activeItem: PropTypes.number,
   children: ImmuTypes.list,
   top: PropTypes.bool,

@@ -53,23 +53,7 @@ class GalleryList extends React.Component {
       delete: () => this.setState({ showConfirmDelete: true }),
       share: () => this.setState({ showManageUrl: true }),
     }
-    this.handleResize = this.handleResize.bind(this)
     this.handleOpenSlideshow = this.handleOpenSlideshow.bind(this)
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
-  }
-
-  handleResize() {
-    clearTimeout(this.resizeTimeout)
-    this.resizeTimeout = setTimeout(() => {
-      this.forceUpdate()
-    }, 300)
   }
 
   render() {
@@ -97,8 +81,10 @@ class GalleryList extends React.Component {
       showCreateZip,
     } = this.state
 
-    const size =
-      Math.floor((window.outerWidth - 50) / 180) * Math.floor((window.outerHeight - 200) / 220) || 1
+    const elementSize = {
+      height: 180,
+      width: 180
+    }
 
     const active = location.search.split('active=')[1]
       ? location.search.split('active=')[1].split('&')[0]
@@ -114,12 +100,13 @@ class GalleryList extends React.Component {
           busy={busy}
         />
         <Pager
-          size={size}
+          elementSize={elementSize}
           activeItem={+active}
           key={gallery.get('id') || 'root'}
           wrapper={children => <div className={style.list}>{children}</div>}
-          onChange={index =>
-            window.history.replaceState('', '', `/gallery/${gallery.get('id')}?active=${index}`)
+          onChange={index => {
+            history.replace(`/${!!gallery.get('id') ? `gallery/${gallery.get('id')}` : ''}?active=${index}`)
+          }
           }
         >
           {elements
@@ -229,6 +216,7 @@ GalleryList.propTypes = {
   deleteUrl: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
   }).isRequired,
   uploadImages: PropTypes.func.isRequired,
   queue: ImmuTypes.map,

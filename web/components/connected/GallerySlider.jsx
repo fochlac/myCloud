@@ -67,11 +67,7 @@ class GallerySlider extends React.Component {
     } else if (!images.getIn([index, 'id'])) {
       history.push(`/gallery/${gallery.get('id')}`)
     } else if (lastState.index !== index) {
-      window.history.replaceState(
-        '',
-        '',
-        `/gallery/${gallery.get('id')}/slideshow?image=${images.getIn([index, 'id'])}`,
-      )
+      history.replace(`/gallery/${gallery.get('id')}/slideshow?image=${images.getIn([index, 'id'])}`)
       onChangeIndex && onChangeIndex(index)
     }
   }

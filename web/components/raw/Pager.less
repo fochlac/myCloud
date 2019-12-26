@@ -3,8 +3,9 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  white-space: nowrap;
   font-size: 1.2em;
-  min-height: 25px;
+  height: 25px;
   margin: 5px 20px;
 
   .pagerList .page {
@@ -28,6 +29,11 @@
   }
 }
 
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+
 .bottom {
   margin-top: auto;
   margin-bottom: 10px;
@@ -37,6 +43,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow: hidden;
 }
 
 @media (pointer: coarse) {

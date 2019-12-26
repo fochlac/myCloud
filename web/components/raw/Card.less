@@ -1,10 +1,10 @@
 .wrapper {
   margin: 10px;
-  height: 200px;
+  height: 160px;
 }
 .card {
   width: 150px;
-  max-height: 180px;
+  max-height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,7 +17,7 @@
   }
 }
 .name {
-  max-height: 30px;
+  height: 30px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -29,4 +29,13 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
+}
+.nameHidden {
+  height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  white-space: nowrap;
 }

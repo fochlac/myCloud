@@ -36,7 +36,6 @@ export default class GalleryHeader extends React.Component {
           <h3 className={styles.name}>{isRoot ? 'Galerieübersicht' : gallery.get('name')}</h3>
           <div />
         </div>
-        {!isRoot && <p className={styles.description}>{gallery.get('description')}</p>}
         <ul className={styles.galleryControl}>
           {!isRoot && (
             <li title="Galerie downloaden" onClick={galleryActions.zip}>
