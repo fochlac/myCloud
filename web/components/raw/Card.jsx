@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './Card.less'
 
-export default function Card({ children, image, imageTitle, className, src, showChildren }) {
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.card + ' ' + className}>
-        <Image image={image} src={src} size={140} height={showChildren ? 110 : 140} title={imageTitle} />
-        <div className={showChildren ? styles.name : styles.nameHidden}>{children}</div>
-      </div>
+export default function Card({ children, onClick, image, imageTitle, className, src, noWrapper, imageStyle, showChildren }) {
+  const card = (
+    <div onClick={onClick} className={styles.card + ' ' + className}>
+      <Image style={imageStyle} image={image} src={src} size={140} height={showChildren ? 110 : 140} title={imageTitle} />
+      <div className={showChildren ? styles.name : styles.nameHidden}>{children}</div>
     </div>
   )
+
+  return noWrapper ? card : <div className={styles.wrapper}>{card}</div>
 }
 
 Card.propTypes = {

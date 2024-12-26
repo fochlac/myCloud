@@ -42,6 +42,7 @@ declare namespace Core {
     ancestors: Id[]
     children: Id[]
     accessToken?: AccessUrl
+    textNodes: TextNode[]
   }
 
   interface BareGallery {
@@ -51,9 +52,20 @@ declare namespace Core {
     path: Path
     parent: Id
     images: Id[]
+    textNodes: Id[]
     urls: Id[]
     ancestors: Id[]
     children: Id[]
+  }
+
+  interface TextNode {
+    id: Id
+    dateTime: string
+    text: string
+    type: string
+    galleryId: Id
+    created: number
+    lastModified: number
   }
 
   interface Image {
@@ -61,6 +73,7 @@ declare namespace Core {
     id: Id
     gallery: Id
     created: string
+    imageTaken?: string
     name: string
     description: string
     lastModified: number

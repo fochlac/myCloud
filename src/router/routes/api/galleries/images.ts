@@ -26,13 +26,15 @@ images.post(
         name: regexpValidator(/^.{1,100}$/),
         description: regexpValidator(/^.{1,2000}$/, true),
         created: regexpValidator(/^[0-9]{1,20}$/, true),
+        imageTaken: regexpValidator(/^[0-9]{1,20}$/, true),
+        rotate: oneOfValidator(['0', '90', '180', '270'], true),
       },
     },
     { nextOnFail: false },
   ),
-  ({ params: { id }, body: { name, description, created }, file }, res) => {
+  ({ params: { id }, body: { name, description, created, imageTaken, rotate }, file }, res) => {
     image
-      .create({ gallery: id, name, description, file, created })
+      .create({ gallery: id, name, description, file, created, imageTaken, rotate })
       .then(image => res.status(200).send(image))
       .catch(routerError(2, res, 'error creating image', { parent: id, name, description }))
   },

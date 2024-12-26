@@ -6,4 +6,4 @@ storage/
 package-lock.json
 .vscode
 log/
-/static/
+/static*

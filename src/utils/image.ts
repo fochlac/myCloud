@@ -13,16 +13,18 @@ const resizers = {}
 
 function getResizer(width, height) {
   return sharp()
-    .rotate()
-    .resize(!isNaN(width) ? width : 1280, !isNaN(height) ? height : 980)
-    .max()
+    .resize({
+      width: !isNaN(width) ? width : 1280,
+      height: !isNaN(height) ? height : 980,
+      fit: sharp.fit.inside,
+      withoutEnlargement: true
+    })
 }
 
 export function getResizedImageStream({
   image,
   dimensions: { width, height },
-  raw = false,
-  format
+  raw = false
 }: getImageType): Stream {
   const stream = createReadStream(global.storage + image.path)
 
@@ -30,10 +32,14 @@ export function getResizedImageStream({
   return raw ? stream : stream.pipe(getResizer(width, height))
 }
 
-export async function rotateImage(image: Core.Image, right: boolean = true) {
+export function rotateImage(image: Core.Image, right: boolean = true) {
+  return rotateDegrees(image, right ? 90 : -90)
+}
+
+export async function rotateDegrees(image: Core.Image, degrees: number) {
   const file = await sharp(global.storage + image.path)
 
-  const rotatedImage = await file.rotate(right ? 90 : -90)
+  const rotatedImage = await file.rotate(degrees)
 
   await writeFile(global.storage + image.path, await rotatedImage.toBuffer())
   return image

@@ -10,6 +10,7 @@ import images from './images'
 import logger from '../../../../utils/logger'
 import urls from './urls'
 import userDb from '../../../../modules/db/user'
+import textNodes from './textNodes'
 
 const log = (level, ...message) => logger(level, 'api/gallery/index.ts -', ...message)
 
@@ -19,6 +20,7 @@ const galleries = Router()
 
 galleries.use(images)
 galleries.use(urls)
+galleries.use(textNodes)
 
 galleries.get('/', (req, res) => {
   res.status(200).send(gallery.ReadAll(req.token && req.token.accessMap))

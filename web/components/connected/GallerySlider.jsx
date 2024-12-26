@@ -59,21 +59,23 @@ class GallerySlider extends React.Component {
   componentDidUpdate(lastProps, lastState) {
     const {
       state: { index },
-      props: { gallery, images, history, onChangeIndex },
+      props: { gallery, images, history, onChangeIndex, noNavigation },
     } = this
 
     if (!images.getIn([index, 'id']) && images.size) {
       this.setState({ index: images.size - 1 })
-    } else if (!images.getIn([index, 'id'])) {
+    } else if (!images.getIn([index, 'id']) && !noNavigation) {
       history.push(`/gallery/${gallery.get('id')}`)
     } else if (lastState.index !== index) {
-      history.replace(`/gallery/${gallery.get('id')}/slideshow?image=${images.getIn([index, 'id'])}`)
+      if (!noNavigation) {
+        history.replace(`/gallery/${gallery.get('id')}/slideshow?image=${images.getIn([index, 'id'])}`)
+      }
       onChangeIndex && onChangeIndex(index)
     }
   }
 
   handleKeys({ keyCode }) {
-    const { gallery, history } = this.props
+    const { gallery, history, onClose } = this.props
     const { index } = this.state
 
     switch (keyCode) {
@@ -84,7 +86,12 @@ class GallerySlider extends React.Component {
         this.nextImage()
         break
       case 27:
-        history.push(`/gallery/${gallery.get('id')}?active=${index}`)
+        if (typeof onClose === 'function') {
+          onClose()
+        }
+        else {
+          history.push(`/gallery/${gallery.get('id')}?active=${index}`)
+        }
         break
     }
   }
@@ -135,7 +142,7 @@ class GallerySlider extends React.Component {
 
   renderSlide({ image, type }) {
     const { index } = this.state
-    const { fullscreen, setFullscreen } = this.props
+    const { fullscreen, setFullscreen, hideEdit } = this.props
 
     const additionalClass = [SLIDE.OLD, SLIDE.LAST].includes(type) ? styles.old : ''
     const { deleteImage, rotateImage } = this.props
@@ -152,7 +159,7 @@ class GallerySlider extends React.Component {
         {![SLIDE.NEW, SLIDE.OLD].includes(type) && (
           <Image image={image} width={maxWidth} height={maxHeight} background="black" />
         )}
-        {type === SLIDE.ACTIVE && (
+        {type === SLIDE.ACTIVE && !hideEdit && (
           <div className={styles.editBar}>
             {fullscreen && (
               <span
@@ -213,6 +220,7 @@ GallerySlider.propTypes = {
   updateImage: PropTypes.func.isRequired,
   setFullscreen: PropTypes.func.isRequired,
   fullscreen: PropTypes.bool,
+  hideEdit: PropTypes.bool,
 }
 
 export default withRouter(

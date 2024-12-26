@@ -1,7 +1,5 @@
-export function resize(file, maxDimensions) {
+export function resize(file, { width: maxWidth, height: maxHeight }) {
   return new Promise((resolve, reject) => {
-    const maxWidth = maxDimensions.width;
-    const maxHeight = maxDimensions.height
 
     if (!file.type.match(/image.*/)) {
       return reject()
@@ -29,10 +27,11 @@ export function resize(file, maxDimensions) {
       }
 
       let canvas = document.createElement('canvas')
+      let ctx = canvas.getContext('2d')
+
       canvas.width = width
       canvas.height = height
 
-      let ctx = canvas.getContext('2d')
       ctx.drawImage(image, 0, 0, width, height)
 
       resolve(canvas)
@@ -45,3 +44,4 @@ export function resize(file, maxDimensions) {
 export function createSmallObjectURL(image, size = 200) {
   return resize(image, { width: size, height: size }).then(canvas => canvas.toDataURL())
 }
+

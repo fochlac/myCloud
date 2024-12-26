@@ -1,8 +1,9 @@
-/* global Response, Blob, self, caches, Request, Headers, console, fetch, navigator, setInterval, clearInterval, clearTimeout, setTimeout, indexedDB, __SWVERSION__ */
+/* self Response, Blob, self, caches, Request, Headers, console, fetch, navigator, setInterval, clearInterval, clearTimeout, setTimeout, indexedDB, __SWVERSION__ */
 'use strict'
 const serverUrl = location.origin
 let version = __SWVERSION__
-let assets = global.serviceWorkerOption.assets.map(asset => serverUrl + '/static' + asset)
+
+let assets = self.serviceWorkerOption.assets.map(asset => serverUrl + '/static' + asset)
 let staticContent = [...assets, '/manifest.json']
 let staticRegex = staticContent.length
   ? new RegExp(

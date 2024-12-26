@@ -2,6 +2,7 @@ import imageDb from '../../modules/db/image'
 import initDb from '../../utils/fileDb'
 import { randomUrl } from '../../utils/url'
 import urlDb from '../../modules/db/url'
+import textNodeDb from '../../modules/db/textNode'
 
 class GalleryDb {
   db: Core.FileDb
@@ -76,6 +77,25 @@ class GalleryDb {
     return enrichGallery(newGallery)
   }
 
+  async insertTextNode(id: Core.Id, textNode: Core.TextNode): Promise<Core.Gallery> {
+    const gallery: Core.BareGallery = this.db.get(id)
+    if (!Array.isArray(gallery.textNodes)) {
+      gallery.textNodes = []
+    }
+    if (!gallery.textNodes.includes(textNode.id)) {
+      gallery.textNodes.push(textNode.id)
+    }
+    const newGallery: Core.BareGallery = await this.db.set(id, gallery)
+    return enrichGallery(newGallery)
+  }
+
+  async deleteTextNode(id: Core.Id, textNode: Core.TextNode): Promise<Core.Gallery> {
+    const gallery: Core.BareGallery = this.db.get(id)
+    gallery.textNodes = gallery.textNodes.filter(nodeId => nodeId !== textNode.id)
+    const newGallery: Core.BareGallery = await this.db.set(id, gallery)
+    return enrichGallery(newGallery)
+  }
+
   async update({ name, description, id, parent }) {
     const gallery: Core.BareGallery = this.db.get(id)
     let result
@@ -118,6 +138,7 @@ class GalleryDb {
       parent,
       id,
       images: [],
+      textNodes: [],
       urls,
       ancestors,
       children: [],
@@ -134,10 +155,13 @@ class GalleryDb {
 }
 
 function enrichGallery(gallery: Core.BareGallery): Core.Gallery {
+  const { textNodes = [], images = [], urls = [] } = gallery
+
   return {
     ...gallery,
-    images: gallery.images.map((id: string): Core.Image => imageDb.get(id)),
-    urls: gallery.urls.map(id => urlDb.get(id)),
+    images: images.map((id: string): Core.Image => imageDb.get(id)),
+    urls: urls.map(id => urlDb.get(id)),
+    textNodes: textNodes.map(id => textNodeDb.get(id)),
   } as Core.Gallery
 }
 

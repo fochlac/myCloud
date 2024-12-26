@@ -60,8 +60,8 @@ export async function Delete(id: Core.Id): Promise<Core.Id> {
 
   log(7, `deleting gallery ${id}`)
 
-  await deleteFolder(path)
   await galleryDb.delete(id)
+  await deleteFolder(path)
 
   log(7, `successfully deleted gallery ${id}`)
   return id

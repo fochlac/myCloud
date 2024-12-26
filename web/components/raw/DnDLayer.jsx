@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import exifr from 'exifr'
+
 import cx from '../../utils/classnames'
 import styles from './DnDLayer.less'
 import { createSmallObjectURL } from '../../utils/resizer'
@@ -77,11 +79,18 @@ export default class DnDLayer extends React.Component {
         promises.unshift(
           oldPromise.then(async () => {
             this.setState({ current: index + 1 })
+
+            const metadata = await exifr.parse(file, { translateValues: false });
+
+            const rotation = {1: 0, 3: 180, 5: 90, 6: 90, 7: 270, 8: 270}[metadata?.Orientation]
+
             return {
               file,
               name: file.name,
+              rotate: String(rotation),
               created: Date.now(),
-              objectUrl: await createSmallObjectURL(file),
+              imageTaken: metadata?.DateTimeOriginal ? metadata.DateTimeOriginal.getTime() : undefined,
+              objectUrl: await createSmallObjectURL(file, 200, rotation),
               id: `${file.lastModified}_${file.size}`,
             }
           }),

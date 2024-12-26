@@ -1,7 +1,7 @@
 import { deleteFile } from '../../utils/fs'
 import galleryDb from '../../modules/db/gallery'
 import imageDb from '../../modules/db/image'
-import { rotateImage } from '../../utils/image'
+import { rotateDegrees, rotateImage } from '../../utils/image'
 import logger from '../../utils/logger'
 
 const log = (level, ...message) => logger(level, 'controller/images.ts -', ...message)
@@ -22,7 +22,7 @@ export default {
     return await imageDb.delete(id)
   },
 
-  create: async ({ gallery, name, description, file, created }) => {
+  create: async ({ gallery, name, description, file, created, imageTaken, rotate }) => {
     log(7, `adding image ${name} to gallery ${gallery}`)
     const image = await imageDb.create({
       gallery,
@@ -30,8 +30,14 @@ export default {
       description,
       created,
       path: file.path.split(global.storage)[1],
+      imageTaken
     })
+    if (rotate && rotate !== '0') {
+      await rotateDegrees(image, Number(rotate))
+    }
+
     await galleryDb.insertImage(gallery, image)
+
     log(7, `successfully added image ${image.id} to gallery ${gallery}`)
     return image
   },
@@ -41,7 +47,7 @@ export default {
     const image = await imageDb.update({
       name,
       description,
-      id,
+      id
     })
     log(7, `successfully updated image ${id} in gallery ${gallery}`)
     return image

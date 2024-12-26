@@ -10,8 +10,22 @@ import React from 'react'
 import Slideshow from './views/Slideshow'
 import { connect } from 'react-redux'
 import { loadGalleries } from 'STORE/actions'
+import Timeline from './views/Timeline'
 
 class App extends React.Component {
+  getRedirectPath(app) {
+    if (!app.get('startGallery')) {
+      return '/'
+    }
+
+    const galleryId = app.get('startGallery')
+    const isTimeline = app.get('startTimeline')
+
+    return isTimeline
+      ? `/timelines/${galleryId}`
+      : `/gallery/${galleryId}`
+  }
+
   render() {
     const { app } = this.props
     const busy = app.get('busy').includes('APP_ROOT')
@@ -30,6 +44,10 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route
+            path="/timelines/:id/:edit?"
+            render={({ match: { params } }) => <Timeline params={params} />}
+          />
+          <Route
             path="/gallery/:id/slideshow"
             render={({ match: { params }, location: { search } }) => (
               <Slideshow params={params} image={extractQuery(search, 'image')} />
@@ -40,7 +58,7 @@ class App extends React.Component {
             render={({ match: { params } }) => <Gallery params={params} />}
           />
           <Route path="/" exact render={() => <Dashboard />} />
-          <Redirect to={app.get('startGallery') ? `/gallery/${app.get('startGallery')}` : '/'} />
+          <Redirect to={this.getRedirectPath(app)} />
         </Switch>
       </Router>
     )

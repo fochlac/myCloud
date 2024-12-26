@@ -23,7 +23,7 @@ urls.post(
     {
       body: {
         access: oneOfValidator(['read', 'write'], true),
-        url: regexpValidator(/^[0-9a-zA-z\_\-]{1,200}$/, true),
+        url: regexpValidator(/^\/[0-9a-zA-z\_\+]{7,14}$/, true),
       },
     },
     { nextOnFail: false },

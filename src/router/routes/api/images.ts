@@ -22,20 +22,19 @@ images.get(
   ({ params: { id }, query: { width, height, format, raw } }, res) => {
     const image = imageDb.get(id)
     const dimensions = {
-      width: parseInt(width),
-      height: parseInt(height)
+      width: parseInt(width as string),
+      height: parseInt(height as string),
     }
     const imageStream = getResizedImageStream({
       image,
       dimensions,
-      format,
       raw: !!raw && raw === 'raw'
     })
 
     res
       .status(200)
       .contentType(
-        RegExp('image/.*').test(format || '') ? format : 'image/jpeg'
+        RegExp('image/.*').test(format as string || '') ? format as string : 'image/jpeg'
       )
 
     imageStream.pipe(res)

@@ -7,7 +7,7 @@ import styles from './ImageUploadCard.less'
 
 function ImageUploadCard({ image }) {
   return (
-    <Card src={image.get('objectUrl')} imageTitle={image.get('name')} className={styles.card}>
+    <Card imageStyle={{ rotate: `transform: rotate(${image.get('rotate')}deg)` }} src={image.get('objectUrl')} imageTitle={image.get('name')} className={styles.card}>
       {image.get('isUploading') && (
         <div className={styles.uploading}>
           <span className="fa fa-2x fa-circle-o-notch fa-spin" />

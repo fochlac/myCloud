@@ -4,7 +4,6 @@ import { Map } from 'immutable'
 import { SET_FULLSCREEN } from '../actions/app'
 
 const appReducer = (app = Map, action) => {
-  console.log(action)
   switch (action.type) {
     case SET_BUSY:
       return app.set('busy', action.busy)

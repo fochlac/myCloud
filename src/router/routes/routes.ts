@@ -14,7 +14,8 @@ router.use(authenticate)
 router.use('/api', apiRouter)
 
 // check for a shortUrl
-router.get(/^\/[A-Za-z0-9+/]{7,14}$/, checkShortUrl)
+router.get(/^\/timelines\/[0-9a-zA-z_+]{7,14}$/, checkShortUrl)
+router.get(/^\/[0-9a-zA-z_+]{7,14}$/, checkShortUrl)
 
 // catch-all
 router.get('*', serveIndex)

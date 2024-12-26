@@ -93,8 +93,8 @@ export function checkImageAccess(req: Express.Request, res, next) {
     token,
     params: { id },
   } = req
-  const image = imageDb.get(id)
-  const imageGallery = image.gallery && galleryDb.getBare(image.gallery)
+  const { gallery } = imageDb.get(id) ?? {}
+  const imageGallery = gallery && galleryDb.getBare(gallery)
   if (!imageGallery) {
     log(4, 'unknown gallery')
     res.status(400).send({
@@ -147,7 +147,9 @@ export function isAuthenticated(req: Express.Request, res: Express.Response, nex
 }
 
 export async function checkShortUrl(req, res: Express.Response, next) {
-  const accessUrl = urlDb.find('url', req.path)[0]
+  const isTimelineUrl = req.path.startsWith('/timelines/')
+  const urlPath = isTimelineUrl ? req.path.replace('/timelines/', '/') : req.path
+  const accessUrl = urlDb.find('url', urlPath)[0]
 
   if (accessUrl) {
     log(5, `added gallery ${accessUrl.gallery} to access map for user ${req.user ? req.user.id : 'unregisterd'}`)
@@ -157,9 +159,9 @@ export async function checkShortUrl(req, res: Express.Response, next) {
     const token = await addToAccessMap(req, res, accessUrl)
     req.token = token
     req.startGallery = accessUrl.gallery
-  }
-  else {
-    log(6, `invalid access url ${req.path} was called`)
+    req.startTimeline = isTimelineUrl
+  } else {
+    log(4, `invalid access url ${req.path} was called`)
   }
   next()
 }

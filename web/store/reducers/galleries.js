@@ -1,18 +1,21 @@
 import {
   CREATE_GALLERY,
   CREATE_IMAGE,
+  CREATE_TEXT_NODES,
   CREATE_URL,
   DELETE_GALLERY,
   DELETE_IMAGE,
+  DELETE_TEXT_NODES,
   DELETE_URL,
   LOAD_GALLERIES,
   ROTATE_IMAGE,
   UPDATE_GALLERY,
   UPDATE_IMAGE,
+  UPDATE_TEXT_NODES,
 } from '../actions'
 
 import { COMPLETE } from '../middleware/api'
-import { Map } from 'immutable'
+import { List, Map } from 'immutable'
 
 const galleriesReducer = (galleries = Map, action) => {
   switch (action.type) {
@@ -36,34 +39,33 @@ const galleriesReducer = (galleries = Map, action) => {
           : galleries
       }
       return galleries
-    case CREATE_IMAGE:
-      if (action.status === COMPLETE) {
-        const image = action.data
-        galleries = galleries.updateIn([image.get('gallery'), 'images'], images =>
-          images.push(image),
-        )
-      }
-      return galleries
-    case UPDATE_IMAGE:
-    case ROTATE_IMAGE:
-      if (action.status === COMPLETE) {
-        const image = action.data
+      case CREATE_TEXT_NODES:
+        if (action.status === COMPLETE) {
+          const node = action.data
+          galleries = galleries.updateIn([node.get('galleryId'), 'textNodes'], nodes =>
+            !!nodes ? nodes.push(node) : new List([node])
+          )
+        }
+        return galleries
+      case UPDATE_TEXT_NODES:
+        if (action.status === COMPLETE) {
+          const node = action.data
 
-        galleries = galleries.updateIn([image.get('gallery'), 'images'], images => {
-          const position = images.findIndex(img => img.get('id') === image.get('id'))
-          return images.set(position, image)
-        })
-      }
-      return galleries
-    case DELETE_IMAGE:
-      if (action.status === COMPLETE) {
-        const { data } = action
+          galleries = galleries.updateIn([node.get('galleryId'), 'textNodes'], nodes => {
+            const position = nodes.findIndex(tn => tn.get('id') === node.get('id'))
+            return nodes.set(position, node)
+          })
+        }
+        return galleries
+      case DELETE_TEXT_NODES:
+        if (action.status === COMPLETE) {
+          const { data } = action
 
-        galleries = galleries.updateIn([data.get('gallery'), 'images'], images => {
-          return images.filter(image => image.get('id') !== data.get('id'))
-        })
-      }
-      return galleries
+          galleries = galleries.updateIn([data.get('galleryId'), 'textNodes'], nodes => {
+            return nodes.filter(tn => tn.get('id') !== data.get('id'))
+          })
+        }
+        return galleries
     case DELETE_URL:
       if (action.status === COMPLETE) {
         const {

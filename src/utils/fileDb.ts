@@ -81,7 +81,7 @@ function write(content: object, path: Core.Path): void {
     debounceContent = content
   } else {
     debounceContent = content
-    writeDebounce = new Promise(resolve =>
+    writeDebounce = new Promise<void>(resolve =>
       setTimeout(async () => {
         const data = JSON.stringify(debounceContent, null, 2)
         debounceContent = undefined

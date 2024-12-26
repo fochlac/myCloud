@@ -89,3 +89,47 @@ export function deleteUrl(gallery, id) {
     },
   }
 }
+
+export const CREATE_TEXT_NODES = 'CREATE_TEXT_NODES'
+export function createTextNode({ galleryId, type, text, dateTime }) {
+  return {
+    type: CREATE_TEXT_NODES,
+    status: INITIALIZED,
+    api: {
+      url: `galleries/${galleryId}/textNodes`,
+      method: 'post',
+      body: {
+        type, text, dateTime
+      },
+    },
+  }
+}
+
+export const UPDATE_TEXT_NODES = 'UPDATE_TEXT_NODES'
+export function updateTextNode({ galleryId, type, text, dateTime, id }) {
+  return {
+    type: UPDATE_TEXT_NODES,
+    status: INITIALIZED,
+    api: {
+      url: `galleries/${galleryId}/textNodes/${id}`,
+      method: 'put',
+      body: {
+        type,
+        text,
+        dateTime
+      },
+    },
+  }
+}
+
+export const DELETE_TEXT_NODES = 'DELETE_TEXT_NODES'
+export function deleteTextNode({ galleryId, id }) {
+  return {
+    type: DELETE_TEXT_NODES,
+    status: INITIALIZED,
+    api: {
+      url: `galleries/${galleryId}/textNodes/${id}`,
+      method: 'delete',
+    }
+  }
+}

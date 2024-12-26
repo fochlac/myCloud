@@ -26,6 +26,7 @@ export async function serveIndex(req, res) {
                     busy: [],
                     hd: !localStorage || (localStorage.hd !== 'false' && true),
                     ${req.startGallery ? `startGallery: ${req.startGallery},` : ''}
+                    ${req.startTimeline ? `startTimeline: true,` : ''}
                   },
                   galleries:${sanitizeHtml(JSON.stringify(galleries))},
                   user:${req.user ? sanitizeHtml(JSON.stringify(req.user)) : '{}'},

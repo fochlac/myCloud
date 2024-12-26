@@ -36,11 +36,11 @@ export default class Dialog extends React.Component {
   }
 
   render() {
-    const { className, children, header, onClose } = this.props
+    const { className, children, header, onClose, headerClassName } = this.props
     return (
       <div className={cx(styles.dialogBackground, 'dialogBackground')} onClick={this.closeDialog}>
         <div className={cx(styles.dialog, className)}>
-          <div className={styles.header}>
+          <div className={cx(styles.header, headerClassName)}>
             {header}
             <span className={cx('fa fa-times', styles.closeButton)} onClick={onClose} />
           </div>

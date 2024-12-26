@@ -14,7 +14,7 @@ class Image extends React.PureComponent {
   }
 
   render() {
-    const { image, size, src, title, width, height, background, hd } = this.props
+    const { image, size, src, title, width, height, background, hd, style } = this.props
     const { ready } = this.state
     const factor = hd ? 2 : 1.2
     const imgWidth = Math.ceil(((width || size) * factor) / 100) * 100
@@ -34,7 +34,7 @@ class Image extends React.PureComponent {
       >
         {image || src ? (
           <img
-            style={{ maxHeight: `${height || size}px`, maxWidth: `${width || size}px` }}
+            style={{ ...style, maxHeight: `${height || size}px`, maxWidth: `${width || size}px` }}
             className={this.state.ready ? styles.image : styles.hidden}
             title={title}
             src={url}

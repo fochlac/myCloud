@@ -12,8 +12,17 @@ export const AccessTokenType = ImmuTypes.shape({
 export const ImageType = ImmuTypes.shape({
   id: PropTypes.string.isRequired,
   gallery: PropTypes.string.isRequired,
+  imageTaken: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
+})
+
+export const TextNodeType = ImmuTypes.shape({
+  id: PropTypes.string.isRequired,
+  dateTime: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  galleryId: PropTypes.string.isRequired,
 })
 
 export const GalleryType = ImmuTypes.shape({
@@ -23,6 +32,7 @@ export const GalleryType = ImmuTypes.shape({
   description: PropTypes.string.isRequired,
   parent: PropTypes.string.isRequired,
   images: ImmuTypes.listOf(ImageType).isRequired,
+  textNodes: ImmuTypes.listOf(TextNodeType).isRequired,
   urls: ImmuTypes.listOf(AccessTokenType).isRequired,
   ancestors: ImmuTypes.listOf(PropTypes.string).isRequired,
   children: ImmuTypes.listOf(PropTypes.string).isRequired,
