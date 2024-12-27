@@ -41,7 +41,7 @@ function TimelineContent({ gallery, params }) {
         )}
       </div>
       {clusters.map((cluster, i) => (
-        <TimelineCluster selectImage={selectImage} key={i} index={i} cluster={cluster} isEdit={isEdit} gallery={gallery} />
+        <TimelineCluster selectImage={selectImage} key={cluster.dateTime} index={i} cluster={cluster} isEdit={isEdit} gallery={gallery} />
       ))}
 
 
