@@ -20,7 +20,7 @@ export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
   }
   let currentSegment = null
   let previousTime
-  items.forEach((item, index) => {
+  items.forEach((item, index, items) => {
     const isImage = item.has('path') && item.has('name') && !item.has('type')
     const currentTime = isImage ? item.get('imageTaken') : item.get('dateTime')
 
@@ -39,9 +39,12 @@ export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
       if (currentCluster.segments.length || currentCluster.title) {
         clusters.push(currentCluster)
       }
+
+
       currentCluster = {
         title: null,
         dateTime: isImage ? item.get('imageTaken') : item.get('dateTime'),
+        hasImageTime: isImage,
         segments: []
       }
       currentSegment = null
@@ -53,6 +56,11 @@ export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
     if (item.get('type') === 'title') {
       currentCluster.title = item
     } else if (isImage) {
+      if (!currentCluster.hasImageTime) {
+        currentCluster.dateTime = item.get('imageTaken')
+        currentCluster.hasImageTime = true
+      }
+
       // Add image to existing image segment or create new one
       if (currentSegment && currentSegment.type === 'images') {
         currentSegment.images.push(item)
