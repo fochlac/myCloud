@@ -12,6 +12,7 @@ class CreateGalleryCard extends React.Component {
     this.state = {
       name: props.gallery ? props.gallery.get('name') : '',
       description: props.gallery ? props.gallery.get('description') : '',
+      clusterThreshold: props.gallery ? props.gallery.get('clusterThreshold') : 3,
     }
 
     this.submit = this.submit.bind(this)
@@ -39,6 +40,13 @@ class CreateGalleryCard extends React.Component {
           autoFocus={true}
         />
         <InputRow
+          onChange={clusterThreshold => this.setState({ clusterThreshold })}
+          defaultValue={this.state.clusterThreshold}
+          label="Cluster Threshold"
+          required={false}
+          type="number"
+        />
+        <InputRow
           defaultValue={this.state.description}
           onChange={description => this.setState({ description })}
           label="Beschreibung"
@@ -52,13 +60,14 @@ class CreateGalleryCard extends React.Component {
   submit() {
     const {
       props: { onSubmit, parent, gallery },
-      state: { name, description },
+      state: { name, description, clusterThreshold },
     } = this
 
-    let response = gallery || { parent, name, description }
+    let response = gallery || { parent, name, description, clusterThreshold }
     if (gallery) {
       response = response.set('name', name)
-      response = response.set('description', description)
+        .set('description', description)
+        .set('clusterThreshold', clusterThreshold)
     }
 
     onSubmit(response)

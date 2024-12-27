@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import Card from 'RAW/Card'
 import style from './TimelineCluster.less'
@@ -7,39 +7,68 @@ import { dateHumanized } from '../../utils/date'
 import { useDispatch } from 'react-redux'
 import { createTextNode, deleteTextNode, updateTextNode } from '../../store/actions/galleries'
 
-
-
 function EditableTextNode({ node, isEdit }) {
-  const [text, setText] = useState(node.get('text'))
+  const [text, setText] = useState((node.get('text') || '').trim())
+  const [type, setType] = useState(node.get('type'))
   const dispatch = useDispatch()
+  const onSubmit = useRef()
 
   if (!isEdit) {
     const Type = node.get('type') === 'title' ? 'h3' : 'p'
     return <Type>{node.get('text')}</Type>
   }
 
-  const onSubmit = () => {
-    if (text !== node.get('text')) {
-      dispatch(updateTextNode({ ...node.toJS(), text }))
+  onSubmit.current = () => {
+    if (text !== node.get('text') || type !== node.get('type')) {
+      dispatch(updateTextNode({ ...node.toJS(), text: text || ' ', type }))
     }
   }
 
   return (
     <div className={style.inputWrapper}>
-      <input className={style.input} type="text" value={text} onChange={(e) => setText(e.target.value)} onBlur={onSubmit} />
-      <span className={cx(style.iconButton, 'fa fa-trash')} onClick={() => dispatch(deleteTextNode(node.toJS()))} />
+      <input
+        className={style.input}
+        type="text"
+        value={text}
+        onFocus={(e) => e.target.select()}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={() => onSubmit.current()}
+      />
+      <select onChange={(e) => {
+        setType(e.target.value)
+        setTimeout(() => onSubmit.current(), 100)
+      }} value={type}>
+        <option value="title">Title</option>
+        <option value="description">Descr.</option>
+      </select>
+      <span
+        className={cx(style.iconButton, 'fa fa-trash')}
+        onClick={() => dispatch(deleteTextNode(node.toJS()))}
+      />
     </div>
   )
 }
 
 function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
-  const hasHeader = !!cluster.title
+  const hasHeader = !!cluster.title && (isEdit || cluster.title.get('text').trim().length)
   const dispatch = useDispatch()
+  const startDate = dateHumanized(cluster.dateTime)
+  const endDate = dateHumanized(cluster.endDateTime)
 
   return (
     <div className={style.cluster}>
       <div className={cx(style.dateLine, { [style.hasHeader]: hasHeader || isEdit })}>
-        {!!cluster.dateTime ? <span>{dateHumanized(cluster.dateTime)}</span> : null}
+        {!!cluster.dateTime ? (
+          <span className={style.wrapper}>
+            <span>{startDate}</span>
+            {startDate !== endDate && (
+              <>
+                <span className={style.separator}> - </span>
+                <span>{dateHumanized(cluster.endDateTime)}</span>
+              </>
+            )}
+          </span>
+        ) : null}
       </div>
       <div className={style.content}>
         {hasHeader ? (
@@ -49,7 +78,14 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
         ) : isEdit ? (
           <span
             onClick={() =>
-              dispatch(createTextNode({ galleryId: gallery.get('id'), dateTime: cluster.dateTime - 1000, type: 'title', text: 'Title' }))
+              dispatch(
+                createTextNode({
+                  galleryId: gallery.get('id'),
+                  dateTime: cluster.dateTime - 1000,
+                  type: 'title',
+                  text: ' ',
+                }),
+              )
             }
             className={cx(style.iconButton, 'fa fa-plus-circle')}
           />
@@ -59,11 +95,23 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
             <div key={i} className={style.imageGrid}>
               {segment.images.map((image, j) => (
                 <Fragment key={j}>
-                  <Card image={image} onClick={() => selectImage(image.get('id'))} className={style.thumbnail} noWrapper />
+                  <Card
+                    image={image}
+                    onClick={() => selectImage(image.get('id'))}
+                    className={style.thumbnail}
+                    noWrapper
+                  />
                   {isEdit && (
                     <span
                       onClick={() =>
-                        dispatch(createTextNode({ galleryId: gallery.get('id'), dateTime: image.get('imageTaken') - 1000, type: 'description', text: 'Description' }))
+                        dispatch(
+                          createTextNode({
+                            galleryId: gallery.get('id'),
+                            dateTime: Number(image.get('imageTaken')) + 1000,
+                            type: 'description',
+                            text: ' ',
+                          }),
+                        )
                       }
                       className={cx(style.iconButton, 'fa fa-plus-circle')}
                     />

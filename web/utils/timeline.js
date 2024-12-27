@@ -1,19 +1,18 @@
-
 export const DAY_IN_MS = 24 * 60 * 60 * 1000
-export const MAX_GAP_DAYS = 1
+export const MAX_GAP_DAYS = 7
 
 export function getSortedItems(gallery) {
   const images = gallery.get('images').toArray()
   const textNodes = gallery.get('textNodes', []).toArray()
 
-  return [...images, ...textNodes].sort((a, b) => {
+  return [...images, ...textNodes].filter(a => a.get('dateTime') || a.get('imageTaken')).sort((a, b) => {
     const aTime = a.get('dateTime') || a.get('imageTaken')
     const bTime = b.get('dateTime') || b.get('imageTaken')
     return aTime - bTime
   })
 }
 
-export function clusterItems(items) {
+export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
   const clusters = []
   let currentCluster = {
     title: null,
@@ -32,11 +31,11 @@ export function clusterItems(items) {
     const shouldStartNewCluster =
       index === 0 ||
       (item && item.get('type') === 'title') ||
-      (previousTime && (currentTime - previousTime) > MAX_GAP_DAYS * DAY_IN_MS)
+      (previousTime && (currentTime - previousTime) > Number(clusterThreshold) * DAY_IN_MS)
 
-    previousTime = currentTime
 
     if (shouldStartNewCluster) {
+      currentCluster.endDateTime = previousTime
       if (currentCluster.segments.length || currentCluster.title) {
         clusters.push(currentCluster)
       }
@@ -47,6 +46,8 @@ export function clusterItems(items) {
       }
       currentSegment = null
     }
+
+    previousTime = currentTime
 
     // Handle different item types
     if (item.get('type') === 'title') {
@@ -74,6 +75,7 @@ export function clusterItems(items) {
 
   // Add final cluster
   if (currentCluster.segments.length) {
+    currentCluster.endDateTime = previousTime
     clusters.push(currentCluster)
   }
 

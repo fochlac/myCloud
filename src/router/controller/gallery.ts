@@ -14,6 +14,7 @@ export async function Create({
   name,
   parent,
   description,
+  clusterThreshold,
 }: Core.RawGallery): Promise<Core.Gallery[]> {
   const { path = '' } = galleryDb.getBare(parent) || {}
 
@@ -26,7 +27,7 @@ export async function Create({
   if (!newPath) return Promise.reject('')
 
   const gallery = await galleryDb
-    .create({ name, parent, description, path: newPath })
+    .create({ name, parent, description, path: newPath, clusterThreshold })
     .catch(
       internalError(3, 'unable to create gallery', { name, parent, description, path: newPath }),
     )
@@ -45,10 +46,11 @@ export async function Update({
   id,
   description,
   parent,
+  clusterThreshold,
 }: Core.RawGallery): Promise<Core.Gallery[]> {
   log(7, `updating gallery ${id}`)
 
-  const newGallery = await galleryDb.update({ name, id, description, parent })
+  const newGallery = await galleryDb.update({ name, id, description, parent, clusterThreshold })
 
   log(7, `successfully updated gallery ${id}`)
 

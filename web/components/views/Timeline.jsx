@@ -19,7 +19,7 @@ function TimelineContent({ gallery, params }) {
   const [selectedImage, selectImage] = useState(null)
   const [index, setIndex] = useState(null)
   const sortedItems = useMemo(() => getSortedItems(gallery), [gallery])
-  const clusters = useMemo(() => clusterItems(sortedItems), [sortedItems])
+  const clusters = useMemo(() => clusterItems(sortedItems, gallery.get('clusterThreshold')), [sortedItems, gallery])
   const imageList = useMemo(() => new List(sortedItems.filter(item => item.has('path') && item.has('name') && !item.has('type'))), [sortedItems])
 
   const dispatch = useDispatch()

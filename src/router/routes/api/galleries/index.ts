@@ -48,17 +48,18 @@ galleries.put(
         name: regexpValidator(/^.{1,100}$/),
         parent: regexpValidator(/^[0-9]{1,200}$/, true),
         description: regexpValidator(/^.{1,2000}$/, true),
+        clusterThreshold: regexpValidator(/^[0-9]{1,2}$/, true),
       },
     },
     { nextOnFail: false },
   ),
-  ({ body: { name, parent, description }, params: { id }, accessToken }, res) => {
+  ({ body: { name, parent, description, clusterThreshold }, params: { id }, accessToken }, res) => {
     gallery
-      .Update({ name, parent, description, id })
+      .Update({ name, parent, description, id, clusterThreshold })
       .then(galleries =>
         res.status(200).send(galleries.map(gallery => ({ ...gallery, accessToken }))),
       )
-      .catch(routerError(2, res, 'error updating gallery', { name, parent, description, id }))
+      .catch(routerError(2, res, 'error updating gallery', { name, parent, description, id, clusterThreshold }))
   },
 )
 
@@ -70,13 +71,14 @@ galleries.post(
         name: regexpValidator(/^.{1,100}$/),
         parent: regexpValidator(/^[0-9]{1,200}$/, true),
         description: regexpValidator(/^.{1,2000}$/, true),
+        clusterThreshold: regexpValidator(/^[0-9]{1,3}$/, true),
       },
     },
     { nextOnFail: false },
   ),
   async (req, res) => {
     const {
-      body: { name, parent, description },
+      body: { name, parent, description, clusterThreshold },
       token,
     } = req
 
@@ -93,7 +95,7 @@ galleries.post(
         .send({ success: false, message: 'Kein Zugriff auf die Eltern-Gallerie' })
     }
     try {
-      let galleries = await gallery.Create({ name, parent, description })
+      let galleries = await gallery.Create({ name, parent, description, clusterThreshold })
       if (!parent) {
         await addToAccessMap(req, res, galleries[0].urls[0])
         if (req.user) {
@@ -105,7 +107,7 @@ galleries.post(
       }
       res.status(200).send(galleries)
     } catch (error) {
-      routerError(2, res, 'error creating new gallery', { name, parent, description })(error)
+      routerError(2, res, 'error creating new gallery', { name, parent, description, clusterThreshold })(error)
     }
   },
 )

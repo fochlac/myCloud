@@ -35,17 +35,19 @@
   flex-shrink: 0;
 }
 
-.dateLine span {
+.dateLine .wrapper {
   background: #fff;
   padding: 0 10px;
   font-size: 0.9em;
   color: #666;
   position: relative;
-  width: 70px;
+  width: 75px;
   text-align: center;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
-.dateLine span:after {
+.dateLine .wrapper:after {
   content: "";
   height: 1px;
   width: 18px;
@@ -54,6 +56,10 @@
   position: absolute;
   top: 8px;
   right: -11px;
+}
+
+.separator {
+  line-height: 5px;
 }
 
 .dateLine::before,

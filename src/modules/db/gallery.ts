@@ -96,7 +96,7 @@ class GalleryDb {
     return enrichGallery(newGallery)
   }
 
-  async update({ name, description, id, parent }) {
+  async update({ name, description, id, parent, clusterThreshold }) {
     const gallery: Core.BareGallery = this.db.get(id)
     let result
     if (parent !== gallery.parent) {
@@ -105,19 +105,19 @@ class GalleryDb {
       const ancestors = [parent].concat(parent ? newParent.ancestors : [])
       newParent.children.push(id)
       oldParent.children.filter(childId => id !== childId)
-      const newGallery = { ...gallery, name, description, parent, ancestors }
+      const newGallery = { ...gallery, name, description, parent, ancestors, clusterThreshold }
       result = await this.db.setMultiple({
         [id]: newGallery,
         [parent]: newParent,
         [gallery.parent]: oldParent,
       })
     } else {
-      result = await this.db.setMultiple({ [id]: { ...gallery, name, description } })
+      result = await this.db.setMultiple({ [id]: { ...gallery, name, description, clusterThreshold } })
     }
     return Object.values(result).map((gallery: Core.BareGallery) => enrichGallery(gallery))
   }
 
-  async create({ name, description = '', path, parent }): Promise<Core.Gallery[]> {
+  async create({ name, description = '', path, parent, clusterThreshold }): Promise<Core.Gallery[]> {
     const id = this.db.nextIndex
     const ancestors = []
     const urls = []
@@ -142,6 +142,7 @@ class GalleryDb {
       urls,
       ancestors,
       children: [],
+      clusterThreshold,
     }
     createObject[id] = gallery
     const result = await this.db.setMultiple(createObject).catch(err => {

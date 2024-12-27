@@ -43,6 +43,7 @@ declare namespace Core {
     children: Id[]
     accessToken?: AccessUrl
     textNodes: TextNode[]
+    clusterThreshold?: number
   }
 
   interface BareGallery {
@@ -56,6 +57,7 @@ declare namespace Core {
     urls: Id[]
     ancestors: Id[]
     children: Id[]
+    clusterThreshold?: number
   }
 
   interface TextNode {
@@ -152,6 +154,7 @@ declare namespace Core {
     id?: Id
     description?: string
     parent?: Id
+    clusterThreshold?: number
   }
 
   interface WebToken {

@@ -14,7 +14,7 @@ export function loadGalleries() {
 }
 
 export const CREATE_GALLERY = 'CREATE_GALLERY'
-export function createGallery({ parent = '', name, description = '' }) {
+export function createGallery({ parent = '', name, description = '', clusterThreshold }) {
   return {
     type: CREATE_GALLERY,
     status: INITIALIZED,
@@ -25,6 +25,7 @@ export function createGallery({ parent = '', name, description = '' }) {
         parent,
         name,
         description,
+        clusterThreshold,
       },
     },
   }
@@ -42,6 +43,7 @@ export function updateGallery(gallery) {
         parent: gallery.get('parent'),
         name: gallery.get('name'),
         description: gallery.get('description'),
+        clusterThreshold: gallery.get('clusterThreshold'),
       },
     },
   }
