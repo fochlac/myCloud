@@ -5,8 +5,7 @@ const copyStaticFiles = require('esbuild-copy-static-files');
 const config = {
   entryPoints: ['web/index.js', 'web/sw.js'],
   bundle: true,
-  minify: false,
-  sourcemap: true,
+  minify: true,
   outdir: 'static',
   outbase: 'web',
   plugins: [

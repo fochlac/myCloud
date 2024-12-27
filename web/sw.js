@@ -3,8 +3,13 @@
 const serverUrl = location.origin
 let version = __SWVERSION__
 
-let assets = self.serviceWorkerOption.assets.map(asset => serverUrl + '/static' + asset)
-let staticContent = [...assets, '/manifest.json']
+let staticContent = [
+  '/jszip.min.js',
+  '/browserconfig.xml',
+  '/index.js',
+  '/index.css',
+  '/manifest.json'
+]
 let staticRegex = staticContent.length
   ? new RegExp(
       staticContent.map(str => str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')).join('$|') + '$',
@@ -42,7 +47,7 @@ function handleFetch(event) {
   } else if (
     req.url.includes('/static/') ||
     req.url.includes('/api/images/') ||
-    req.url.includes('fonts.')
+    req.url.includes('fontawesome-')
   ) {
     event.respondWith(
       caches
