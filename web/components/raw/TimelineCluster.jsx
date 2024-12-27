@@ -99,6 +99,7 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
                 <Fragment key={j}>
                   {entry?.isVisible ? (
                     <Card
+                      size={50}
                       image={image}
                       onClick={() => selectImage(image.get('id'))}
                       className={style.thumbnail}
