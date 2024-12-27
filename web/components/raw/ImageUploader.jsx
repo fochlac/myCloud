@@ -17,11 +17,17 @@ export default class ImageUploader extends React.Component {
           oldPromise.then(async () => {
             onChange({ length: files.length, current: index + 1 })
 
+            const metadata = await exifr.parse(file, { translateValues: false });
+
+            const rotation = {1: 0, 3: 180, 5: 90, 6: 90, 7: 270, 8: 270}[metadata?.Orientation]
+
             return {
               file,
               name: file.name,
+              rotate: String(rotation),
               created: Date.now(),
-              objectUrl: await createSmallObjectURL(file),
+              imageTaken: metadata?.DateTimeOriginal ? metadata.DateTimeOriginal.getTime() : undefined,
+              objectUrl: await createSmallObjectURL(file, 200, rotation),
               id: `${file.lastModified}_${file.size}`,
             }
           }),
