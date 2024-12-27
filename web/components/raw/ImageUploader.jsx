@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './ImageUploader.less'
 import { createSmallObjectURL } from '../../utils/resizer'
 import PropTypes from 'prop-types'
+import exifr from 'exifr'
 
 export default class ImageUploader extends React.Component {
   handleNewFile(evt) {
