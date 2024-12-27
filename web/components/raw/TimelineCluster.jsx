@@ -5,6 +5,7 @@ import style from './TimelineCluster.less'
 import cx from '../../utils/classnames'
 import { dateHumanized } from '../../utils/date'
 import { useDispatch } from 'react-redux'
+import { useInView } from "react-intersection-observer";
 import { createTextNode, deleteTextNode, updateTextNode } from '../../store/actions/galleries'
 
 function EditableTextNode({ node, isEdit }) {
@@ -52,11 +53,12 @@ function EditableTextNode({ node, isEdit }) {
 function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
   const hasHeader = !!cluster.title && (isEdit || cluster.title.get('text').trim().length)
   const dispatch = useDispatch()
+  const { ref, entry } = useInView({ trackVisibility: true, delay: 100 })
   const startDate = dateHumanized(cluster.dateTime)
   const endDate = dateHumanized(cluster.endDateTime)
 
   return (
-    <div className={style.cluster}>
+    <div ref={ref} className={style.cluster}>
       <div className={cx(style.dateLine, { [style.hasHeader]: hasHeader || isEdit })}>
         {!!cluster.dateTime ? (
           <span className={style.wrapper}>
@@ -95,12 +97,17 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
             <div key={i} className={style.imageGrid}>
               {segment.images.map((image, j) => (
                 <Fragment key={j}>
-                  <Card
-                    image={image}
-                    onClick={() => selectImage(image.get('id'))}
-                    className={style.thumbnail}
-                    noWrapper
-                  />
+                  {entry?.isVisible ? (
+                    <Card
+                      image={image}
+                      onClick={() => selectImage(image.get('id'))}
+                      className={style.thumbnail}
+                      noWrapper
+                    />
+
+                  ) : (
+                    <div className={style.thumbnail} />
+                  )}
                   {isEdit && (
                     <span
                       onClick={() =>

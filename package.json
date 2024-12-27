@@ -61,6 +61,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.4.0",
     "react-immutable-proptypes": "^2.1.0",
+    "react-intersection-observer": "9.13.1",
     "react-redux": "^7.2.9",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
