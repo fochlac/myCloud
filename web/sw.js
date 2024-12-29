@@ -49,9 +49,11 @@ function handleFetch(event) {
     req.url.includes('/api/images/') ||
     req.url.includes('fontawesome-')
   ) {
+    const cacheVersion = req.url.includes('/api/images/') ? 'imageCache' : version
+
     event.respondWith(
       caches
-        .open(version)
+        .open(cacheVersion)
         .then(cache => cache.match(req))
         .then(res => {
           if (res) {
