@@ -55,14 +55,14 @@ function handleFetch(event) {
       caches
         .open(cacheVersion)
         .then((cache) => cache.match(req))
-        .then(async (res) => {
-          if (res) {
-            return res
+        .then(async (cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse
           }
 
-          const [res, cache] = Promise.all([fetch(req.clone()), caches.open(cacheVersion)])
-          cache.put(req.clone(), res.clone())
-          return res
+          const [response, cache] = Promise.all([fetch(req.clone()), caches.open(cacheVersion)])
+          cache.put(req.clone(), response.clone())
+          return response
         })
         .catch((err) => console.warn(err)),
     )
