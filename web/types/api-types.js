@@ -12,7 +12,7 @@ export const AccessTokenType = ImmuTypes.shape({
 export const ImageType = ImmuTypes.shape({
   id: PropTypes.string.isRequired,
   gallery: PropTypes.string.isRequired,
-  imageTaken: PropTypes.string.isRequired,
+  imageTaken: PropTypes.string,
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
 })
