@@ -39,6 +39,34 @@ const galleriesReducer = (galleries = Map, action) => {
           : galleries
       }
       return galleries
+      case CREATE_IMAGE:
+        if (action.status === COMPLETE) {
+          const image = action.data
+          galleries = galleries.updateIn([image.get('gallery'), 'images'], images =>
+            images.push(image),
+          )
+        }
+        return galleries
+      case UPDATE_IMAGE:
+      case ROTATE_IMAGE:
+        if (action.status === COMPLETE) {
+          const image = action.data
+
+          galleries = galleries.updateIn([image.get('gallery'), 'images'], images => {
+            const position = images.findIndex(img => img.get('id') === image.get('id'))
+            return images.set(position, image)
+          })
+        }
+        return galleries
+      case DELETE_IMAGE:
+        if (action.status === COMPLETE) {
+          const { data } = action
+
+          galleries = galleries.updateIn([data.get('gallery'), 'images'], images => {
+            return images.filter(image => image.get('id') !== data.get('id'))
+          })
+        }
+        return galleries
       case CREATE_TEXT_NODES:
         if (action.status === COMPLETE) {
           const node = action.data
