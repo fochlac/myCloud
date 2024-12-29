@@ -8,11 +8,11 @@ let staticContent = [
   '/static/browserconfig.xml',
   '/static/index.js',
   '/static/index.css',
-  '/static/manifest.json'
+  '/static/manifest.json',
 ]
 let staticRegex = staticContent.length
   ? new RegExp(
-      staticContent.map(str => str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')).join('$|') + '$',
+      staticContent.map((str) => str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')).join('$|') + '$',
     )
   : undefined
 
@@ -31,18 +31,18 @@ function handleFetch(event) {
     event.respondWith(
       caches
         .open(version)
-        .then(cache => {
+        .then((cache) => {
           return cache.match(req.clone())
         })
-        .then(res => {
+        .then((res) => {
           if (res) {
             return res
           } else {
             cacheStatic()
-            return fetch(req).catch(err => console.warn(err))
+            return fetch(req).catch((err) => console.warn(err))
           }
         })
-        .catch(err => console.warn(err)),
+        .catch((err) => console.warn(err)),
     )
   } else if (
     req.url.includes('/static/') ||
@@ -54,31 +54,30 @@ function handleFetch(event) {
     event.respondWith(
       caches
         .open(cacheVersion)
-        .then(cache => cache.match(req))
-        .then(res => {
+        .then((cache) => cache.match(req))
+        .then(async (res) => {
           if (res) {
             return res
-          } else {
-            return Promise.all([fetch(req.clone()), caches.open(version)]).then(([res, cache]) => {
-              cache.put(req.clone(), res.clone())
-              return res
-            })
           }
+
+          const [res, cache] = Promise.all([fetch(req.clone()), caches.open(cacheVersion)])
+          cache.put(req.clone(), res.clone())
+          return res
         })
-        .catch(err => console.warn(err)),
+        .catch((err) => console.warn(err)),
     )
   } else {
     event.respondWith(
       fetch(req.clone())
-        .then(res => {
-          return caches
+        .then(async (res) => {
+          await caches
             .open(version)
-            .then(cache => cache.put(req.clone(), res.clone()))
-            .then(() => res)
+            .then((cache) => cache.put(req.clone(), res.clone()))
+          return res
         })
-        .catch(err => {
+        .catch((err) => {
           console.warn(err)
-          return caches.open(version).then(cache => cache.match(req))
+          return caches.open(version).then((cache) => cache.match(req))
         }),
     )
   }
@@ -87,17 +86,17 @@ function handleFetch(event) {
 function cacheStatic() {
   return caches
     .keys()
-    .then(keys => Promise.all(keys.map(key => caches.delete(key))))
-    .catch(err => console.log('error deleting cache', err))
+    .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+    .catch((err) => console.log('error deleting cache', err))
     .then(() => caches.open(version))
-    .then(function(cache) {
+    .then(function (cache) {
       return cache.addAll(staticContent)
     })
-    .catch(err => console.warn(err))
+    .catch((err) => console.warn(err))
 }
 
 self.addEventListener('fetch', handleFetch)
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(cacheStatic())
   self.skipWaiting()
 })
