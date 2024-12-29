@@ -87,7 +87,7 @@ export default class DnDLayer extends React.Component {
             return {
               file,
               name: file.name,
-              rotate: String(rotation),
+              rotate: String(rotation ?? 0),
               created: Date.now(),
               imageTaken: metadata?.DateTimeOriginal ? metadata.DateTimeOriginal.getTime() : undefined,
               objectUrl: await createSmallObjectURL(file, 200, rotation),

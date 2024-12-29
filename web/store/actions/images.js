@@ -51,7 +51,7 @@ export function createImage(image, parent) {
       url: `galleries/${parent}/images/`,
       body: formDataFromObject({
         image: image.file,
-        rotate: image.rotate,
+        rotate: image.rotate ?? 0,
         name: image.name,
         imageTaken: image.imageTaken,
         created: image.created,
