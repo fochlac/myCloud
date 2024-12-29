@@ -4,11 +4,11 @@ const serverUrl = location.origin
 let version = __SWVERSION__
 
 let staticContent = [
-  '/jszip.min.js',
-  '/browserconfig.xml',
-  '/index.js',
-  '/index.css',
-  '/manifest.json'
+  '/static/jszip.min.js',
+  '/static/browserconfig.xml',
+  '/static/index.js',
+  '/static/index.css',
+  '/static/manifest.json'
 ]
 let staticRegex = staticContent.length
   ? new RegExp(
