@@ -40,7 +40,7 @@ function EditableTextNode({ node, isEdit }) {
         setTimeout(() => onSubmit.current(), 100)
       }} value={type}>
         <option value="title">Title</option>
-        <option value="description">Descr.</option>
+        <option value="description">Subtitle</option>
       </select>
       <span
         className={cx(style.iconButton, 'fa fa-trash')}
@@ -92,47 +92,55 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
             className={cx(style.iconButton, 'fa fa-plus-circle')}
           />
         ) : null}
-        {cluster.segments.map((segment, i) =>
-          segment.type === 'images' ? (
-            <div key={i} className={style.imageGrid}>
-              {segment.images.map((image, j) => (
-                <Fragment key={j}>
-                  {entry?.isVisible ? (
-                    <Card
-                      size={50}
-                      image={image}
-                      onClick={() => selectImage(image.get('id'))}
-                      className={style.thumbnail}
-                      noWrapper
-                    />
+        {cluster.segments.map((segment, i) => {
+          if (segment.type === 'images') {
+            return (
+              <div key={i} className={style.imageGrid}>
+                {segment.images.map((image, j) => (
+                  <Fragment key={j}>
+                    {entry?.isVisible ? (
+                      <Card
+                        size={50}
+                        image={image}
+                        onClick={() => selectImage(image.get('id'))}
+                        className={style.thumbnail}
+                        noWrapper
+                      />
 
-                  ) : (
-                    <div className={style.thumbnail} />
-                  )}
-                  {isEdit && (
-                    <span
-                      onClick={() =>
-                        dispatch(
-                          createTextNode({
-                            galleryId: gallery.get('id'),
-                            dateTime: Number(image.get('imageTaken')) + 1000,
-                            type: 'description',
-                            text: ' ',
-                          }),
-                        )
-                      }
-                      className={cx(style.iconButton, 'fa fa-plus-circle')}
-                    />
-                  )}
-                </Fragment>
-              ))}
-            </div>
-          ) : (
-            <div key={i} className={style.textNode}>
-              <EditableTextNode node={segment.node} isEdit={isEdit} />
-            </div>
-          ),
-        )}
+                    ) : (
+                      <div className={style.thumbnail} />
+                    )}
+                    {isEdit && (
+                      <span
+                        onClick={() =>
+                          dispatch(
+                            createTextNode({
+                              galleryId: gallery.get('id'),
+                              dateTime: Number(image.get('imageTaken')) + 1000,
+                              type: 'title',
+                              text: ' ',
+                            }),
+                          )
+                        }
+                        className={cx(style.iconButton, 'fa fa-plus-circle')}
+                      />
+                    )}
+                  </Fragment>
+                ))}
+              </div>
+            )
+          }
+
+          if (segment.type === 'text') {
+            return (
+              <div key={i} className={style.textNode}>
+                <EditableTextNode node={segment.node} isEdit={isEdit} />
+              </div>
+            )
+          }
+
+          return null
+        })}
       </div>
     </div>
   )

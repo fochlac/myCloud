@@ -1,3 +1,5 @@
+import { dateHumanized } from "./date"
+
 export const DAY_IN_MS = 24 * 60 * 60 * 1000
 export const MAX_GAP_DAYS = 7
 
@@ -16,10 +18,12 @@ export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
   const clusters = []
   let currentCluster = {
     title: null,
-    segments: []
+    segments: [],
+    imageTitles: {}
   }
   let currentSegment = null
   let previousTime
+  let lastTextNode = null
   items.forEach((item, index, items) => {
     const isImage = item.has('path') && item.has('name') && !item.has('type')
     const currentTime = isImage ? item.get('imageTaken') : item.get('dateTime')
@@ -45,9 +49,20 @@ export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
         title: null,
         dateTime: isImage ? item.get('imageTaken') : item.get('dateTime'),
         hasImageTime: isImage,
+        imageTitles: {},
         segments: []
       }
       currentSegment = null
+      lastTextNode = null
+    }
+
+
+    if (isImage) {
+      const title = [dateHumanized(item.get('imageTaken'))]
+      if (lastTextNode && lastTextNode.get('text').trim().length) title.unshift(lastTextNode.get('text'))
+      if (currentCluster.title && currentCluster.title.get('text').trim().length) title.unshift(currentCluster.title.get('text'))
+
+      currentCluster.imageTitles[item.get('id')] = title.join(' - ')
     }
 
     previousTime = currentTime
@@ -77,6 +92,7 @@ export function clusterItems(items, clusterThreshold = MAX_GAP_DAYS) {
         type: 'text',
         node: item
       }
+      lastTextNode = item
       currentCluster.segments.push(currentSegment)
     }
   })

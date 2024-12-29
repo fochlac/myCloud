@@ -1,5 +1,6 @@
 import ImageUploader from 'RAW/ImageUploader'
 import ImmuTypes from 'react-immutable-proptypes'
+import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styles from './GalleryHeader.less'
@@ -9,7 +10,7 @@ const defaultState = {
   length: 0,
 }
 
-export default class GalleryHeader extends React.Component {
+class GalleryHeader extends React.Component {
   constructor() {
     super()
 
@@ -17,7 +18,7 @@ export default class GalleryHeader extends React.Component {
   }
 
   render() {
-    const { gallery, uploadImages, galleryActions, isRoot } = this.props
+    const { gallery, uploadImages, galleryActions, isRoot, history } = this.props
     const { current, length } = this.state
     const canWrite = gallery.getIn(['accessToken', 'access']) === 'write'
 
@@ -78,6 +79,11 @@ export default class GalleryHeader extends React.Component {
                 <span className="fa fa-lg fa-share-square-o" />
               </li>
             )}
+          {!isRoot && (
+              <li title="Timeline" onClick={() => history.push(`/timelines/${gallery.get('id')}${canWrite ? `/edit` : ''}`)}>
+                <span className="fa fa-lg fa-list" />
+              </li>
+            )}
         </ul>
       </div>
     )
@@ -99,3 +105,5 @@ GalleryHeader.propTypes = {
 GalleryHeader.defaultProps = {
   galleryActions: {},
 }
+
+export default withRouter(GalleryHeader)

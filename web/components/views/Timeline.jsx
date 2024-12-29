@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router'
 import ImmuTypes from 'react-immutable-proptypes'
 import PageMissing from 'RAW/PageMissing'
 import CreateGalleryCard from 'RAW/CreateGalleryCard'
@@ -12,9 +13,8 @@ import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import GallerySlider from '../connected/GallerySlider'
 import { List } from 'immutable'
-import { dateHumanized } from '../../utils/date'
 
-function TimelineContent({ gallery, params }) {
+function TimelineContent({ gallery, isEdit }) {
   const [showEditGallery, setShowEditGallery] = useState(false)
   const [selectedImage, selectImage] = useState(null)
   const [index, setIndex] = useState(null)
@@ -24,7 +24,8 @@ function TimelineContent({ gallery, params }) {
 
   const dispatch = useDispatch()
 
-  const isEdit = params.edit === 'edit'
+  const currentImage = imageList.get(index)
+  const currentImageTitle = currentImage && clusters.find(cluster => cluster.imageTitles[currentImage.get('id')])?.imageTitles[currentImage.get('id')]
 
   return (
     <div className={style.container}>
@@ -41,10 +42,14 @@ function TimelineContent({ gallery, params }) {
         )}
       </div>
       {clusters.map((cluster, i) => (
-        <TimelineCluster selectImage={selectImage} key={cluster.dateTime} index={i} cluster={cluster} isEdit={isEdit} gallery={gallery} />
+        <TimelineCluster
+          key={cluster.dateTime}
+          cluster={cluster}
+          isEdit={isEdit}
+          gallery={gallery}
+          selectImage={selectImage}
+        />
       ))}
-
-
       {showEditGallery && (
         <Dialog
           onClose={() => setShowEditGallery(false)}
@@ -66,7 +71,11 @@ function TimelineContent({ gallery, params }) {
             selectImage(null)
             setIndex(null)
           }}
-          header={<span className={style.dialogTitle}>{index ? dateHumanized(imageList.getIn([index, 'imageTaken'])) : null}</span>}
+          header={(
+            <span className={style.dialogTitle}>
+              {currentImageTitle || ''}
+            </span>
+          )}
         >
           <GallerySlider
             hideEdit={!isEdit}
@@ -92,7 +101,13 @@ TimelineContent.propTypes = {
 
 export function Timeline({ gallery, params }) {
   if (!gallery) return <PageMissing />
-  return <TimelineContent gallery={gallery} params={params} />
+  const canWrite = gallery.getIn(['accessToken', 'access']) === 'write'
+  const isEdit = params.edit === 'edit' && canWrite
+
+  if (params.edit === 'edit' && !canWrite) {
+    return <Redirect to={`/timelines/${gallery.get('id')}`} />
+  }
+  return <TimelineContent gallery={gallery} isEdit={isEdit} />
 }
 
 Timeline.propTypes = {
