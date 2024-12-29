@@ -60,7 +60,7 @@ function handleFetch(event) {
             return cachedResponse
           }
 
-          const [response, cache] = Promise.all([fetch(req.clone()), caches.open(cacheVersion)])
+          const [response, cache] = await Promise.all([fetch(req.clone()), caches.open(cacheVersion)])
           cache.put(req.clone(), response.clone())
           return response
         })
