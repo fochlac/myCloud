@@ -9,8 +9,6 @@ const { internalError } = error('image-util')
 
 sharp.cache(false)
 
-const resizers = {}
-
 function getResizer(width, height) {
   return sharp()
     .resize({
@@ -19,6 +17,7 @@ function getResizer(width, height) {
       fit: sharp.fit.inside,
       withoutEnlargement: true
     })
+    .withMetadata()
 }
 
 export function getResizedImageStream({
@@ -41,7 +40,7 @@ export async function rotateDegrees(image: Core.Image, degrees: number) {
 
   const rotatedImage = await file.rotate(degrees)
 
-  await writeFile(global.storage + image.path, await rotatedImage.toBuffer())
+  await writeFile(global.storage + image.path, await rotatedImage.withMetadata().toBuffer())
   return image
 }
 

@@ -23,7 +23,7 @@ export default function uploadQueue(Component) {
 
       let galleryQueue =
         (queue && queue.get(gallery.get('id'))) ||
-        fromJS({ promise: Promise.resolve(), images: [] })
+        fromJS({ promise: [Promise.resolve(), Promise.resolve(), Promise.resolve()], images: [] })
 
       galleryQueue = galleryQueue.set(
         'images',
@@ -32,13 +32,17 @@ export default function uploadQueue(Component) {
           .concat(fromJS(images.map(image => ({ ...image, isUploading: true })))),
       )
 
+      let imageUploadQueue = images.map((image) => () => createImage(image, gallery.get('id')))
+
+      function startNext() {
+        if (imageUploadQueue.length) {
+          return imageUploadQueue.shift()().then(() => startNext())
+        }
+      }
+
       galleryQueue = galleryQueue.set(
         'promise',
-        images.reduce((promise, image) => {
-          return promise.then(() => {
-            return createImage(image, gallery.get('id'))
-          })
-        }, galleryQueue.get('promise')),
+        galleryQueue.get('promise').map(promise => promise.then(() => startNext()))
       )
 
       updateQueue({ [gallery.get('id')]: galleryQueue })
