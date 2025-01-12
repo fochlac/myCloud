@@ -147,8 +147,8 @@ export function isAuthenticated(req: Express.Request, res: Express.Response, nex
 }
 
 export async function checkShortUrl(req, res: Express.Response, next) {
-  const isTimelineUrl = req.path.startsWith('/timelines/')
-  const urlPath = isTimelineUrl ? req.path.replace('/timelines/', '/') : req.path
+  const isTimelineUrl = req.path.startsWith('/t/')
+  const urlPath = isTimelineUrl ? req.path.replace('/t/', '/') : req.path
   const accessUrl = urlDb.find('url', urlPath)[0]
 
   if (accessUrl) {

@@ -38,15 +38,17 @@ export default class ManageUrlDialog extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {gallery.get('urls').map(url => (
+              {gallery.get('urls').map(url => {
+                const href = `${window.location.origin}${url.get('access') === 'timeline' ? '/t' : ''}${url.get('url')}`
+                return (
                 <tr key={'url_' + url.get('id')}>
                   <td className={styles.urlCell}>
-                    <a href={'https://gallery.fochlac.com' + url.get('url')} className={styles.url}>
-                      {'https://gallery.fochlac.com' + url.get('url')}
+                    <a href={href} className={styles.url}>
+                      {href}
                     </a>
                     <span
                       className={styles.copy}
-                      onClick={() => copy(`https://gallery.fochlac.com${url.get('url')}`)}
+                      onClick={() => copy(href)}
                     >
                       Kopieren
                     </span>
@@ -63,7 +65,8 @@ export default class ManageUrlDialog extends React.Component {
                     />
                   </td>
                 </tr>
-              ))}
+              )
+              })}
               <tr>
                 <td className={styles.newLink}>Neuen Link erstellen</td>
                 <td>
