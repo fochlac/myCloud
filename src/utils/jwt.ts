@@ -95,7 +95,7 @@ const jwtCookieOptions = () => ({
 
 export function generateUserAccessMap(user: Core.User): Core.AccessMap {
   return user.urls.reduce((accessMap, url) => {
-    if (url && url.gallery && getPrio(url) <= getPrio(accessMap[url.gallery])) {
+    if (url && url.gallery && getPrio(url) > getPrio(accessMap[url.gallery])) {
       accessMap[url.gallery] = url
     }
     return accessMap
