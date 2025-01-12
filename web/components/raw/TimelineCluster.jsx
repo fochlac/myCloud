@@ -89,8 +89,8 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
                 }),
               )
             }
-            className={cx(style.iconButton, 'fa fa-plus-circle')}
-          />
+            className={cx(style.iconButton, style.headlineIcon, 'fa fa-plus-circle')}
+          >Add Headline</span>
         ) : null}
         {cluster.segments.map((segment, i) => {
           if (segment.type === 'images') {

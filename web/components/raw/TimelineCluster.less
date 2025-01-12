@@ -1,7 +1,40 @@
 .cluster {
   display: flex;
   flex-direction: row;
+}
 
+@media (min-width: 1000px) {
+  .cluster {
+    width: calc(40% + 50px);
+    margin-left: calc(50% - 50px);
+  }
+
+  .cluster:nth-child(2n+1) {
+    margin-left: 10%;
+    flex-direction: row-reverse;
+
+    & .imageGrid {
+      align-items: flex-end;
+      justify-content: end;
+    }
+
+    & .textNode {
+      text-align: right;
+    }
+
+    & .dateLine .wrapper:after {
+      right: unset;
+      left: -11px;
+    }
+
+    & .content {
+      align-items: flex-end;
+    }
+
+    & .inputWrapper {
+      flex-direction: row-reverse;
+    }
+  }
 }
 
 .thumbnail {
@@ -80,7 +113,7 @@
   flex-shrink: 0;
 }
 
-.imageGrid{
+.imageGrid {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -96,6 +129,8 @@
 .content {
   margin-top: 20px;
   min-width: calc(100% - 100px);
+  display: flex;
+  flex-direction: column;
 }
 
 .iconButton.iconButton {
@@ -105,6 +140,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.iconButton.headlineIcon {
+  width: 100px;
+  justify-content: space-around;
 }
 
 .title .iconButton {
@@ -122,8 +162,20 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
+  height: 19px;
+
+  & select {
+    height: 100%;
+    margin: 0 4px;
+  }
 }
 
 .input {
   flex-grow: 1;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.titleSection {
+  width: 100%;
 }
