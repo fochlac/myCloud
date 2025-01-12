@@ -40,12 +40,19 @@ class App extends React.Component {
       )
     }
 
+    const galleryId = app.get('startGallery')
+    const isTimeline = app.get('startTimeline')
+
+    if (isTimeline && galleryId) {
+      return <Router><Timeline id={galleryId}/></Router>
+    }
+
     return (
       <Router>
         <Switch>
           <Route
             path="/timelines/:id/:edit?"
-            render={({ match: { params } }) => <Timeline params={params} />}
+            render={({ match: { params } }) => <Timeline id={params.id} edit={params.edit} />}
           />
           <Route
             path="/gallery/:id/slideshow"

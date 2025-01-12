@@ -22,7 +22,7 @@ urls.post(
   validate(
     {
       body: {
-        access: oneOfValidator(['read', 'write'], true),
+        access: oneOfValidator(['read', 'write', 'timeline'], true),
         url: regexpValidator(/^\/[0-9a-zA-z\_\+]{7,14}$/, true),
       },
     },

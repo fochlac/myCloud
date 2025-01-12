@@ -12,7 +12,7 @@ export class Gallery extends React.Component {
   render() {
     const { app, gallery, galleries } = this.props
     const busy = app.get('busy').includes(GALLERY)
-    if (!gallery || !galleries) return <PageMissing />
+    if (!gallery || !galleries || !['read', 'write'].includes(gallery.getIn(['accessToken', 'access']))) return <PageMissing />
     const elements = gallery
       .get('children')
       .map(id => galleries.get(id))

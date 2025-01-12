@@ -99,12 +99,12 @@ TimelineContent.propTypes = {
   gallery: ImmuTypes.map
 }
 
-export function Timeline({ gallery, params }) {
+export function Timeline({ gallery, edit }) {
   if (!gallery) return <PageMissing />
   const canWrite = gallery.getIn(['accessToken', 'access']) === 'write'
-  const isEdit = params.edit === 'edit' && canWrite
+  const isEdit = edit === 'edit' && canWrite
 
-  if (params.edit === 'edit' && !canWrite) {
+  if (edit === 'edit' && !canWrite) {
     return <Redirect to={`/timelines/${gallery.get('id')}`} />
   }
   return <TimelineContent gallery={gallery} isEdit={isEdit} />
@@ -115,7 +115,7 @@ Timeline.propTypes = {
 }
 
 const mapStoreToProps = (store, ownProps) => ({
-  gallery: store.getIn(['galleries', ownProps.params.id])
+  gallery: store.getIn(['galleries', String(ownProps.id)])
 })
 
 export default connect(mapStoreToProps)(Timeline)

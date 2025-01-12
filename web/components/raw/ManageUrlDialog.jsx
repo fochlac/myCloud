@@ -51,7 +51,11 @@ export default class ManageUrlDialog extends React.Component {
                       Kopieren
                     </span>
                   </td>
-                  <td>{url.get('access') === 'read' ? 'Lesen' : 'Lesen & Schreiben'}</td>
+                  <td>
+                    {url.get('access') === 'read' ? 'Lesen' : ''}
+                    {url.get('access') === 'write' ? 'Lesen & Schreiben' : ''}
+                    {url.get('access') === 'timeline' ? 'Zeitstrahl' : ''}
+                  </td>
                   <td>
                     <span
                       className={cx('fa fa-trash', styles.buttons)}
@@ -68,6 +72,7 @@ export default class ManageUrlDialog extends React.Component {
                     className={styles.access}
                   >
                     <option value="read">Lesen</option>
+                    <option value="timeline">Timeline</option>
                     <option value="write">Lesen & Schreiben</option>
                   </select>
                 </td>

@@ -57,7 +57,7 @@ export async function authenticate(req: Express.Request, res, next): Promise<voi
   }
 }
 
-export function checkGalleryAccessToken(level = ['read', 'write']) {
+export function checkGalleryAccessToken(level = ['read', 'write', 'timeline']) {
   return (req: Express.Request, res, next) => {
     const {
       token,

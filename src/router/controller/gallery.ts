@@ -77,7 +77,7 @@ export function ReadAll(accessMap: Core.AccessMap) {
   const filteredGalleries = galleries
     .map(gallery => {
       const accessToken = getGalleryAccessToken(gallery, accessMap)
-      if (accessToken && accessToken.access === 'read') {
+      if (accessToken && ['read', 'timeline'].includes(accessToken.access)) {
         gallery.urls = []
       }
       return { ...gallery, accessToken }

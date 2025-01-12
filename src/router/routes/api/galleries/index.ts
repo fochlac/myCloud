@@ -31,7 +31,7 @@ galleries.get(
   checkGalleryAccessToken(),
   ({ params: { id }, accessToken }, res) => {
     const data = gallery.Read(id)
-    if (accessToken.access === 'read') {
+    if (['read', 'timeline'].includes(accessToken.access)) {
       data.urls = []
     }
     res.status(200).send({ ...data, accessToken })

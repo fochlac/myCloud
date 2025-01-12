@@ -85,7 +85,7 @@ declare namespace Core {
     url: string
     gallery: Id
     id: Id
-    access: 'read' | 'write'
+    access: 'read' | 'write' | 'timeline'
     recursive: boolean
   }
 
