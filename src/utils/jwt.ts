@@ -81,10 +81,17 @@ const jwtCookieOptions = () => ({
   expires: new Date(Date.now() + 1000 * 3600 * 24 * 31),
 })
 
+
+const prio = {
+  timeline: 0,
+  read: 1,
+  write: 2
+}
 export function generateUserAccessMap(user: Core.User): Core.AccessMap {
   return user.urls.reduce((accessMap, url) => {
     // remove invalid ids from the token list
     if (url && url.gallery) {
+      if (!accessMap[url.gallery] || prio[url.access] > prio[accessMap[url.gallery].access])
       accessMap[url.gallery] = url
     }
     return accessMap
