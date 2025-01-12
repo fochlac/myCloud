@@ -39,6 +39,13 @@ export function decodeJWT(token: string): Promise<Core.WebToken> {
 const newToken: Core.WebToken = {
   accessMap: {},
 }
+const getPrio = (url?:Core.AccessUrl): number => {
+    if (!url) return 0
+    if (url.access === 'timeline') return 5
+    if (url.access === 'read') return 15
+    if (url.access === 'write') return 25
+    return 0
+}
 
 export async function addToAccessMap(
   req: Express.Request,
@@ -46,6 +53,10 @@ export async function addToAccessMap(
   accessUrl: Core.AccessUrl,
 ): Promise<Core.WebToken> {
   let baseToken = req.token || newToken
+  const { accessMap } = baseToken
+  if (getPrio(accessUrl) <= getPrio(accessMap[accessUrl.gallery])) {
+    return baseToken
+  }
   delete baseToken.iss
   delete baseToken.iat
 
@@ -82,16 +93,9 @@ const jwtCookieOptions = () => ({
 })
 
 
-const prio = {
-  timeline: 0,
-  read: 1,
-  write: 2
-}
 export function generateUserAccessMap(user: Core.User): Core.AccessMap {
   return user.urls.reduce((accessMap, url) => {
-    // remove invalid ids from the token list
-    if (url && url.gallery) {
-      if (!accessMap[url.gallery] || prio[url.access] > prio[accessMap[url.gallery].access])
+    if (url && url.gallery && getPrio(url) <= getPrio(accessMap[url.gallery])) {
       accessMap[url.gallery] = url
     }
     return accessMap
