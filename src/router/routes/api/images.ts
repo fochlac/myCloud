@@ -33,7 +33,9 @@ images.get(
 
     res
       .status(200)
-      .contentType(
+      .setHeader('Content-Encoding', 'gzip')
+
+    res.contentType(
         RegExp('image/.*').test(format as string || '') ? format as string : 'image/jpeg'
       )
 

@@ -53,7 +53,7 @@ function EditableTextNode({ node, isEdit }) {
 function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
   const hasHeader = !!cluster.title && (isEdit || cluster.title.get('text').trim().length)
   const dispatch = useDispatch()
-  const { ref, entry } = useInView({ trackVisibility: true, delay: 100 })
+  const { ref, inView } = useInView()
   const startDate = dateHumanized(cluster.dateTime)
   const endDate = dateHumanized(cluster.endDateTime)
 
@@ -98,7 +98,7 @@ function TimelineCluster({ cluster, isEdit, gallery, selectImage }) {
               <div key={i} className={style.imageGrid}>
                 {segment.images.map((image, j) => (
                   <Fragment key={j}>
-                    {entry?.isVisible ? (
+                    {inView ? (
                       <Card
                         size={50}
                         image={image}
