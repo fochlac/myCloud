@@ -1,3 +1,5 @@
+const MAX_IMAGES_PER_ZIP = 500
+
 export default class ZipBuilder {
   constructor(props) {
     this.props = {
@@ -38,22 +40,34 @@ export default class ZipBuilder {
     this.props.onAbort()
   }
 
-  zipGallery(gallery, imageSettings) {
+  zipGallery(gallery, imageSettings, options = {}) {
     if (!this.ready) return Promise.reject('not yet ready')
     if (this.busy) return Promise.reject('already busy')
     this.abort = false
     const { onChange } = this.props
-    const imageCount = gallery.get('images').size
+    const startIndex = options.startIndex || 0
+    const totalImageCount = gallery.get('images').size
+    const images = gallery.get('images').slice(startIndex, startIndex + MAX_IMAGES_PER_ZIP)
+    const imageCount = images.size
+    const chunkCount = Math.max(Math.ceil(totalImageCount / MAX_IMAGES_PER_ZIP), 1)
+    const chunkIndex = Math.floor(startIndex / MAX_IMAGES_PER_ZIP) + 1
+    const endIndex = startIndex + imageCount
+    const hasMore = endIndex < totalImageCount
+    const fileName = buildZipName(gallery.get('name'), chunkIndex, chunkCount)
     this.busy = true
     const zip = new window.JSZip()
 
     onChange({
       position: 0,
       imageCount,
+      totalImageCount,
+      chunkIndex,
+      chunkCount,
+      startIndex,
+      endIndex,
     })
 
-    this.queue = gallery
-      .get('images')
+    this.queue = images
       .reduce(
         (promise, image, index) =>
           promise.then(async () => {
@@ -63,25 +77,56 @@ export default class ZipBuilder {
             onChange({
               position: index + 1,
               imageCount,
+              totalImageCount,
+              chunkIndex,
+              chunkCount,
+              startIndex,
+              endIndex,
             })
           }),
         Promise.resolve(),
       )
-      .then(() => zip.generateAsync({ type: 'blob' }))
-      .then(
-        blob => {
-          const objectUrl = URL.createObjectURL(blob)
-          this.props.onSuccess(
-            saveAs(objectUrl, `${gallery.get('name').replace(/[^a-zA-Z0-9-_]+/g, '_')}.zip`),
-            objectUrl,
-          )
-        },
-        err => this.props.onError('error creating zip file', err),
-      )
+      .then(() => {
+        if (this.abort) return Promise.reject('user abort')
+        return zip.generateAsync({ type: 'blob' })
+      })
+      .then(blob => {
+        const objectUrl = URL.createObjectURL(blob)
+        this.props.onSuccess(
+          saveAs(objectUrl, fileName),
+          objectUrl,
+          {
+            fileName,
+            chunkIndex,
+            chunkCount,
+            startIndex,
+            endIndex,
+            imageCount,
+            totalImageCount,
+            hasMore,
+            nextStartIndex: endIndex,
+          },
+        )
+      })
+      .catch(err => {
+        if (err !== 'user abort') {
+          this.props.onError('error creating zip file', err)
+        }
+      })
       .then(() => {
         this.busy = false
       })
   }
+}
+
+function buildZipName(galleryName, chunkIndex, chunkCount) {
+  const sanitizedGalleryName = galleryName.replace(/[^a-zA-Z0-9-_]+/g, '_')
+
+  if (chunkCount === 1) {
+    return `${sanitizedGalleryName}.zip`
+  }
+
+  return `${sanitizedGalleryName}_part-${String(chunkIndex).padStart(String(chunkCount).length, '0')}-of-${chunkCount}.zip`
 }
 
 function loadImage(image, { size }) {

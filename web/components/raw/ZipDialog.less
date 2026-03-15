@@ -27,17 +27,15 @@
   height: 25px;
   border: solid 1px var(--black);
   margin: 10px 0 10px;
-  display: flex;
-  justify-content: space-evenly;
+  overflow: hidden;
 
-  .done {
-    background: var(--main);
-    flex-grow: 1;
-  }
-  .todo {
-    background: #eee;
-    flex-grow: 1;
-  }
+  background: #eee;
+}
+
+.progressFill {
+  background: var(--main);
+  height: 100%;
+  transition: width 0.2s ease;
 }
 
 .link {

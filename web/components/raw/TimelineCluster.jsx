@@ -157,7 +157,9 @@ TimelineCluster.propTypes = {
       }),
     ).isRequired,
   }).isRequired,
-  index: PropTypes.number.isRequired,
+  isEdit: PropTypes.bool,
+  gallery: PropTypes.object,
+  selectImage: PropTypes.func,
 }
 
 export default TimelineCluster

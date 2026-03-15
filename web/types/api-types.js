@@ -19,7 +19,7 @@ export const ImageType = ImmuTypes.shape({
 
 export const TextNodeType = ImmuTypes.shape({
   id: PropTypes.string.isRequired,
-  dateTime: PropTypes.string.isRequired,
+  dateTime: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   text: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   galleryId: PropTypes.string.isRequired,
