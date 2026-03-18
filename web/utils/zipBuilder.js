@@ -1,4 +1,5 @@
 const MAX_IMAGES_PER_ZIP = 500
+const USER_ABORT = 'user abort'
 
 export default class ZipBuilder {
   constructor(props) {
@@ -71,7 +72,7 @@ export default class ZipBuilder {
       .reduce(
         (promise, image, index) =>
           promise.then(async () => {
-            if (this.abort) return Promise.reject('user abort')
+            if (this.abort) return Promise.reject(USER_ABORT)
             const file = await loadImage(image, imageSettings)
             zip.file(image.get('name'), file)
             onChange({
@@ -87,11 +88,14 @@ export default class ZipBuilder {
         Promise.resolve(),
       )
       .then(() => {
-        if (this.abort) return Promise.reject('user abort')
+        if (this.abort) return Promise.reject(USER_ABORT)
         return zip.generateAsync({ type: 'blob' })
       })
       .then(blob => {
         const objectUrl = URL.createObjectURL(blob)
+
+        releaseZip(zip)
+
         this.props.onSuccess(
           saveAs(objectUrl, fileName),
           objectUrl,
@@ -107,15 +111,20 @@ export default class ZipBuilder {
             nextStartIndex: endIndex,
           },
         )
+
+        return null
       })
       .catch(err => {
-        if (err !== 'user abort') {
+        if (err !== USER_ABORT) {
           this.props.onError('error creating zip file', err)
         }
       })
       .then(() => {
         this.busy = false
+        this.queue = null
       })
+
+    return this.queue
   }
 }
 
@@ -136,7 +145,17 @@ function loadImage(image, { size }) {
 
 function saveAs(objectUrl, name) {
   const link = document.createElement('a')
+
   link.download = name
   link.href = objectUrl
-  return () => link.click()
+
+  return () => {
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+  }
+}
+
+function releaseZip(zip) {
+  Object.keys(zip.files).forEach(name => zip.remove(name))
 }

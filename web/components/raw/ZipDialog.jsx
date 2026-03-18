@@ -26,15 +26,17 @@ export default class ZipDialog extends React.Component {
       fileName: null,
     }
 
+    this.saveCurrentChunk = null
+
     this.zip = new ZipBuilder({
       onInit: () => this.setState({ view: 'settings' }),
       onChange: progress => {
         this.setState(progress)
       },
       onSuccess: (save, objectUrl, progress) => {
+        this.saveCurrentChunk = save
         this.cleanupObjectUrl(objectUrl)
         this.setState({ view: 'success', objectUrl, ...progress })
-        save()
       },
       onError: console.log,
       onAbort: () => this.setState({ view: 'settings' }),
@@ -42,6 +44,8 @@ export default class ZipDialog extends React.Component {
 
     this.loadGallery = this.loadGallery.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleDownload = this.handleDownload.bind(this)
+    this.handleDownloadAndContinue = this.handleDownloadAndContinue.bind(this)
   }
 
   componentWillUnmount() {
@@ -52,13 +56,35 @@ export default class ZipDialog extends React.Component {
     const { objectUrl } = this.state
 
     if (objectUrl && objectUrl !== nextObjectUrl) {
-      URL.revokeObjectURL(objectUrl)
+      window.setTimeout(() => {
+        URL.revokeObjectURL(objectUrl)
+      }, 1000)
     }
   }
 
   handleClose() {
+    this.saveCurrentChunk = null
     this.cleanupObjectUrl()
     this.props.onClose()
+  }
+
+  handleDownload() {
+    if (this.saveCurrentChunk) {
+      this.saveCurrentChunk()
+    }
+  }
+
+  handleDownloadAndContinue() {
+    const { nextStartIndex } = this.state
+
+    if (this.saveCurrentChunk) {
+      this.saveCurrentChunk()
+    }
+
+    this.saveCurrentChunk = null
+    this.cleanupObjectUrl()
+    this.setState({ objectUrl: null })
+    this.loadGallery(nextStartIndex)
   }
 
   loadGallery(startIndex = 0) {
@@ -71,8 +97,8 @@ export default class ZipDialog extends React.Component {
       this.cleanupObjectUrl()
       this.setState({
         view: 'started',
-        objectUrl: null,
         position: 0,
+        objectUrl: null,
         startIndex,
         endIndex: startIndex,
       })
@@ -117,14 +143,24 @@ export default class ZipDialog extends React.Component {
             type: 'secondary',
           },
           {
-            text: 'Weiter',
-            onClick: () => this.loadGallery(nextStartIndex),
+            text: 'Paket herunterladen',
+            onClick: this.handleDownload,
+            type: 'secondary',
+          },
+          {
+            text: 'Herunterladen und weiter',
+            onClick: this.handleDownloadAndContinue,
           },
         ]
       : [
           {
             text: 'Schließen',
             onClick: this.handleClose,
+            type: 'secondary',
+          },
+          {
+            text: 'Download starten',
+            onClick: this.handleDownload,
           },
         ]
 
@@ -152,6 +188,7 @@ export default class ZipDialog extends React.Component {
               Bitte wählen sie die maximale Bildgröße aus, in der Sie die Bilder herunterladen
               wollen.
             </p>
+            <p>Der Download wird in Pakete mit jeweils maximal 500 Bildern aufgeteilt.</p>
             <select value={size} onChange={({ target }) => this.setState({ size: target.value })}>
               <option value="1280">HD 720p</option>
               <option value="1920">Full HD</option>
@@ -176,6 +213,7 @@ export default class ZipDialog extends React.Component {
             <p>
               {position} von {imageCount} Bildern geladen
             </p>
+            <p>Nach jedem Paket wird ein Download-Knopf angezeigt.</p>
           </div>,
           <ButtonBar key="2" buttons={buttonsProgress} />,
         ]
@@ -189,18 +227,23 @@ export default class ZipDialog extends React.Component {
               </p>
             )}
             <p className={styles.text}>
-              Sollte der Download nicht automatisch starten, klicken sie hier:
-              <a
-                className={styles.link}
-                href={objectUrl}
-                download={fileName}
-              >
-                {fileName}
-              </a>
+              Das aktuelle Paket ist {fileName}.
             </p>
+            <p className={styles.text}>
+              Der Download startet erst nach einem Klick auf den Download-Knopf.
+            </p>
+            {objectUrl && (
+              <p className={styles.text}>
+                Sollte der Download nicht starten, können sie das Paket auch direkt hier laden:
+                <a className={styles.link} href={objectUrl} download={fileName}>
+                  {fileName}
+                </a>
+              </p>
+            )}
             {hasMore && (
               <p className={styles.text}>
-                Mit „Weiter“ wird das nächste Paket erstellt.
+                Mit „Herunterladen und weiter“ wird nach dem Klick das nächste Paket erzeugt und die
+                Referenz auf das aktuelle Paket wieder freigegeben.
               </p>
             )}
           </div>,
