@@ -87,11 +87,12 @@ export default class ZipDialog extends React.Component {
     this.loadGallery(nextStartIndex)
   }
 
-  loadGallery(startIndex = 0) {
+  loadGallery(startIndexOrEvent = 0) {
     const {
       props: { gallery },
       state: { size },
     } = this
+    const startIndex = typeof startIndexOrEvent === 'number' ? startIndexOrEvent : 0
 
     if (gallery && this.zip.ready) {
       this.cleanupObjectUrl()
