@@ -82,23 +82,20 @@ export default class ZipDialog extends React.Component {
 
   renderContent() {
     const {
-      props: { onClose, gallery },
-      state: {
-        imageCount,
-        position,
-        size,
-        view,
-        objectUrl,
-        totalImageCount,
-        chunkIndex,
-        chunkCount,
-        startIndex,
-        endIndex,
-        hasMore,
-        nextStartIndex,
-        fileName,
-      },
-    } = this
+      imageCount,
+      position,
+      size,
+      view,
+      objectUrl,
+      totalImageCount,
+      chunkIndex,
+      chunkCount,
+      startIndex,
+      endIndex,
+      hasMore,
+      nextStartIndex,
+      fileName,
+    } = this.state
 
     const progress = imageCount ? Math.round((position / imageCount) * 100) : 0
     const downloadedFrom = Math.min(startIndex + 1, totalImageCount || imageCount)
@@ -214,7 +211,6 @@ export default class ZipDialog extends React.Component {
 
   render() {
     const {
-      props: { onClose },
       state: { view },
     } = this
 
